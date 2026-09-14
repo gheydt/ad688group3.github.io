@@ -1,16 +1,30 @@
 [
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
+    "objectID": "market_baseline.html",
+    "href": "market_baseline.html",
+    "title": "Market Baseline",
     "section": "",
-    "text": "About this site"
+    "text": "Add information on Market Baseline here\nSpecifically, show: job volume by title or segment salary distributions location patterns experience requirement distribution remote vs onsite patterns top employers or top hiring locations"
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "AD688 Project Group 3",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+    "text": "Our team is building a career evaluation product for students targeting Data Engineer roles in the Insurance Industry.\nWe primarily seek to answer the question, what skills make someone the most qualified for a Data Engineer role in the Insurance Industry?"
+  },
+  {
+    "objectID": "introduction.html",
+    "href": "introduction.html",
+    "title": "Introduction",
+    "section": "",
+    "text": "Our project focuses on building a career evaluation tool for students targeting Data Engineer roles in the Insurance industry. Our final product aims to answer what skills make someone the most qualified for Data Engineer roles in this industry. This topic is important because data science, risk mitigation, and data analysis are all becoming increasingly important in the Insurance industry. Understanding what skills are desired will help applicants to stand out and break into the industry. We expect to learn about desired skills, salary and experience trends, and how to identify where applicants can upskill to focus their efforts on bettering their resumes for this target career in the Insurance industry.\nSources: https://365datascience.com/career-advice/how-to-become-a-data-scientist-in-insurance/ https://www.discoverdatascience.org/industries/insurance/ https://web.theinstitutes.org/designations/associate-insurance-data-analytics"
+  },
+  {
+    "objectID": "data_preparation.html",
+    "href": "data_preparation.html",
+    "title": "Data Preparation",
+    "section": "",
+    "text": "Add information on the Clean Core Variables here\nSpecifically: how we handled duplicates, missing values, extreme outliers, and inconsistent labels"
   }
 ]
