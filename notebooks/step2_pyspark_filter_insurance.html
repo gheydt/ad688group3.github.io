@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>AD688 Group 3 - Step 2 Filtering: Insurance Carriers, All Roles (PySpark on AWS EC2) – AD688 Project Group 3</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-3e9b1289f5f353c49b617ce48ad2bc38.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">AD688 Project Group 3</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../introduction.html"> 
+<span class="menu-text">Introduction</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../data_preparation.html"> 
+<span class="menu-text">Data Preparation</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../market_baseline.html"> 
+<span class="menu-text">Market Baseline</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../skill_gap_analysis.html"> 
+<span class="menu-text">Skill Gap Analysis</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../career_evaluation.html"> 
+<span class="menu-text">Career Evaluation</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../final_recommendations.html"> 
+<span class="menu-text">Final Recommendations</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#start-spark-and-load-the-data" id="toc-start-spark-and-load-the-data" class="nav-link active" data-scroll-target="#start-spark-and-load-the-data">1. Start Spark and load the data</a></li>
+  <li><a href="#register-the-data-as-a-sql-table" id="toc-register-the-data-as-a-sql-table" class="nav-link" data-scroll-target="#register-the-data-as-a-sql-table">2. Register the data as a SQL table</a></li>
+  <li><a href="#filter-to-insurance-carriers-naics-5241-flagged-for-data-role-titles" id="toc-filter-to-insurance-carriers-naics-5241-flagged-for-data-role-titles" class="nav-link" data-scroll-target="#filter-to-insurance-carriers-naics-5241-flagged-for-data-role-titles">3. Filter to Insurance Carriers (NAICS 5241), flagged for data-role titles</a></li>
+  <li><a href="#see-the-results" id="toc-see-the-results" class="nav-link" data-scroll-target="#see-the-results">4. See the results</a></li>
+  <li><a href="#export-for-the-team-excel-csv" id="toc-export-for-the-team-excel-csv" class="nav-link" data-scroll-target="#export-for-the-team-excel-csv">5. Export for the team (Excel + CSV)</a></li>
+  <li><a href="#what-this-produced" id="toc-what-this-produced" class="nav-link" data-scroll-target="#what-this-produced">6. What this produced</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">AD688 Group 3 - Step 2 Filtering: Insurance Carriers, All Roles (PySpark on AWS EC2)</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><strong>Track:</strong> Team project, Step 2 (Data Preparation and Market Baseline).</p>
+<p><strong>Engine:</strong> PySpark, running on the AWS EC2 instance (the class-proper toolchain).</p>
+<p><strong>Goal:</strong> filter the job postings down to the Insurance Carriers industry (NAICS 5241),keeping every role, not just data roles, and flag which postings match our data-role scope.</p>
+<p>This is the team’s master dataset going forward. Everything is included, and <code>IS_DATA_ROLE_MATCH</code> column marks the ones relevant to the data-role analysis, so the team can sort/filter to that subset in Excel or widen the view as needed.</p>
+<p>Run the cells top to bottom. Each one prints its output right below it.</p>
+<section id="start-spark-and-load-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="start-spark-and-load-the-data">1. Start Spark and load the data</h2>
+<p>Spark is the query engine. We point it at the 17 Parquet files and load them as one table.</p>
+<div id="cbc2eb2c" class="cell" data-execution_count="47">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Start a local Spark session - this is the engine that reads and queries the data.</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># local[1] = use 1 CPU core, 512m = cap memory at 512MB. Both are set low on purpose</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># because this notebook runs on a small EC2 instance with under 1GB of RAM.</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> glob, os</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> SparkSession</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>spark <span class="op">=</span> (SparkSession.builder</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>         .appName(<span class="st">"AD688-Step2-Insurance"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>         .master(<span class="st">"local[1]"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>         .config(<span class="st">"spark.driver.memory"</span>, <span class="st">"512m"</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>         .getOrCreate())</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>spark.sparkContext.setLogLevel(<span class="st">"ERROR"</span>)  <span class="co"># quiet down Spark's own log noise</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Find every Parquet file in the data folder and load them all as one table.</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>files <span class="op">=</span> glob.glob(<span class="st">"data/MET_CareerCompass_2026/*.parquet"</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> spark.read.parquet(<span class="op">*</span>files)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Parquet files loaded:"</span>, <span class="bu">len</span>(files))</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Total postings:"</span>, df.count())</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Columns:"</span>, <span class="bu">len</span>(df.columns))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+[Stage 0:&gt;                                                          (0 + 0) / 1]
+
+[Stage 0:&gt;                                                          (0 + 1) / 1]
+
+                                                                                </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Parquet files loaded: 17</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+[Stage 1:&gt;                                                          (0 + 1) / 3]
+
+[Stage 1:===================&gt;                                       (1 + 1) / 3]
+
+                                                                                </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Total postings: 165386
+Columns: 115</code></pre>
+</div>
+</div>
+</section>
+<section id="register-the-data-as-a-sql-table" class="level2">
+<h2 class="anchored" data-anchor-id="register-the-data-as-a-sql-table">2. Register the data as a SQL table</h2>
+<p>This lets us query the postings with plain SQL and name the table <code>jobs</code>.</p>
+<div id="5c3650a1" class="cell" data-execution_count="48">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Register the DataFrame as a temporary SQL table named "jobs" so the next cell can</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># query it with plain SQL (SELECT / WHERE) instead of PySpark method chains.</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>df.createOrReplaceTempView(<span class="st">"jobs"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Table 'jobs' is ready to query."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Table 'jobs' is ready to query.</code></pre>
+</div>
+</div>
+</section>
+<section id="filter-to-insurance-carriers-naics-5241-flagged-for-data-role-titles" class="level2">
+<h2 class="anchored" data-anchor-id="filter-to-insurance-carriers-naics-5241-flagged-for-data-role-titles">3. Filter to Insurance Carriers (NAICS 5241), flagged for data-role titles</h2>
+<p>Keep every posting in the Insurance Carriers industry (NAICS code 5241), regardless of job title - nothing gets dropped, this is still the full industry cross-section.</p>
+<p>The one addition is a new column, <code>IS_DATA_ROLE_MATCH</code>, placed right after <code>TITLE_CLEAN</code>: it’s 1 for postings whose title matches our data-role keyword set (data engineer, data scientist, data analyst / BI, data architect / DBA, data governance, ML engineer, etc), and 0 for everything else.</p>
+<p>Sorting or filtering on this column in Excel is how the team can hone in on data roles specifically, without losing the rest of the dataset to work from.</p>
+<div id="c4980457" class="cell" data-execution_count="49">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This is still the full Insurance Carrier (NAICS 5241) slice - every role, nothing</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># filtered out. The only addition is IS_DATA_ROLE_MATCH, a 1/0 flag placed right after</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># TITLE_CLEAN, using our data-role keyword regex. Rows flagged 1 are the data-role subset.</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="st">SELECT</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Core identifiers and posting metadata</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="st">  ID, POSTED, EXPIRED, DURATION, URL,</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Job title fields (raw text plus Lightcast's cleaned versions)</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="st">  TITLE_RAW, TITLE_NAME, TITLE_CLEAN,</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Flag: 1 if this title matches the data-role keyword set, 0 otherwise. Does not</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="st">  -- drop any rows - just marks which ones are in the data-role scope.</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="st">  CASE WHEN lower(TITLE_RAW) RLIKE 'data engineer|analytics engineer|etl|data pipeline|data platform|big data|ml engineer|machine learning engineer|data architect|database|data scientist|data science|data analyst|business intelligence| bi |data governance|data management'</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="st">       THEN 1 ELSE 0 END AS IS_DATA_ROLE_MATCH,</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Employer info</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="st">  COMPANY_NAME, COMPANY_IS_STAFFING, EMPLOYMENT_TYPE_NAME,</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Experience and education requirements</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="st">  MIN_YEARS_EXPERIENCE, MAX_YEARS_EXPERIENCE, IS_INTERNSHIP,</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="st">  MIN_EDULEVELS_NAME, MAX_EDULEVELS_NAME,</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Pay</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="st">  SALARY, SALARY_FROM, SALARY_TO, ORIGINAL_PAY_PERIOD,</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Location and remote status</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="st">  REMOTE_TYPE_NAME, LOCATION, CITY_NAME, STATE_NAME, MSA_NAME,</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Industry and occupation codes</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="st">  NAICS_2022_4, SOC_2021_4_NAME, ONET_NAME,</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Skills and certifications requested in the posting</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="st">  SKILLS_NAME, SPECIALIZED_SKILLS_NAME, COMMON_SKILLS_NAME,</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="st">  SOFTWARE_SKILLS_NAME, CERTIFICATIONS_NAME</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="st">FROM jobs</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a><span class="st">WHERE NAICS_2022_4 = '5241'</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="st">ORDER BY TITLE_NAME, TITLE_RAW</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>insurance <span class="op">=</span> spark.sql(query)</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>insurance.createOrReplaceTempView(<span class="st">"insurance_jobs"</span>)</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Insurance Carrier (NAICS 5241) postings:"</span>, insurance.count())</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows flagged IS_DATA_ROLE_MATCH = 1:"</span>, insurance.<span class="bu">filter</span>(<span class="st">"IS_DATA_ROLE_MATCH = 1"</span>).count())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+[Stage 4:=======================================&gt;                   (2 + 1) / 3]
+
+                                                                                </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Insurance Carrier (NAICS 5241) postings: 1895</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+[Stage 7:===================&gt;                                       (1 + 1) / 3]
+
+[Stage 7:=======================================&gt;                   (2 + 1) / 3]</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows flagged IS_DATA_ROLE_MATCH = 1: 27</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+                                                                                </code></pre>
+</div>
+</div>
+</section>
+<section id="see-the-results" class="level2">
+<h2 class="anchored" data-anchor-id="see-the-results">4. See the results</h2>
+<p>A preview of the postings, and the most common job titles in this slice so the team can get a feel for what’s in here before deciding how to narrow it down.</p>
+<div id="f1a7f292" class="cell" data-execution_count="50">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Preview the postings, including the new flag, and the most common job titles.</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>insurance.select(<span class="st">"TITLE_RAW"</span>, <span class="st">"TITLE_NAME"</span>, <span class="st">"IS_DATA_ROLE_MATCH"</span>, <span class="st">"COMPANY_NAME"</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"STATE_NAME"</span>, <span class="st">"REMOTE_TYPE_NAME"</span>, <span class="st">"SALARY_FROM"</span>).show(<span class="dv">30</span>, truncate<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Most common job titles (TITLE_NAME), top 25:"</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>insurance.groupBy(<span class="st">"TITLE_NAME"</span>).count().orderBy(<span class="st">"count"</span>, ascending<span class="op">=</span><span class="va">False</span>).show(<span class="dv">25</span>, truncate<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>+------------------------------------------------------------------------+------------------------+------------------+---------------------------+---------------------+----------------+-----------+
+|TITLE_RAW                                                               |TITLE_NAME              |IS_DATA_ROLE_MATCH|COMPANY_NAME               |STATE_NAME           |REMOTE_TYPE_NAME|SALARY_FROM|
++------------------------------------------------------------------------+------------------------+------------------+---------------------------+---------------------+----------------+-----------+
+|Accountant                                                              |Accountants and Auditors|0                 |Jobs.danaher.com           |California           |Unknown         |           |
+|Accountant                                                              |Accountants and Auditors|0                 |Bannerlife                 |Maryland             |Unknown         |           |
+|Accountant                                                              |Accountants and Auditors|0                 |Seniorlifepa               |Pennsylvania         |Unknown         |           |
+|Accountant                                                              |Accountants and Auditors|0                 |Wcgclinical                |Unavailable          |Remote          |           |
+|Escrow Accountant                                                       |Accountants and Auditors|0                 |Qualia                     |Austin               |Unknown         |           |
+|Staff Accountant                                                        |Accountants and Auditors|0                 |Acadiahealthcare           |Florida              |Unknown         |           |
+|AI Compiler Engineer                                                    |Actors                  |0                 |Ericsson                   |Texas                |Remote          |           |
+|Account Executive, Commercial - Central                                 |Actors                  |0                 |Eve                        |Remote               |Remote          |           |
+|Account Executive, Commercial - East                                    |Actors                  |0                 |Eve                        |Remote               |Remote          |           |
+|Account Executive, Commercial - Pacific/Mountain                        |Actors                  |0                 |Eve                        |Remote               |Remote          |           |
+|Account Executive, Titan                                                |Actors                  |0                 |Junipersquare              |                     |Hybrid          |           |
+|Account Manager, Private Client Group                                   |Actors                  |0                 |Conner Strong &amp; Buckelew   |United States        |Hybrid          |80000.00   |
+|Accounting Supervisor                                                   |Actors                  |0                 |Citywide                   |North Carolina       |Unknown         |           |
+|Advisor - Fashion Mall at Keystone                                      |Actors                  |0                 |Warby Parker               |United States        |Unknown         |           |
+|Advisory Administrative Assistant III                                   |Actors                  |0                 |Weaver                     |United States        |On-site         |50000.00   |
+|Alternative Risk Funding Specialist                                     |Actors                  |0                 |Acrisure                   |New York             |On-site         |           |
+|Assistant Manager, Fund Administration (AML)                            |Actors                  |0                 |Junipersquare              |Americas ( Or Canada)|Hybrid          |           |
+|Assistant Mortgage Banker - Inside Sales                                |Actors                  |0                 |The Federal Savings Bank   |United States        |On-site         |3600.00    |
+|Assistant Property Manager                                              |Actors                  |0                 |Fairlawn                   |Illinois             |On-site         |50000.00   |
+|Assistant, Plant Maintenance Technician MRF                             |Actors                  |0                 |Emcm.fa.us2.oraclecloud.com|Maryland             |On-site         |           |
+|Associate Corporate Account Executive                                   |Actors                  |0                 |NetApp                     |United States        |Hybrid          |174250.00  |
+|Associate Corporate Account Executive                                   |Actors                  |0                 |NetApp                     |United States        |Hybrid          |174250.00  |
+|Associate Corporate Account Executive - SLED                            |Actors                  |0                 |NetApp                     |                     |Hybrid          |174250.00  |
+|Associate Corporate Client Executive                                    |Actors                  |0                 |NetApp                     |United States        |Hybrid          |174250.00  |
+|Associate Director International Learning Oncology                      |Actors                  |0                 |Abbvie                     |Illinois             |Unknown         |           |
+|Associate Director, Commerce Search                                     |Actors                  |0                 |Wppmedia                   |New York             |Hybrid          |           |
+|Associate Director, Data Strategy                                       |Actors                  |0                 |Wppmedia                   |New York             |Hybrid          |           |
+|Associate Director, Data Strategy                                       |Actors                  |0                 |WPP                        |United States        |Hybrid          |75000.00   |
+|Associate Director, Promotional Medical Education - Psychiatry Marketing|Actors                  |0                 |Abbvie                     |New Jersey           |Unknown         |           |
+|Associate Manager - Influencer &amp; Affiliate Marketing                    |Actors                  |0                 |AEO                        |United States        |Hybrid          |           |
++------------------------------------------------------------------------+------------------------+------------------+---------------------------+---------------------+----------------+-----------+
+only showing top 30 rows
+Most common job titles (TITLE_NAME), top 25:
++------------------------------------------------------------------------------------------------+-----+
+|TITLE_NAME                                                                                      |count|
++------------------------------------------------------------------------------------------------+-----+
+|Management Analysts                                                                             |643  |
+|Project Management Specialists                                                                  |472  |
+|Actors                                                                                          |244  |
+|Marketing Managers                                                                              |87   |
+|Information Security Analysts                                                                   |66   |
+|Data Scientists                                                                                 |44   |
+|Software Developers                                                                             |43   |
+|Construction Managers                                                                           |29   |
+|Database Architects                                                                             |28   |
+|Registered Nurses                                                                               |18   |
+|Sales Managers                                                                                  |18   |
+|Sales Representatives of Services, Except Advertising, Insurance, Financial Services, and Travel|15   |
+|Cooks, Restaurant                                                                               |10   |
+|Occupational Therapists                                                                         |7    |
+|Editors                                                                                         |7    |
+|Customer Service Representatives                                                                |7    |
+|Physical Therapists                                                                             |6    |
+|Accountants and Auditors                                                                        |6    |
+|Nurse Practitioners                                                                             |5    |
+|Bartenders                                                                                      |4    |
+|Maids and Housekeeping Cleaners                                                                 |4    |
+|Clinical Data Managers                                                                          |4    |
+|Riggers                                                                                         |4    |
+|Medical Assistants                                                                              |3    |
+|Audiologists                                                                                    |3    |
++------------------------------------------------------------------------------------------------+-----+
+only showing top 25 rows</code></pre>
+</div>
+</div>
+</section>
+<section id="export-for-the-team-excel-csv" class="level2">
+<h2 class="anchored" data-anchor-id="export-for-the-team-excel-csv">5. Export for the team (Excel + CSV)</h2>
+<p>This is bigger than the 27-row data-role cut (about 1,900 rows), but still small enough to pull into pandas and write out directly.</p>
+<div id="45c927d0" class="cell" data-execution_count="51">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pull the full Insurance Carrier slice into pandas and write it out as both Excel</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># and CSV, so the team has one shared file to review and narrow down from.</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>os.makedirs(<span class="st">"outputs/step2"</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>pdf <span class="op">=</span> insurance.toPandas()</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>xlsx_path <span class="op">=</span> <span class="st">"outputs/step2/insurance_5241_all_postings.xlsx"</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>csv_path  <span class="op">=</span> <span class="st">"outputs/step2/insurance_5241_all_postings.csv"</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>pdf.to_excel(xlsx_path, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>pdf.to_csv(csv_path, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows exported:"</span>, <span class="bu">len</span>(pdf))</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Excel:"</span>, os.path.abspath(xlsx_path))</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"CSV:  "</span>, os.path.abspath(csv_path))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/home/ubuntu/ad688/.venv/lib/python3.14/site-packages/pyspark/sql/pandas/conversion.py:298: FutureWarning: PySpark does not yet fully support pandas &gt;= 3.0.0. Some features may not work correctly. It is recommended to use pandas &lt; 3.0.0 for now.
+  require_minimum_pandas_version()
+/home/ubuntu/ad688/.venv/lib/python3.14/site-packages/pyspark/sql/pandas/conversion.py:348: UserWarning: toPandas attempted Arrow optimization because 'spark.sql.execution.arrow.pyspark.enabled' is set to true; however, failed by the reason below:
+  [PACKAGE_NOT_INSTALLED] PyArrow &gt;= 18.0.0 must be installed; however, it was not found.
+Attempting non-optimization as 'spark.sql.execution.arrow.pyspark.fallback.enabled' is set to true.
+  warn(msg)
+
+[Stage 14:&gt;                                                         (0 + 1) / 3]
+
+[Stage 14:===================&gt;                                      (1 + 1) / 3]
+
+[Stage 14:======================================&gt;                   (2 + 1) / 3]
+
+                                                                                
+
+[Stage 15:&gt;                                                         (0 + 1) / 3]
+
+[Stage 15:===================&gt;                                      (1 + 1) / 3]
+
+[Stage 15:======================================&gt;                   (2 + 1) / 3]
+
+[Stage 17:&gt;                                                         (0 + 1) / 1]
+
+                                                                                </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows exported: 1895
+Excel: /home/ubuntu/ad688/outputs/step2/insurance_5241_all_postings.xlsx
+CSV:   /home/ubuntu/ad688/outputs/step2/insurance_5241_all_postings.csv</code></pre>
+</div>
+</div>
+</section>
+<section id="what-this-produced" class="level2">
+<h2 class="anchored" data-anchor-id="what-this-produced">6. What this produced</h2>
+<ul>
+<li>The team’s master dataset: the full Insurance Carrier (NAICS 5241) posting set, every role, nothing filtered out.</li>
+<li>A new <code>IS_DATA_ROLE_MATCH</code> column (1/0) right after <code>TITLE_CLEAN</code>, flagging postings that match our data-role keyword set. Sort or filter on that column in Excel/CSV to jump straight to the data roles, or clear the filter to see everything else in the industry.</li>
+<li>Two export files in <code>outputs/step2/</code> (Excel and CSV): <code>insurance_5241_all_postings</code>. This is the file the team should use going forward.</li>
+</ul>
+<p>When done, stop Spark to free memory:</p>
+<div id="4b93ac39" class="cell" data-execution_count="52">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Release Spark's memory now that we're done with it.</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>spark.stop()</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Spark stopped."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Spark stopped.</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/gheydt\.github\.io\/ad688group3\.github\.io\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
