@@ -7,7 +7,12 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - introduction.qmd
+      - data_preparation.qmd
+      - market_baseline.qmd
+      - skill_gap_analysis.qmd
+      - career_evaluation.qmd
+      - final_recommendations.qmd
 
 format:
   html:

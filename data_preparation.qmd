@@ -1,0 +1,7 @@
+---
+title: "Data Preparation"
+---
+
+Add information on the Clean Core Variables here
+
+Specifically: how we handled duplicates, missing values, extreme outliers, and inconsistent labels

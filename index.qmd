@@ -2,6 +2,6 @@
 title: "AD688 Project Group 3"
 ---
 
-This is a Quarto website.
+Our team is building a career evaluation product for students targeting Data Engineer roles in the Insurance Industry. 
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+We primarily seek to answer the question, what skills make someone the most qualified for a Data Engineer role in the Insurance Industry?

@@ -1,0 +1,13 @@
+---
+title: "Market Baseline"
+---
+
+Add information on Market Baseline here
+
+Specifically, show:
+    job volume by title or segment
+    salary distributions
+    location patterns
+    experience requirement distribution
+    remote vs onsite patterns
+    top employers or top hiring locations

@@ -1,0 +1,11 @@
+---
+title: "Introduction"
+---
+
+
+    Our project focuses on building a career evaluation tool for students targeting Data Engineer roles in the Insurance industry. Our final product aims to answer what skills make someone the most qualified for Data Engineer roles in this industry. This topic is important because data science, risk mitigation, and data analysis are all becoming increasingly important in the Insurance industry. Understanding what skills are desired will help applicants to stand out and break into the industry. We expect to learn about desired skills, salary and experience trends, and how to identify where applicants can upskill to focus their efforts on bettering their resumes for this target career in the Insurance industry.
+
+Sources:
+https://365datascience.com/career-advice/how-to-become-a-data-scientist-in-insurance/
+https://www.discoverdatascience.org/industries/insurance/
+https://web.theinstitutes.org/designations/associate-insurance-data-analytics
