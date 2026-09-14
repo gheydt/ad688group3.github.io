@@ -2,3 +2,29 @@
 **/*.quarto_ipynb
 
 .env
+
+# Python environment
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Raw dataset - EXCLUDED PER COURSE INSTRUCTIONS, not by our own choice.
+#   Module 3 Lab 1: "Add large dataset files (e.g., MET_CareerCompass_2026) to
+#     .gitignore to prevent pushing them to GitHub. Make sure to add the file in
+#     gitignore first and then commit and sync."
+#   Module 3 Lab 2: "Exclude raw data (MET_CareerCompass_2026) using .gitignore"
+#   Module 1 Project: "Do not commit very large raw files if they are not needed
+#     on the public site."
+#   Module 3 Project: "Ensure .gitignore Excludes Large Files"
+# The data is not shared via git. Everyone (and the EC2 instance) pulls the same
+# copy from Google Drive with gdown - see notebooks/README.md:
+#   gdown --folder "https://drive.google.com/drive/folders/11uTPfwHiRohl2ljSYeFuo0KKBUP_1vk4?usp=sharing" -O ./MET_CareerCompass_2026
+# Also a hard GitHub limit: single files over 100MB are rejected, so a push would
+# fail anyway. Do NOT remove these entries.
+data/
+MET_CareerCompass_2026/
+*.parquet
+
+# Jupyter/Quarto build artifacts
+/_site/
