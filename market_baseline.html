@@ -26,6 +26,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -134,8 +169,25 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#market-baseline" id="toc-market-baseline" class="nav-link active" data-scroll-target="#market-baseline">Market Baseline</a>
+  <ul class="collapse">
+  <li><a href="#load-the-cleaned-dataset" id="toc-load-the-cleaned-dataset" class="nav-link" data-scroll-target="#load-the-cleaned-dataset">Load the Cleaned Dataset</a></li>
+  <li><a href="#job-volume-by-title" id="toc-job-volume-by-title" class="nav-link" data-scroll-target="#job-volume-by-title">Job Volume by Title</a></li>
+  <li><a href="#salary-distribution" id="toc-salary-distribution" class="nav-link" data-scroll-target="#salary-distribution">Salary Distribution</a></li>
+  <li><a href="#location-patterns" id="toc-location-patterns" class="nav-link" data-scroll-target="#location-patterns">Location Patterns</a></li>
+  <li><a href="#experience-requirements" id="toc-experience-requirements" class="nav-link" data-scroll-target="#experience-requirements">Experience Requirements</a></li>
+  <li><a href="#remote-vs.-on-site-work" id="toc-remote-vs.-on-site-work" class="nav-link" data-scroll-target="#remote-vs.-on-site-work">Remote vs.&nbsp;On-Site Work</a></li>
+  <li><a href="#top-employers" id="toc-top-employers" class="nav-link" data-scroll-target="#top-employers">Top Employers</a></li>
+  <li><a href="#top-specialized-skills" id="toc-top-specialized-skills" class="nav-link" data-scroll-target="#top-specialized-skills">Top Specialized Skills</a></li>
+  <li><a href="#key-findings-and-limitations" id="toc-key-findings-and-limitations" class="nav-link" data-scroll-target="#key-findings-and-limitations">Key Findings and Limitations</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -159,10 +211,192 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Add information on Market Baseline here</p>
-<p>Specifically, show: job volume by title or segment salary distributions location patterns experience requirement distribution remote vs onsite patterns top employers or top hiring locations</p>
+<section id="market-baseline" class="level1">
+<h1>Market Baseline</h1>
+<p>This market baseline examines data-related job postings within the Insurance Carrier industry (NAICS 5241). The analysis focuses on job volume, salary, location, experience requirements, work arrangement, hiring patterns, and specialized skills.</p>
+<p>The team identified <strong>27 data-related postings</strong> from the Insurance Carrier dataset after applying the project role filter.</p>
+<section id="load-the-cleaned-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="load-the-cleaned-dataset">Load the Cleaned Dataset</h2>
+<div id="ff27769e" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Find the project root</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>project_root <span class="op">=</span> Path.cwd()</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="kw">not</span> (project_root <span class="op">/</span> <span class="st">"_quarto.yml"</span>).exists():</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> project_root.parent <span class="op">==</span> project_root:</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">FileNotFoundError</span>(<span class="st">"Could not find project root."</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    project_root <span class="op">=</span> project_root.parent</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the cleaned dataset</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>data_path <span class="op">=</span> (</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    project_root</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">/</span> <span class="st">"processed"</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">/</span> <span class="st">"insurance_5241_data_roles_cleaned.csv"</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(data_path)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Total data-related postings:"</span>, <span class="bu">len</span>(df))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Total data-related postings: 27</code></pre>
+</div>
+</div>
+</section>
+<section id="job-volume-by-title" class="level2">
+<h2 class="anchored" data-anchor-id="job-volume-by-title">Job Volume by Title</h2>
+<div id="d75941fc" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>top_titles <span class="op">=</span> (</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"TITLE_CLEAN"</span>]</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .value_counts()</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">10</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>top_titles</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<pre><code>TITLE_CLEAN
+Senior Data Engineer                        4
+Data Scientist                              2
+Senior Data Analyst                         2
+Data Analyst                                2
+Data Analyst — AI-Driven Insights           1
+Staff Data Engineer, Finance                1
+Data Governance &amp; Metadata Scientist        1
+Machine Learning Engineer, Conversion ML    1
+Senior Sales Ops Data Analyst               1
+Test Lead, Senior Data Analyst              1
+Name: count, dtype: int64</code></pre>
+</div>
+</div>
+<p>The cleaned dataset contains <strong>27 data-related postings</strong> across several related data roles. These include Data Engineer, Data Analyst, Data Scientist, Business Intelligence, and other technical data positions.</p>
+</section>
+<section id="salary-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="salary-distribution">Salary Distribution</h2>
+<div id="30df2ec5" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>salary_df <span class="op">=</span> df[</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"ANNUAL_SALARY_MIDPOINT"</span>].notna()</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Postings with salary:"</span>, <span class="bu">len</span>(salary_df))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Average annual salary midpoint:"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">round</span>(salary_df[<span class="st">"ANNUAL_SALARY_MIDPOINT"</span>].mean(), <span class="dv">2</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Minimum salary midpoint:"</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">round</span>(salary_df[<span class="st">"ANNUAL_SALARY_MIDPOINT"</span>].<span class="bu">min</span>(), <span class="dv">2</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Maximum salary midpoint:"</span>,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">round</span>(salary_df[<span class="st">"ANNUAL_SALARY_MIDPOINT"</span>].<span class="bu">max</span>(), <span class="dv">2</span>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Postings with salary: 5
+Average annual salary midpoint: 163840.0
+Minimum salary midpoint: 93000.0
+Maximum salary midpoint: 280000.0</code></pre>
+</div>
+</div>
+<p>Salary information was available for only <strong>5 of the 27 postings</strong>. Among those postings, the average annual salary midpoint was approximately <strong>$163,840</strong>.</p>
+<p>The salary midpoint ranged from approximately <strong>$93,000 to $280,000</strong>. Because salary information was missing for most postings, these results should be interpreted cautiously.</p>
+</section>
+<section id="location-patterns" class="level2">
+<h2 class="anchored" data-anchor-id="location-patterns">Location Patterns</h2>
+<div id="e35e319e" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>state_counts <span class="op">=</span> (</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"CLEAN_STATE"</span>]</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .dropna()</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    .value_counts()</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>state_counts</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>CLEAN_STATE
+California              2
+Illinois                1
+Ohio                    1
+Maryland                1
+District of Columbia    1
+Washington              1
+New Jersey              1
+Florida                 1
+Name: count, dtype: int64</code></pre>
+</div>
+</div>
+<p>Valid state information was available for only <strong>9 of the 27 postings</strong>. Because geographic information was missing or inconsistent for many postings, state-level demand patterns should be interpreted cautiously.</p>
+</section>
+<section id="experience-requirements" class="level2">
+<h2 class="anchored" data-anchor-id="experience-requirements">Experience Requirements</h2>
+<p>The structured <code>MIN_YEARS_EXPERIENCE</code> and <code>MAX_YEARS_EXPERIENCE</code> fields did not contain usable experience information for any of the 27 filtered postings.</p>
+<p>Because structured experience information was unavailable, an experience-requirement distribution could not be calculated. Missing experience values were retained as missing rather than estimated.</p>
+</section>
+<section id="remote-vs.-on-site-work" class="level2">
+<h2 class="anchored" data-anchor-id="remote-vs.-on-site-work">Remote vs.&nbsp;On-Site Work</h2>
+<p><img src="images/output.png" class="img-fluid"></p>
+<p>The filtered postings included:</p>
+<ul>
+<li><strong>12 remote</strong></li>
+<li><strong>4 hybrid</strong></li>
+<li><strong>3 on-site</strong></li>
+<li><strong>8 unknown</strong></li>
+</ul>
+<p>Remote work was the most common identifiable work arrangement among the data-related Insurance Carrier postings.</p>
+</section>
+<section id="top-employers" class="level2">
+<h2 class="anchored" data-anchor-id="top-employers">Top Employers</h2>
+<div id="3b305aad" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>top_employers <span class="op">=</span> (</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"COMPANY_NAME"</span>]</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .dropna()</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    .value_counts()</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">10</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>top_employers</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>COMPANY_NAME
+Amazon                   2
+Replit                   1
+David's Bridal           1
+DAT                      1
+Base-2 Solutions, LLC    1
+Liftoff Mobile           1
+Carbo                    1
+Uniti Fiber              1
+WellSky                  1
+ProFocus                 1
+Name: count, dtype: int64</code></pre>
+</div>
+</div>
+<p>The employer counts show which organizations contributed the most data-related postings within the filtered Insurance Carrier sample.</p>
+</section>
+<section id="top-specialized-skills" class="level2">
+<h2 class="anchored" data-anchor-id="top-specialized-skills">Top Specialized Skills</h2>
+<p><img src="images/output1.png" class="img-fluid"></p>
+<p>Skills information was more complete than salary, experience, and geographic information.</p>
+<p>The strongest specialized-skill signals were:</p>
+<ul>
+<li><strong>Analytics — 59.3%</strong></li>
+<li><strong>Automation — 22.2%</strong></li>
+<li><strong>Business Intelligence — 18.5%</strong></li>
+<li><strong>Accounting — 14.8%</strong></li>
+<li><strong>Airflow — 11.1%</strong></li>
+<li><strong>BigQuery — 11.1%</strong></li>
+</ul>
+<p>Analytics was the most frequently identified specialized skill among the data-related postings.</p>
+</section>
+<section id="key-findings-and-limitations" class="level2">
+<h2 class="anchored" data-anchor-id="key-findings-and-limitations">Key Findings and Limitations</h2>
+<p>The Insurance Carrier sample contained <strong>27 data-related postings</strong>. Remote work was the most common identifiable work arrangement.</p>
+<p>Salary information was available for only <strong>5 postings</strong>, with an average annual salary midpoint of approximately <strong>$163,840</strong>. Because the salary sample is small, this value should not be interpreted as representative of the entire Insurance Carrier data-job market.</p>
+<p>Structured experience information was unavailable for all 27 postings, while valid state information was available for only a subset of the sample.</p>
+<p>Skills information was considerably more complete. Analytics, Automation, Business Intelligence, Airflow, and BigQuery were among the most frequently identified specialized skills.</p>
+<p>These missing-data limitations should be considered when interpreting the market baseline results.</p>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

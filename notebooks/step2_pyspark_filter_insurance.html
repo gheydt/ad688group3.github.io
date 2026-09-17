@@ -180,6 +180,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#see-the-results" id="toc-see-the-results" class="nav-link" data-scroll-target="#see-the-results">4. See the results</a></li>
   <li><a href="#export-for-the-team-excel-csv" id="toc-export-for-the-team-excel-csv" class="nav-link" data-scroll-target="#export-for-the-team-excel-csv">5. Export for the team (Excel + CSV)</a></li>
   <li><a href="#what-this-produced" id="toc-what-this-produced" class="nav-link" data-scroll-target="#what-this-produced">6. What this produced</a></li>
+  <li><a href="#core-variable-cleaning-and-market-baseline" id="toc-core-variable-cleaning-and-market-baseline" class="nav-link" data-scroll-target="#core-variable-cleaning-and-market-baseline">7. Core Variable Cleaning and Market Baseline</a>
+  <ul class="collapse">
+  <li><a href="#remove-duplicate-job-postings" id="toc-remove-duplicate-job-postings" class="nav-link" data-scroll-target="#remove-duplicate-job-postings">8. Remove Duplicate Job Postings</a></li>
+  <li><a href="#clean-and-review-salary-variables" id="toc-clean-and-review-salary-variables" class="nav-link" data-scroll-target="#clean-and-review-salary-variables">9. Clean and Review Salary Variables</a></li>
+  </ul></li>
+  <li><a href="#salary" id="toc-salary" class="nav-link" data-scroll-target="#salary">10. Salary</a>
+  <ul class="collapse">
+  <li><a href="#clean-and-review-experience-requirements" id="toc-clean-and-review-experience-requirements" class="nav-link" data-scroll-target="#clean-and-review-experience-requirements">11. Clean and Review Experience Requirements</a></li>
+  <li><a href="#clean-location-and-remote-work-variables" id="toc-clean-location-and-remote-work-variables" class="nav-link" data-scroll-target="#clean-location-and-remote-work-variables">12. Clean Location and Remote Work Variables</a></li>
+  <li><a href="#clean-and-analyze-skills" id="toc-clean-and-analyze-skills" class="nav-link" data-scroll-target="#clean-and-analyze-skills">13. Clean and Analyze Skills</a></li>
+  <li><a href="#market-baseline-summary" id="toc-market-baseline-summary" class="nav-link" data-scroll-target="#market-baseline-summary">14. Market Baseline Summary</a></li>
+  <li><a href="#market-baseline-visualizations" id="toc-market-baseline-visualizations" class="nav-link" data-scroll-target="#market-baseline-visualizations">15. Market Baseline Visualizations</a></li>
+  <li><a href="#key-findings-and-limitations" id="toc-key-findings-and-limitations" class="nav-link" data-scroll-target="#key-findings-and-limitations">16. Key Findings and Limitations</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -213,60 +227,76 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="start-spark-and-load-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="start-spark-and-load-the-data">1. Start Spark and load the data</h2>
 <p>Spark is the query engine. We point it at the 17 Parquet files and load them as one table.</p>
-<div id="cbc2eb2c" class="cell" data-execution_count="47">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Start a local Spark session - this is the engine that reads and queries the data.</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># local[1] = use 1 CPU core, 512m = cap memory at 512MB. Both are set low on purpose</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># because this notebook runs on a small EC2 instance with under 1GB of RAM.</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> glob, os</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> SparkSession</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>spark <span class="op">=</span> (SparkSession.builder</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>         .appName(<span class="st">"AD688-Step2-Insurance"</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>         .master(<span class="st">"local[1]"</span>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>         .config(<span class="st">"spark.driver.memory"</span>, <span class="st">"512m"</span>)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>         .getOrCreate())</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>spark.sparkContext.setLogLevel(<span class="st">"ERROR"</span>)  <span class="co"># quiet down Spark's own log noise</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Find every Parquet file in the data folder and load them all as one table.</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>files <span class="op">=</span> glob.glob(<span class="st">"data/MET_CareerCompass_2026/*.parquet"</span>)</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> spark.read.parquet(<span class="op">*</span>files)</span>
+<div id="cbc2eb2c" class="cell" data-execution_count="187">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> SparkSession</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Start or reuse the Spark session</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>spark <span class="op">=</span> (</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    SparkSession.builder</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    .appName(<span class="st">"AD688-Step2-Insurance"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    .master(<span class="st">"local[1]"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    .config(<span class="st">"spark.driver.memory"</span>, <span class="st">"512m"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    .getOrCreate()</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>spark.sparkContext.setLogLevel(<span class="st">"ERROR"</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Find the project root</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>project_root <span class="op">=</span> Path.cwd()</span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Parquet files loaded:"</span>, <span class="bu">len</span>(files))</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Total postings:"</span>, df.count())</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Columns:"</span>, <span class="bu">len</span>(df.columns))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-[Stage 0:&gt;                                                          (0 + 0) / 1]
-
-[Stage 0:&gt;                                                          (0 + 1) / 1]
-
-                                                                                </code></pre>
-</div>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="kw">not</span> (project_root <span class="op">/</span> <span class="st">"_quarto.yml"</span>).exists():</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> project_root.parent <span class="op">==</span> project_root:</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">FileNotFoundError</span>(<span class="st">"Could not find the project root."</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    project_root <span class="op">=</span> project_root.parent</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Shared team dataset</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>csv_path <span class="op">=</span> (</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    project_root</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">/</span> <span class="st">"outputs"</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">/</span> <span class="st">"step2"</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="op">/</span> <span class="st">"insurance_5241_all_postings.csv"</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Dataset path:"</span>, csv_path)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> csv_path.exists():</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">FileNotFoundError</span>(<span class="ss">f"Dataset not found: </span><span class="sc">{</span>csv_path<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the shared Insurance 5241 dataset</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> (</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    spark.read</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    .option(<span class="st">"header"</span>, <span class="va">True</span>)</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    .option(<span class="st">"inferSchema"</span>, <span class="va">True</span>)</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>    .option(<span class="st">"quote"</span>, <span class="st">'"'</span>)</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>    .option(<span class="st">"escape"</span>, <span class="st">'"'</span>)</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    .csv(<span class="bu">str</span>(csv_path))</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="co"># Make the DataFrame available for Spark SQL</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>df.createOrReplaceTempView(<span class="st">"jobs"</span>)</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Dataset loaded successfully"</span>)</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows:"</span>, df.count())</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Columns:"</span>, <span class="bu">len</span>(df.columns))</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"SQL table 'jobs' is ready."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Parquet files loaded: 17</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-[Stage 1:&gt;                                                          (0 + 1) / 3]
-
-[Stage 1:===================&gt;                                       (1 + 1) / 3]
-
-                                                                                </code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Total postings: 165386
-Columns: 115</code></pre>
+<pre><code>Dataset path: /home/ubuntu/ad688group3.github.io/outputs/step2/insurance_5241_all_postings.csv
+Dataset loaded successfully
+Rows: 1895
+Columns: 34
+SQL table 'jobs' is ready.</code></pre>
 </div>
 </div>
 </section>
 <section id="register-the-data-as-a-sql-table" class="level2">
 <h2 class="anchored" data-anchor-id="register-the-data-as-a-sql-table">2. Register the data as a SQL table</h2>
 <p>This lets us query the postings with plain SQL and name the table <code>jobs</code>.</p>
-<div id="5c3650a1" class="cell" data-execution_count="48">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Register the DataFrame as a temporary SQL table named "jobs" so the next cell can</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># query it with plain SQL (SELECT / WHERE) instead of PySpark method chains.</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>df.createOrReplaceTempView(<span class="st">"jobs"</span>)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Table 'jobs' is ready to query."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="5c3650a1" class="cell" data-execution_count="188">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Register the DataFrame as a temporary SQL table named "jobs" so the next cell can</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># query it with plain SQL (SELECT / WHERE) instead of PySpark method chains.</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>df.createOrReplaceTempView(<span class="st">"jobs"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Table 'jobs' is ready to query."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Table 'jobs' is ready to query.</code></pre>
 </div>
@@ -277,110 +307,92 @@ Columns: 115</code></pre>
 <p>Keep every posting in the Insurance Carriers industry (NAICS code 5241), regardless of job title - nothing gets dropped, this is still the full industry cross-section.</p>
 <p>The one addition is a new column, <code>IS_DATA_ROLE_MATCH</code>, placed right after <code>TITLE_CLEAN</code>: it’s 1 for postings whose title matches our data-role keyword set (data engineer, data scientist, data analyst / BI, data architect / DBA, data governance, ML engineer, etc), and 0 for everything else.</p>
 <p>Sorting or filtering on this column in Excel is how the team can hone in on data roles specifically, without losing the rest of the dataset to work from.</p>
-<div id="c4980457" class="cell" data-execution_count="49">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This is still the full Insurance Carrier (NAICS 5241) slice - every role, nothing</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># filtered out. The only addition is IS_DATA_ROLE_MATCH, a 1/0 flag placed right after</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># TITLE_CLEAN, using our data-role keyword regex. Rows flagged 1 are the data-role subset.</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> <span class="st">"""</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="st">SELECT</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Core identifiers and posting metadata</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="st">  ID, POSTED, EXPIRED, DURATION, URL,</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Job title fields (raw text plus Lightcast's cleaned versions)</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="st">  TITLE_RAW, TITLE_NAME, TITLE_CLEAN,</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Flag: 1 if this title matches the data-role keyword set, 0 otherwise. Does not</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="st">  -- drop any rows - just marks which ones are in the data-role scope.</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="st">  CASE WHEN lower(TITLE_RAW) RLIKE 'data engineer|analytics engineer|etl|data pipeline|data platform|big data|ml engineer|machine learning engineer|data architect|database|data scientist|data science|data analyst|business intelligence| bi |data governance|data management'</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="st">       THEN 1 ELSE 0 END AS IS_DATA_ROLE_MATCH,</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Employer info</span></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="st">  COMPANY_NAME, COMPANY_IS_STAFFING, EMPLOYMENT_TYPE_NAME,</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Experience and education requirements</span></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="st">  MIN_YEARS_EXPERIENCE, MAX_YEARS_EXPERIENCE, IS_INTERNSHIP,</span></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="st">  MIN_EDULEVELS_NAME, MAX_EDULEVELS_NAME,</span></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Pay</span></span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="st">  SALARY, SALARY_FROM, SALARY_TO, ORIGINAL_PAY_PERIOD,</span></span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Location and remote status</span></span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="st">  REMOTE_TYPE_NAME, LOCATION, CITY_NAME, STATE_NAME, MSA_NAME,</span></span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Industry and occupation codes</span></span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="st">  NAICS_2022_4, SOC_2021_4_NAME, ONET_NAME,</span></span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Skills and certifications requested in the posting</span></span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="st">  SKILLS_NAME, SPECIALIZED_SKILLS_NAME, COMMON_SKILLS_NAME,</span></span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="st">  SOFTWARE_SKILLS_NAME, CERTIFICATIONS_NAME</span></span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="st">FROM jobs</span></span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a><span class="st">WHERE NAICS_2022_4 = '5241'</span></span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="st">ORDER BY TITLE_NAME, TITLE_RAW</span></span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>insurance <span class="op">=</span> spark.sql(query)</span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>insurance.createOrReplaceTempView(<span class="st">"insurance_jobs"</span>)</span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Insurance Carrier (NAICS 5241) postings:"</span>, insurance.count())</span>
-<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows flagged IS_DATA_ROLE_MATCH = 1:"</span>, insurance.<span class="bu">filter</span>(<span class="st">"IS_DATA_ROLE_MATCH = 1"</span>).count())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-[Stage 4:=======================================&gt;                   (2 + 1) / 3]
-
-                                                                                </code></pre>
-</div>
+<div id="c4980457" class="cell" data-execution_count="189">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This is still the full Insurance Carrier (NAICS 5241) slice - every role, nothing</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># filtered out. The only addition is IS_DATA_ROLE_MATCH, a 1/0 flag placed right after</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># TITLE_CLEAN, using our data-role keyword regex. Rows flagged 1 are the data-role subset.</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="st">SELECT</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Core identifiers and posting metadata</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="st">  ID, POSTED, EXPIRED, DURATION, URL,</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Job title fields (raw text plus Lightcast's cleaned versions)</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="st">  TITLE_RAW, TITLE_NAME, TITLE_CLEAN,</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Flag: 1 if this title matches the data-role keyword set, 0 otherwise. Does not</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="st">  -- drop any rows - just marks which ones are in the data-role scope.</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="st">  CASE WHEN lower(TITLE_RAW) RLIKE 'data engineer|analytics engineer|etl|data pipeline|data platform|big data|ml engineer|machine learning engineer|data architect|database|data scientist|data science|data analyst|business intelligence| bi |data governance|data management'</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="st">       THEN 1 ELSE 0 END AS IS_DATA_ROLE_MATCH,</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Employer info</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="st">  COMPANY_NAME, COMPANY_IS_STAFFING, EMPLOYMENT_TYPE_NAME,</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Experience and education requirements</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="st">  MIN_YEARS_EXPERIENCE, MAX_YEARS_EXPERIENCE, IS_INTERNSHIP,</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="st">  MIN_EDULEVELS_NAME, MAX_EDULEVELS_NAME,</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Pay</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="st">  SALARY, SALARY_FROM, SALARY_TO, ORIGINAL_PAY_PERIOD,</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Location and remote status</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="st">  REMOTE_TYPE_NAME, LOCATION, CITY_NAME, STATE_NAME, MSA_NAME,</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Industry and occupation codes</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="st">  NAICS_2022_4, SOC_2021_4_NAME, ONET_NAME,</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="st">  -- Skills and certifications requested in the posting</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="st">  SKILLS_NAME, SPECIALIZED_SKILLS_NAME, COMMON_SKILLS_NAME,</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="st">  SOFTWARE_SKILLS_NAME, CERTIFICATIONS_NAME</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="st">FROM jobs</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="st">WHERE NAICS_2022_4 = '5241'</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="st">ORDER BY TITLE_NAME, TITLE_RAW</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>insurance <span class="op">=</span> spark.sql(query)</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>insurance.createOrReplaceTempView(<span class="st">"insurance_jobs"</span>)</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Insurance Carrier (NAICS 5241) postings:"</span>, insurance.count())</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows flagged IS_DATA_ROLE_MATCH = 1:"</span>, insurance.<span class="bu">filter</span>(<span class="st">"IS_DATA_ROLE_MATCH = 1"</span>).count())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Insurance Carrier (NAICS 5241) postings: 1895</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-[Stage 7:===================&gt;                                       (1 + 1) / 3]
-
-[Stage 7:=======================================&gt;                   (2 + 1) / 3]</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Rows flagged IS_DATA_ROLE_MATCH = 1: 27</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-                                                                                </code></pre>
+<pre><code>Insurance Carrier (NAICS 5241) postings: 1895
+Rows flagged IS_DATA_ROLE_MATCH = 1: 27</code></pre>
 </div>
 </div>
 </section>
 <section id="see-the-results" class="level2">
 <h2 class="anchored" data-anchor-id="see-the-results">4. See the results</h2>
 <p>A preview of the postings, and the most common job titles in this slice so the team can get a feel for what’s in here before deciding how to narrow it down.</p>
-<div id="f1a7f292" class="cell" data-execution_count="50">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Preview the postings, including the new flag, and the most common job titles.</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>insurance.select(<span class="st">"TITLE_RAW"</span>, <span class="st">"TITLE_NAME"</span>, <span class="st">"IS_DATA_ROLE_MATCH"</span>, <span class="st">"COMPANY_NAME"</span>,</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"STATE_NAME"</span>, <span class="st">"REMOTE_TYPE_NAME"</span>, <span class="st">"SALARY_FROM"</span>).show(<span class="dv">30</span>, truncate<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Most common job titles (TITLE_NAME), top 25:"</span>)</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>insurance.groupBy(<span class="st">"TITLE_NAME"</span>).count().orderBy(<span class="st">"count"</span>, ascending<span class="op">=</span><span class="va">False</span>).show(<span class="dv">25</span>, truncate<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="f1a7f292" class="cell" data-execution_count="190">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Preview the postings, including the new flag, and the most common job titles.</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>insurance.select(<span class="st">"TITLE_RAW"</span>, <span class="st">"TITLE_NAME"</span>, <span class="st">"IS_DATA_ROLE_MATCH"</span>, <span class="st">"COMPANY_NAME"</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"STATE_NAME"</span>, <span class="st">"REMOTE_TYPE_NAME"</span>, <span class="st">"SALARY_FROM"</span>).show(<span class="dv">30</span>, truncate<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Most common job titles (TITLE_NAME), top 25:"</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>insurance.groupBy(<span class="st">"TITLE_NAME"</span>).count().orderBy(<span class="st">"count"</span>, ascending<span class="op">=</span><span class="va">False</span>).show(<span class="dv">25</span>, truncate<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>+------------------------------------------------------------------------+------------------------+------------------+---------------------------+---------------------+----------------+-----------+
 |TITLE_RAW                                                               |TITLE_NAME              |IS_DATA_ROLE_MATCH|COMPANY_NAME               |STATE_NAME           |REMOTE_TYPE_NAME|SALARY_FROM|
 +------------------------------------------------------------------------+------------------------+------------------+---------------------------+---------------------+----------------+-----------+
-|Accountant                                                              |Accountants and Auditors|0                 |Jobs.danaher.com           |California           |Unknown         |           |
-|Accountant                                                              |Accountants and Auditors|0                 |Bannerlife                 |Maryland             |Unknown         |           |
-|Accountant                                                              |Accountants and Auditors|0                 |Seniorlifepa               |Pennsylvania         |Unknown         |           |
-|Accountant                                                              |Accountants and Auditors|0                 |Wcgclinical                |Unavailable          |Remote          |           |
-|Escrow Accountant                                                       |Accountants and Auditors|0                 |Qualia                     |Austin               |Unknown         |           |
-|Staff Accountant                                                        |Accountants and Auditors|0                 |Acadiahealthcare           |Florida              |Unknown         |           |
-|AI Compiler Engineer                                                    |Actors                  |0                 |Ericsson                   |Texas                |Remote          |           |
-|Account Executive, Commercial - Central                                 |Actors                  |0                 |Eve                        |Remote               |Remote          |           |
-|Account Executive, Commercial - East                                    |Actors                  |0                 |Eve                        |Remote               |Remote          |           |
-|Account Executive, Commercial - Pacific/Mountain                        |Actors                  |0                 |Eve                        |Remote               |Remote          |           |
-|Account Executive, Titan                                                |Actors                  |0                 |Junipersquare              |                     |Hybrid          |           |
-|Account Manager, Private Client Group                                   |Actors                  |0                 |Conner Strong &amp; Buckelew   |United States        |Hybrid          |80000.00   |
-|Accounting Supervisor                                                   |Actors                  |0                 |Citywide                   |North Carolina       |Unknown         |           |
-|Advisor - Fashion Mall at Keystone                                      |Actors                  |0                 |Warby Parker               |United States        |Unknown         |           |
-|Advisory Administrative Assistant III                                   |Actors                  |0                 |Weaver                     |United States        |On-site         |50000.00   |
-|Alternative Risk Funding Specialist                                     |Actors                  |0                 |Acrisure                   |New York             |On-site         |           |
-|Assistant Manager, Fund Administration (AML)                            |Actors                  |0                 |Junipersquare              |Americas ( Or Canada)|Hybrid          |           |
-|Assistant Mortgage Banker - Inside Sales                                |Actors                  |0                 |The Federal Savings Bank   |United States        |On-site         |3600.00    |
-|Assistant Property Manager                                              |Actors                  |0                 |Fairlawn                   |Illinois             |On-site         |50000.00   |
-|Assistant, Plant Maintenance Technician MRF                             |Actors                  |0                 |Emcm.fa.us2.oraclecloud.com|Maryland             |On-site         |           |
-|Associate Corporate Account Executive                                   |Actors                  |0                 |NetApp                     |United States        |Hybrid          |174250.00  |
-|Associate Corporate Account Executive                                   |Actors                  |0                 |NetApp                     |United States        |Hybrid          |174250.00  |
-|Associate Corporate Account Executive - SLED                            |Actors                  |0                 |NetApp                     |                     |Hybrid          |174250.00  |
-|Associate Corporate Client Executive                                    |Actors                  |0                 |NetApp                     |United States        |Hybrid          |174250.00  |
-|Associate Director International Learning Oncology                      |Actors                  |0                 |Abbvie                     |Illinois             |Unknown         |           |
-|Associate Director, Commerce Search                                     |Actors                  |0                 |Wppmedia                   |New York             |Hybrid          |           |
-|Associate Director, Data Strategy                                       |Actors                  |0                 |Wppmedia                   |New York             |Hybrid          |           |
-|Associate Director, Data Strategy                                       |Actors                  |0                 |WPP                        |United States        |Hybrid          |75000.00   |
-|Associate Director, Promotional Medical Education - Psychiatry Marketing|Actors                  |0                 |Abbvie                     |New Jersey           |Unknown         |           |
-|Associate Manager - Influencer &amp; Affiliate Marketing                    |Actors                  |0                 |AEO                        |United States        |Hybrid          |           |
+|Accountant                                                              |Accountants and Auditors|0                 |Jobs.danaher.com           |California           |Unknown         |NULL       |
+|Accountant                                                              |Accountants and Auditors|0                 |Bannerlife                 |Maryland             |Unknown         |NULL       |
+|Accountant                                                              |Accountants and Auditors|0                 |Seniorlifepa               |Pennsylvania         |Unknown         |NULL       |
+|Accountant                                                              |Accountants and Auditors|0                 |Wcgclinical                |Unavailable          |Remote          |NULL       |
+|Escrow Accountant                                                       |Accountants and Auditors|0                 |Qualia                     |Austin               |Unknown         |NULL       |
+|Staff Accountant                                                        |Accountants and Auditors|0                 |Acadiahealthcare           |Florida              |Unknown         |NULL       |
+|AI Compiler Engineer                                                    |Actors                  |0                 |Ericsson                   |Texas                |Remote          |NULL       |
+|Account Executive, Commercial - Central                                 |Actors                  |0                 |Eve                        |Remote               |Remote          |NULL       |
+|Account Executive, Commercial - East                                    |Actors                  |0                 |Eve                        |Remote               |Remote          |NULL       |
+|Account Executive, Commercial - Pacific/Mountain                        |Actors                  |0                 |Eve                        |Remote               |Remote          |NULL       |
+|Account Executive, Titan                                                |Actors                  |0                 |Junipersquare              |NULL                 |Hybrid          |NULL       |
+|Account Manager, Private Client Group                                   |Actors                  |0                 |Conner Strong &amp; Buckelew   |United States        |Hybrid          |80000.0    |
+|Accounting Supervisor                                                   |Actors                  |0                 |Citywide                   |North Carolina       |Unknown         |NULL       |
+|Advisor - Fashion Mall at Keystone                                      |Actors                  |0                 |Warby Parker               |United States        |Unknown         |NULL       |
+|Advisory Administrative Assistant III                                   |Actors                  |0                 |Weaver                     |United States        |On-site         |50000.0    |
+|Alternative Risk Funding Specialist                                     |Actors                  |0                 |Acrisure                   |New York             |On-site         |NULL       |
+|Assistant Manager, Fund Administration (AML)                            |Actors                  |0                 |Junipersquare              |Americas ( Or Canada)|Hybrid          |NULL       |
+|Assistant Mortgage Banker - Inside Sales                                |Actors                  |0                 |The Federal Savings Bank   |United States        |On-site         |3600.0     |
+|Assistant Property Manager                                              |Actors                  |0                 |Fairlawn                   |Illinois             |On-site         |50000.0    |
+|Assistant, Plant Maintenance Technician MRF                             |Actors                  |0                 |Emcm.fa.us2.oraclecloud.com|Maryland             |On-site         |NULL       |
+|Associate Corporate Account Executive                                   |Actors                  |0                 |NetApp                     |United States        |Hybrid          |174250.0   |
+|Associate Corporate Account Executive                                   |Actors                  |0                 |NetApp                     |United States        |Hybrid          |174250.0   |
+|Associate Corporate Account Executive - SLED                            |Actors                  |0                 |NetApp                     |NULL                 |Hybrid          |174250.0   |
+|Associate Corporate Client Executive                                    |Actors                  |0                 |NetApp                     |United States        |Hybrid          |174250.0   |
+|Associate Director International Learning Oncology                      |Actors                  |0                 |Abbvie                     |Illinois             |Unknown         |NULL       |
+|Associate Director, Commerce Search                                     |Actors                  |0                 |Wppmedia                   |New York             |Hybrid          |NULL       |
+|Associate Director, Data Strategy                                       |Actors                  |0                 |Wppmedia                   |New York             |Hybrid          |NULL       |
+|Associate Director, Data Strategy                                       |Actors                  |0                 |WPP                        |United States        |Hybrid          |75000.0    |
+|Associate Director, Promotional Medical Education - Psychiatry Marketing|Actors                  |0                 |Abbvie                     |New Jersey           |Unknown         |NULL       |
+|Associate Manager - Influencer &amp; Affiliate Marketing                    |Actors                  |0                 |AEO                        |United States        |Hybrid          |NULL       |
 +------------------------------------------------------------------------+------------------------+------------------+---------------------------+---------------------+----------------+-----------+
 only showing top 30 rows
 Most common job titles (TITLE_NAME), top 25:
@@ -420,50 +432,26 @@ only showing top 25 rows</code></pre>
 <section id="export-for-the-team-excel-csv" class="level2">
 <h2 class="anchored" data-anchor-id="export-for-the-team-excel-csv">5. Export for the team (Excel + CSV)</h2>
 <p>This is bigger than the 27-row data-role cut (about 1,900 rows), but still small enough to pull into pandas and write out directly.</p>
-<div id="45c927d0" class="cell" data-execution_count="51">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pull the full Insurance Carrier slice into pandas and write it out as both Excel</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># and CSV, so the team has one shared file to review and narrow down from.</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>os.makedirs(<span class="st">"outputs/step2"</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>pdf <span class="op">=</span> insurance.toPandas()</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>xlsx_path <span class="op">=</span> <span class="st">"outputs/step2/insurance_5241_all_postings.xlsx"</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>csv_path  <span class="op">=</span> <span class="st">"outputs/step2/insurance_5241_all_postings.csv"</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>pdf.to_excel(xlsx_path, index<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>pdf.to_csv(csv_path, index<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows exported:"</span>, <span class="bu">len</span>(pdf))</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Excel:"</span>, os.path.abspath(xlsx_path))</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"CSV:  "</span>, os.path.abspath(csv_path))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>/home/ubuntu/ad688/.venv/lib/python3.14/site-packages/pyspark/sql/pandas/conversion.py:298: FutureWarning: PySpark does not yet fully support pandas &gt;= 3.0.0. Some features may not work correctly. It is recommended to use pandas &lt; 3.0.0 for now.
-  require_minimum_pandas_version()
-/home/ubuntu/ad688/.venv/lib/python3.14/site-packages/pyspark/sql/pandas/conversion.py:348: UserWarning: toPandas attempted Arrow optimization because 'spark.sql.execution.arrow.pyspark.enabled' is set to true; however, failed by the reason below:
-  [PACKAGE_NOT_INSTALLED] PyArrow &gt;= 18.0.0 must be installed; however, it was not found.
-Attempting non-optimization as 'spark.sql.execution.arrow.pyspark.fallback.enabled' is set to true.
-  warn(msg)
-
-[Stage 14:&gt;                                                         (0 + 1) / 3]
-
-[Stage 14:===================&gt;                                      (1 + 1) / 3]
-
-[Stage 14:======================================&gt;                   (2 + 1) / 3]
-
-                                                                                
-
-[Stage 15:&gt;                                                         (0 + 1) / 3]
-
-[Stage 15:===================&gt;                                      (1 + 1) / 3]
-
-[Stage 15:======================================&gt;                   (2 + 1) / 3]
-
-[Stage 17:&gt;                                                         (0 + 1) / 1]
-
-                                                                                </code></pre>
-</div>
+<div id="45c927d0" class="cell" data-execution_count="191">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pull the full Insurance Carrier slice into pandas and write it out as both Excel</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># and CSV, so the team has one shared file to review and narrow down from.</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>os.makedirs(<span class="st">"outputs/step2"</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>pdf <span class="op">=</span> insurance.toPandas()</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>xlsx_path <span class="op">=</span> <span class="st">"outputs/step2/insurance_5241_all_postings.xlsx"</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>csv_path  <span class="op">=</span> <span class="st">"outputs/step2/insurance_5241_all_postings.csv"</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>pdf.to_excel(xlsx_path, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>pdf.to_csv(csv_path, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows exported:"</span>, <span class="bu">len</span>(pdf))</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Excel:"</span>, os.path.abspath(xlsx_path))</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"CSV:  "</span>, os.path.abspath(csv_path))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows exported: 1895
-Excel: /home/ubuntu/ad688/outputs/step2/insurance_5241_all_postings.xlsx
-CSV:   /home/ubuntu/ad688/outputs/step2/insurance_5241_all_postings.csv</code></pre>
+Excel: /home/ubuntu/ad688group3.github.io/notebooks/outputs/step2/insurance_5241_all_postings.xlsx
+CSV:   /home/ubuntu/ad688group3.github.io/notebooks/outputs/step2/insurance_5241_all_postings.csv</code></pre>
 </div>
 </div>
 </section>
@@ -474,17 +462,577 @@ CSV:   /home/ubuntu/ad688/outputs/step2/insurance_5241_all_postings.csv</code></
 <li>A new <code>IS_DATA_ROLE_MATCH</code> column (1/0) right after <code>TITLE_CLEAN</code>, flagging postings that match our data-role keyword set. Sort or filter on that column in Excel/CSV to jump straight to the data roles, or clear the filter to see everything else in the industry.</li>
 <li>Two export files in <code>outputs/step2/</code> (Excel and CSV): <code>insurance_5241_all_postings</code>. This is the file the team should use going forward.</li>
 </ul>
+</section>
+<section id="core-variable-cleaning-and-market-baseline" class="level2">
+<h2 class="anchored" data-anchor-id="core-variable-cleaning-and-market-baseline">7. Core Variable Cleaning and Market Baseline</h2>
+<p>This section continues from the Insurance Carrier (NAICS 5241) dataset prepared above. The analysis focuses on the data-related roles identified by <code>IS_DATA_ROLE_MATCH</code> and cleans the core variables needed for the market baseline analysis.</p>
+<div id="25927488" class="cell" data-execution_count="192">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select the data-related roles identified in the previous filtering step.</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>data_roles_df <span class="op">=</span> spark.sql(<span class="st">"""</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="st">SELECT *</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="st">FROM jobs</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="st">WHERE IS_DATA_ROLE_MATCH = 1</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Data-related postings:"</span>, data_roles_df.count())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Data-related postings: 27</code></pre>
+</div>
+</div>
+<section id="remove-duplicate-job-postings" class="level3">
+<h3 class="anchored" data-anchor-id="remove-duplicate-job-postings">8. Remove Duplicate Job Postings</h3>
+<div id="eb5c73d7" class="cell" data-execution_count="193">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>before <span class="op">=</span> data_roles_df.count()</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>clean_df <span class="op">=</span> data_roles_df.dropDuplicates([<span class="st">"ID"</span>])</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>after <span class="op">=</span> clean_df.count()</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows before duplicate removal:"</span>, before)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows after duplicate removal:"</span>, after)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Duplicates removed:"</span>, before <span class="op">-</span> after)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows before duplicate removal: 27
+Rows after duplicate removal: 27
+Duplicates removed: 0</code></pre>
+</div>
+</div>
+</section>
+<section id="clean-and-review-salary-variables" class="level3">
+<h3 class="anchored" data-anchor-id="clean-and-review-salary-variables">9. Clean and Review Salary Variables</h3>
+<p>Salary fields are reviewed for missing values and pay-period consistency before they are used in the market baseline analysis.</p>
+<div id="bc62db5e" class="cell" data-execution_count="194">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check salary availability and pay-period values</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>clean_df.createOrReplaceTempView(<span class="st">"clean_jobs"</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>spark.sql(<span class="st">"""</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="st">SELECT</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="st">    ORIGINAL_PAY_PERIOD,</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="st">    COUNT(*) AS postings,</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="st">    SUM(CASE WHEN SALARY_FROM IS NOT NULL THEN 1 ELSE 0 END) AS with_salary_from,</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="st">    SUM(CASE WHEN SALARY_TO IS NOT NULL THEN 1 ELSE 0 END) AS with_salary_to</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="st">FROM clean_jobs</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="st">GROUP BY ORIGINAL_PAY_PERIOD</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="st">ORDER BY postings DESC</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>).show(truncate<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>spark.sql(<span class="st">"""</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="st">SELECT</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="st">    TITLE_CLEAN,</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="st">    SALARY_FROM,</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="st">    SALARY_TO,</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="st">    ORIGINAL_PAY_PERIOD</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="st">FROM clean_jobs</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="st">ORDER BY SALARY_FROM DESC</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>).show(<span class="dv">27</span>, truncate<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>+-------------------+--------+----------------+--------------+
+|ORIGINAL_PAY_PERIOD|postings|with_salary_from|with_salary_to|
++-------------------+--------+----------------+--------------+
+|NULL               |21      |0               |0             |
+|annual             |6       |5               |5             |
++-------------------+--------+----------------+--------------+
+
++---------------------------------------------------------------------------------------------------+-----------+---------+-------------------+
+|TITLE_CLEAN                                                                                        |SALARY_FROM|SALARY_TO|ORIGINAL_PAY_PERIOD|
++---------------------------------------------------------------------------------------------------+-----------+---------+-------------------+
+|Data Scientist                                                                                     |210000.0   |350000.0 |annual             |
+|Senior Data Analyst                                                                                |175000.0   |225000.0 |annual             |
+|Senior Sales Ops Data Analyst                                                                      |120000.0   |120000.0 |annual             |
+|Data Scientist                                                                                     |101000.0   |151400.0 |annual             |
+|Data Analyst — AI-Driven Insights                                                                  |74000.0    |112000.0 |annual             |
+|Staff Data Engineer, Finance                                                                       |NULL       |NULL     |NULL               |
+|Data Governance &amp; Metadata Scientist                                                               |NULL       |NULL     |NULL               |
+|Machine Learning Engineer, Conversion ML                                                           |NULL       |NULL     |NULL               |
+|Senior Data Analyst                                                                                |NULL       |NULL     |NULL               |
+|Data Analyst                                                                                       |NULL       |NULL     |NULL               |
+|Senior Data Engineer                                                                               |NULL       |NULL     |NULL               |
+|Data Analyst                                                                                       |NULL       |NULL     |annual             |
+|Test Lead, Senior Data Analyst                                                                     |NULL       |NULL     |NULL               |
+|Senior Data Engineer                                                                               |NULL       |NULL     |NULL               |
+|Manager, Data Management HRConnect People Solutions                                                |NULL       |NULL     |NULL               |
+|Director of Data Governance                                                                        |NULL       |NULL     |NULL               |
+|Sr. Manager Global Master Data Management                                                          |NULL       |NULL     |NULL               |
+|Senior Data Engineer                                                                               |NULL       |NULL     |NULL               |
+|Business Intelligence Manager                                                                      |NULL       |NULL     |NULL               |
+|Marketing Data Science Manager                                                                     |NULL       |NULL     |NULL               |
+|Annual Fund &amp; Database Manager                                                                     |NULL       |NULL     |NULL               |
+|People Data Analyst                                                                                |NULL       |NULL     |NULL               |
+|Sr Business Intelligence Engineer, Amazon Global Data Center Ops Central Insight and Analytics Team|NULL       |NULL     |NULL               |
+|Senior Data Engineer                                                                               |NULL       |NULL     |NULL               |
+|Database Marketing Coordinator - Casino Marketing Admin                                            |NULL       |NULL     |NULL               |
+|Data Engineer                                                                                      |NULL       |NULL     |NULL               |
+|Senior Data Scientist                                                                              |NULL       |NULL     |NULL               |
++---------------------------------------------------------------------------------------------------+-----------+---------+-------------------+
+</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="salary" class="level2">
+<h2 class="anchored" data-anchor-id="salary">10. Salary</h2>
+<p>Salary information was available for 5 of the 27 data-related postings. The average annual salary midpoint among those postings was $163,840, with midpoint values ranging from $93,000 to $280,000. Missing salary values were left as missing rather than imputed.</p>
+<div id="37adbfb2" class="cell" data-execution_count="195">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> functions <span class="im">as</span> F</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>clean_df <span class="op">=</span> clean_df.withColumn(</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ANNUAL_SALARY_MIDPOINT"</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    F.when(</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        (F.lower(F.col(<span class="st">"ORIGINAL_PAY_PERIOD"</span>)) <span class="op">==</span> <span class="st">"annual"</span>) <span class="op">&amp;</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        F.col(<span class="st">"SALARY_FROM"</span>).isNotNull() <span class="op">&amp;</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>        F.col(<span class="st">"SALARY_TO"</span>).isNotNull(),</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>        (F.col(<span class="st">"SALARY_FROM"</span>) <span class="op">+</span> F.col(<span class="st">"SALARY_TO"</span>)) <span class="op">/</span> <span class="dv">2</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>clean_df.select(</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"TITLE_CLEAN"</span>,</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SALARY_FROM"</span>,</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SALARY_TO"</span>,</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ORIGINAL_PAY_PERIOD"</span>,</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ANNUAL_SALARY_MIDPOINT"</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>).show(<span class="dv">27</span>, truncate<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>clean_df.createOrReplaceTempView(<span class="st">"clean_jobs"</span>)</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>spark.sql(<span class="st">"""</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a><span class="st">SELECT</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a><span class="st">    COUNT(ANNUAL_SALARY_MIDPOINT) AS postings_with_salary,</span></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a><span class="st">    ROUND(AVG(ANNUAL_SALARY_MIDPOINT), 2) AS average_salary_midpoint,</span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a><span class="st">    ROUND(MIN(ANNUAL_SALARY_MIDPOINT), 2) AS minimum_salary_midpoint,</span></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="st">    ROUND(MAX(ANNUAL_SALARY_MIDPOINT), 2) AS maximum_salary_midpoint</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a><span class="st">FROM clean_jobs</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>).show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>+---------------------------------------------------------------------------------------------------+-----------+---------+-------------------+----------------------+
+|TITLE_CLEAN                                                                                        |SALARY_FROM|SALARY_TO|ORIGINAL_PAY_PERIOD|ANNUAL_SALARY_MIDPOINT|
++---------------------------------------------------------------------------------------------------+-----------+---------+-------------------+----------------------+
+|Data Scientist                                                                                     |210000.0   |350000.0 |annual             |280000.0              |
+|Data Analyst — AI-Driven Insights                                                                  |74000.0    |112000.0 |annual             |93000.0               |
+|Staff Data Engineer, Finance                                                                       |NULL       |NULL     |NULL               |NULL                  |
+|Data Governance &amp; Metadata Scientist                                                               |NULL       |NULL     |NULL               |NULL                  |
+|Machine Learning Engineer, Conversion ML                                                           |NULL       |NULL     |NULL               |NULL                  |
+|Senior Data Analyst                                                                                |NULL       |NULL     |NULL               |NULL                  |
+|Data Analyst                                                                                       |NULL       |NULL     |NULL               |NULL                  |
+|Senior Data Engineer                                                                               |NULL       |NULL     |NULL               |NULL                  |
+|Senior Sales Ops Data Analyst                                                                      |120000.0   |120000.0 |annual             |120000.0              |
+|Data Scientist                                                                                     |101000.0   |151400.0 |annual             |126200.0              |
+|Data Analyst                                                                                       |NULL       |NULL     |annual             |NULL                  |
+|Test Lead, Senior Data Analyst                                                                     |NULL       |NULL     |NULL               |NULL                  |
+|Senior Data Engineer                                                                               |NULL       |NULL     |NULL               |NULL                  |
+|Manager, Data Management HRConnect People Solutions                                                |NULL       |NULL     |NULL               |NULL                  |
+|Director of Data Governance                                                                        |NULL       |NULL     |NULL               |NULL                  |
+|Sr. Manager Global Master Data Management                                                          |NULL       |NULL     |NULL               |NULL                  |
+|Senior Data Engineer                                                                               |NULL       |NULL     |NULL               |NULL                  |
+|Senior Data Analyst                                                                                |175000.0   |225000.0 |annual             |200000.0              |
+|Business Intelligence Manager                                                                      |NULL       |NULL     |NULL               |NULL                  |
+|Marketing Data Science Manager                                                                     |NULL       |NULL     |NULL               |NULL                  |
+|Annual Fund &amp; Database Manager                                                                     |NULL       |NULL     |NULL               |NULL                  |
+|People Data Analyst                                                                                |NULL       |NULL     |NULL               |NULL                  |
+|Sr Business Intelligence Engineer, Amazon Global Data Center Ops Central Insight and Analytics Team|NULL       |NULL     |NULL               |NULL                  |
+|Senior Data Engineer                                                                               |NULL       |NULL     |NULL               |NULL                  |
+|Database Marketing Coordinator - Casino Marketing Admin                                            |NULL       |NULL     |NULL               |NULL                  |
+|Data Engineer                                                                                      |NULL       |NULL     |NULL               |NULL                  |
+|Senior Data Scientist                                                                              |NULL       |NULL     |NULL               |NULL                  |
++---------------------------------------------------------------------------------------------------+-----------+---------+-------------------+----------------------+
+
++--------------------+-----------------------+-----------------------+-----------------------+
+|postings_with_salary|average_salary_midpoint|minimum_salary_midpoint|maximum_salary_midpoint|
++--------------------+-----------------------+-----------------------+-----------------------+
+|                   5|               163840.0|                93000.0|               280000.0|
++--------------------+-----------------------+-----------------------+-----------------------+
+</code></pre>
+</div>
+</div>
+<section id="clean-and-review-experience-requirements" class="level3">
+<h3 class="anchored" data-anchor-id="clean-and-review-experience-requirements">11. Clean and Review Experience Requirements</h3>
+<p>Experience requirements were not available in the structured <code>MIN_YEARS_EXPERIENCE</code> or <code>MAX_YEARS_EXPERIENCE</code> fields for any of the 27 data-related postings. Because no structured experience values were available, these fields were retained as missing and excluded from the market baseline calculations.</p>
+<div id="0dc754c3" class="cell" data-execution_count="196">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>clean_df.select(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"TITLE_CLEAN"</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MIN_YEARS_EXPERIENCE"</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MAX_YEARS_EXPERIENCE"</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>).show(<span class="dv">27</span>, truncate<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>clean_df.createOrReplaceTempView(<span class="st">"clean_jobs"</span>)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>spark.sql(<span class="st">"""</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="st">SELECT</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="st">    COUNT(*) AS total_postings,</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="st">    SUM(CASE WHEN MIN_YEARS_EXPERIENCE IS NOT NULL THEN 1 ELSE 0 END) AS with_min_experience,</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="st">    SUM(CASE WHEN MAX_YEARS_EXPERIENCE IS NOT NULL THEN 1 ELSE 0 END) AS with_max_experience</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="st">FROM clean_jobs</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>).show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>+---------------------------------------------------------------------------------------------------+--------------------+--------------------+
+|TITLE_CLEAN                                                                                        |MIN_YEARS_EXPERIENCE|MAX_YEARS_EXPERIENCE|
++---------------------------------------------------------------------------------------------------+--------------------+--------------------+
+|Data Scientist                                                                                     |NULL                |NULL                |
+|Data Analyst — AI-Driven Insights                                                                  |NULL                |NULL                |
+|Staff Data Engineer, Finance                                                                       |NULL                |NULL                |
+|Data Governance &amp; Metadata Scientist                                                               |NULL                |NULL                |
+|Machine Learning Engineer, Conversion ML                                                           |NULL                |NULL                |
+|Senior Data Analyst                                                                                |NULL                |NULL                |
+|Data Analyst                                                                                       |NULL                |NULL                |
+|Senior Data Engineer                                                                               |NULL                |NULL                |
+|Senior Sales Ops Data Analyst                                                                      |NULL                |NULL                |
+|Data Scientist                                                                                     |NULL                |NULL                |
+|Data Analyst                                                                                       |NULL                |NULL                |
+|Test Lead, Senior Data Analyst                                                                     |NULL                |NULL                |
+|Senior Data Engineer                                                                               |NULL                |NULL                |
+|Manager, Data Management HRConnect People Solutions                                                |NULL                |NULL                |
+|Director of Data Governance                                                                        |NULL                |NULL                |
+|Sr. Manager Global Master Data Management                                                          |NULL                |NULL                |
+|Senior Data Engineer                                                                               |NULL                |NULL                |
+|Senior Data Analyst                                                                                |NULL                |NULL                |
+|Business Intelligence Manager                                                                      |NULL                |NULL                |
+|Marketing Data Science Manager                                                                     |NULL                |NULL                |
+|Annual Fund &amp; Database Manager                                                                     |NULL                |NULL                |
+|People Data Analyst                                                                                |NULL                |NULL                |
+|Sr Business Intelligence Engineer, Amazon Global Data Center Ops Central Insight and Analytics Team|NULL                |NULL                |
+|Senior Data Engineer                                                                               |NULL                |NULL                |
+|Database Marketing Coordinator - Casino Marketing Admin                                            |NULL                |NULL                |
+|Data Engineer                                                                                      |NULL                |NULL                |
+|Senior Data Scientist                                                                              |NULL                |NULL                |
++---------------------------------------------------------------------------------------------------+--------------------+--------------------+
+
++--------------+-------------------+-------------------+
+|total_postings|with_min_experience|with_max_experience|
++--------------+-------------------+-------------------+
+|            27|                  0|                  0|
++--------------+-------------------+-------------------+
+</code></pre>
+</div>
+</div>
+</section>
+<section id="clean-location-and-remote-work-variables" class="level3">
+<h3 class="anchored" data-anchor-id="clean-location-and-remote-work-variables">12. Clean Location and Remote Work Variables</h3>
+<p>Location fields were reviewed for missing and inconsistent values. The <code>STATE_NAME</code> field contains some non-state labels, so a cleaned state variable is created before geographic analysis. Remote-work categories are retained separately.</p>
+<p>Valid state information was available for only 9 of the 27 data-related postings, so geographic comparisons should be interpreted cautiously. Remote-work information was more complete, with 12 remote postings, 4 hybrid postings, 3 on-site postings, and 8 postings with an unknown work arrangement.</p>
+<div id="e475a338" class="cell" data-execution_count="197">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> functions <span class="im">as</span> F</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>valid_states <span class="op">=</span> [</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Alabama"</span>, <span class="st">"Alaska"</span>, <span class="st">"Arizona"</span>, <span class="st">"Arkansas"</span>, <span class="st">"California"</span>, <span class="st">"Colorado"</span>,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Connecticut"</span>, <span class="st">"Delaware"</span>, <span class="st">"Florida"</span>, <span class="st">"Georgia"</span>, <span class="st">"Hawaii"</span>, <span class="st">"Idaho"</span>,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Illinois"</span>, <span class="st">"Indiana"</span>, <span class="st">"Iowa"</span>, <span class="st">"Kansas"</span>, <span class="st">"Kentucky"</span>, <span class="st">"Louisiana"</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Maine"</span>, <span class="st">"Maryland"</span>, <span class="st">"Massachusetts"</span>, <span class="st">"Michigan"</span>, <span class="st">"Minnesota"</span>,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Mississippi"</span>, <span class="st">"Missouri"</span>, <span class="st">"Montana"</span>, <span class="st">"Nebraska"</span>, <span class="st">"Nevada"</span>,</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"New Hampshire"</span>, <span class="st">"New Jersey"</span>, <span class="st">"New Mexico"</span>, <span class="st">"New York"</span>,</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"North Carolina"</span>, <span class="st">"North Dakota"</span>, <span class="st">"Ohio"</span>, <span class="st">"Oklahoma"</span>, <span class="st">"Oregon"</span>,</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Pennsylvania"</span>, <span class="st">"Rhode Island"</span>, <span class="st">"South Carolina"</span>, <span class="st">"South Dakota"</span>,</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Tennessee"</span>, <span class="st">"Texas"</span>, <span class="st">"Utah"</span>, <span class="st">"Vermont"</span>, <span class="st">"Virginia"</span>, <span class="st">"Washington"</span>,</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"West Virginia"</span>, <span class="st">"Wisconsin"</span>, <span class="st">"Wyoming"</span>, <span class="st">"District of Columbia"</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>clean_df <span class="op">=</span> clean_df.withColumn(</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CLEAN_STATE"</span>,</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    F.when(</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>        F.col(<span class="st">"STATE_NAME"</span>).isin(valid_states),</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>        F.col(<span class="st">"STATE_NAME"</span>)</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>clean_df <span class="op">=</span> clean_df.withColumn(</span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"WORK_ARRANGEMENT"</span>,</span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>    F.when(F.col(<span class="st">"REMOTE_TYPE_NAME"</span>) <span class="op">==</span> <span class="st">"Remote"</span>, <span class="st">"Remote"</span>)</span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>     .when(F.col(<span class="st">"REMOTE_TYPE_NAME"</span>) <span class="op">==</span> <span class="st">"Hybrid"</span>, <span class="st">"Hybrid"</span>)</span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>     .when(F.col(<span class="st">"REMOTE_TYPE_NAME"</span>) <span class="op">==</span> <span class="st">"On-site"</span>, <span class="st">"On-site"</span>)</span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>     .otherwise(<span class="st">"Unknown"</span>)</span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>clean_df.createOrReplaceTempView(<span class="st">"clean_jobs"</span>)</span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>spark.sql(<span class="st">"""</span></span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a><span class="st">SELECT</span></span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a><span class="st">    CLEAN_STATE,</span></span>
+<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a><span class="st">    COUNT(*) AS postings</span></span>
+<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a><span class="st">FROM clean_jobs</span></span>
+<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a><span class="st">GROUP BY CLEAN_STATE</span></span>
+<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a><span class="st">ORDER BY postings DESC</span></span>
+<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>).show(<span class="dv">50</span>, truncate<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb21-43"><a href="#cb21-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-44"><a href="#cb21-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-45"><a href="#cb21-45" aria-hidden="true" tabindex="-1"></a>spark.sql(<span class="st">"""</span></span>
+<span id="cb21-46"><a href="#cb21-46" aria-hidden="true" tabindex="-1"></a><span class="st">SELECT</span></span>
+<span id="cb21-47"><a href="#cb21-47" aria-hidden="true" tabindex="-1"></a><span class="st">    WORK_ARRANGEMENT,</span></span>
+<span id="cb21-48"><a href="#cb21-48" aria-hidden="true" tabindex="-1"></a><span class="st">    COUNT(*) AS postings</span></span>
+<span id="cb21-49"><a href="#cb21-49" aria-hidden="true" tabindex="-1"></a><span class="st">FROM clean_jobs</span></span>
+<span id="cb21-50"><a href="#cb21-50" aria-hidden="true" tabindex="-1"></a><span class="st">GROUP BY WORK_ARRANGEMENT</span></span>
+<span id="cb21-51"><a href="#cb21-51" aria-hidden="true" tabindex="-1"></a><span class="st">ORDER BY postings DESC</span></span>
+<span id="cb21-52"><a href="#cb21-52" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>).show(truncate<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>+--------------------+--------+
+|CLEAN_STATE         |postings|
++--------------------+--------+
+|NULL                |18      |
+|California          |2       |
+|Ohio                |1       |
+|Washington          |1       |
+|Illinois            |1       |
+|District of Columbia|1       |
+|New Jersey          |1       |
+|Maryland            |1       |
+|Florida             |1       |
++--------------------+--------+
+
++----------------+--------+
+|WORK_ARRANGEMENT|postings|
++----------------+--------+
+|Remote          |12      |
+|Unknown         |8       |
+|Hybrid          |4       |
+|On-site         |3       |
++----------------+--------+
+</code></pre>
+</div>
+</div>
+</section>
+<section id="clean-and-analyze-skills" class="level3">
+<h3 class="anchored" data-anchor-id="clean-and-analyze-skills">13. Clean and Analyze Skills</h3>
+<p>Skill fields are converted from stored list strings into individual skills so that the most frequently requested skills can be identified across the data-related postings.</p>
+<p>General skill information was available for 25 of the 27 data-related postings, and specialized skill information was available for 24 postings. The software-skill and certification fields contained no usable values, so they were excluded from the market baseline analysis.</p>
+<div id="de5d55b8" class="cell" data-execution_count="198">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> functions <span class="im">as</span> F</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.types <span class="im">import</span> ArrayType, StringType</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert the stored skill-list strings into Spark arrays</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>skills_df <span class="op">=</span> (</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    clean_df</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    .withColumn(</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"SKILLS_ARRAY"</span>,</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>        F.from_json(<span class="st">"SKILLS_NAME"</span>, ArrayType(StringType()))</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>    .withColumn(</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"SPECIALIZED_ARRAY"</span>,</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>        F.from_json(<span class="st">"SPECIALIZED_SKILLS_NAME"</span>, ArrayType(StringType()))</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>    .withColumn(</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>        <span class="st">"SOFTWARE_ARRAY"</span>,</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>        F.from_json(<span class="st">"SOFTWARE_SKILLS_NAME"</span>, ArrayType(StringType()))</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>    .withColumn(</span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"CERTIFICATIONS_ARRAY"</span>,</span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>        F.from_json(<span class="st">"CERTIFICATIONS_NAME"</span>, ArrayType(StringType()))</span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Check how many postings contain usable skill information</span></span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>skills_df.select(</span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>    F.count(<span class="st">"*"</span>).alias(<span class="st">"total_postings"</span>),</span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a>    F.<span class="bu">sum</span>(</span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a>        F.when(F.size(<span class="st">"SKILLS_ARRAY"</span>) <span class="op">&gt;</span> <span class="dv">0</span>, <span class="dv">1</span>).otherwise(<span class="dv">0</span>)</span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>    ).alias(<span class="st">"with_skills"</span>),</span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>    F.<span class="bu">sum</span>(</span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a>        F.when(F.size(<span class="st">"SPECIALIZED_ARRAY"</span>) <span class="op">&gt;</span> <span class="dv">0</span>, <span class="dv">1</span>).otherwise(<span class="dv">0</span>)</span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a>    ).alias(<span class="st">"with_specialized_skills"</span>),</span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a>    F.<span class="bu">sum</span>(</span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a>        F.when(F.size(<span class="st">"SOFTWARE_ARRAY"</span>) <span class="op">&gt;</span> <span class="dv">0</span>, <span class="dv">1</span>).otherwise(<span class="dv">0</span>)</span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a>    ).alias(<span class="st">"with_software_skills"</span>),</span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>    F.<span class="bu">sum</span>(</span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a>        F.when(F.size(<span class="st">"CERTIFICATIONS_ARRAY"</span>) <span class="op">&gt;</span> <span class="dv">0</span>, <span class="dv">1</span>).otherwise(<span class="dv">0</span>)</span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a>    ).alias(<span class="st">"with_certifications"</span>)</span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a>).show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>+--------------+-----------+-----------------------+--------------------+-------------------+
+|total_postings|with_skills|with_specialized_skills|with_software_skills|with_certifications|
++--------------+-----------+-----------------------+--------------------+-------------------+
+|            27|         25|                     24|                   0|                  0|
++--------------+-----------+-----------------------+--------------------+-------------------+
+</code></pre>
+</div>
+</div>
+<div id="702dce09" class="cell" data-execution_count="199">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>total_postings <span class="op">=</span> clean_df.count()</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>top_specialized <span class="op">=</span> (</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    skills_df</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    .select(</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>        F.explode_outer(<span class="st">"SPECIALIZED_ARRAY"</span>).alias(<span class="st">"SPECIALIZED_SKILL"</span>)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(F.col(<span class="st">"SPECIALIZED_SKILL"</span>).isNotNull())</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    .groupBy(<span class="st">"SPECIALIZED_SKILL"</span>)</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    .count()</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    .withColumn(</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"percent_of_postings"</span>,</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>        F.<span class="bu">round</span>((F.col(<span class="st">"count"</span>) <span class="op">/</span> total_postings) <span class="op">*</span> <span class="dv">100</span>, <span class="dv">1</span>)</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>    .orderBy(F.desc(<span class="st">"count"</span>), <span class="st">"SPECIALIZED_SKILL"</span>)</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>top_specialized.show(<span class="dv">15</span>, truncate<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>+---------------------+-----+-------------------+
+|SPECIALIZED_SKILL    |count|percent_of_postings|
++---------------------+-----+-------------------+
+|Analytics            |16   |59.3               |
+|Automation           |6    |22.2               |
+|Business Intelligence|5    |18.5               |
+|Accounting           |4    |14.8               |
+|Airflow              |3    |11.1               |
+|BigQuery             |3    |11.1               |
+|AI Agents            |2    |7.4                |
+|Advanced Analytics   |2    |7.4                |
+|Agentic Systems      |2    |7.4                |
+|Azure Data Lake      |2    |7.4                |
+|Batch Processing     |2    |7.4                |
+|Business Requirements|2    |7.4                |
+|AI Innovation        |1    |3.7                |
+|Access Controls      |1    |3.7                |
+|Accounts Receivable  |1    |3.7                |
++---------------------+-----+-------------------+
+only showing top 15 rows</code></pre>
+</div>
+</div>
+</section>
+<section id="market-baseline-summary" class="level3">
+<h3 class="anchored" data-anchor-id="market-baseline-summary">14. Market Baseline Summary</h3>
+<p>The market baseline summarizes the 27 data-related postings identified within Insurance Carriers (NAICS 5241). The baseline focuses on job availability, salary information, work arrangement, geography, and commonly requested skills.</p>
+<div id="26c5ed26" class="cell" data-execution_count="200">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> functions <span class="im">as</span> F</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>total_jobs <span class="op">=</span> clean_df.count()</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>salary_stats <span class="op">=</span> clean_df.select(</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    F.count(<span class="st">"ANNUAL_SALARY_MIDPOINT"</span>).alias(<span class="st">"salary_postings"</span>),</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    F.<span class="bu">round</span>(F.avg(<span class="st">"ANNUAL_SALARY_MIDPOINT"</span>), <span class="dv">2</span>).alias(<span class="st">"avg_salary_midpoint"</span>)</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>).first()</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>remote_jobs <span class="op">=</span> clean_df.<span class="bu">filter</span>(</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    F.col(<span class="st">"WORK_ARRANGEMENT"</span>) <span class="op">==</span> <span class="st">"Remote"</span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>).count()</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>hybrid_jobs <span class="op">=</span> clean_df.<span class="bu">filter</span>(</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>    F.col(<span class="st">"WORK_ARRANGEMENT"</span>) <span class="op">==</span> <span class="st">"Hybrid"</span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>).count()</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>onsite_jobs <span class="op">=</span> clean_df.<span class="bu">filter</span>(</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>    F.col(<span class="st">"WORK_ARRANGEMENT"</span>) <span class="op">==</span> <span class="st">"On-site"</span></span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>).count()</span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"MARKET BASELINE"</span>)</span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"------------------------------"</span>)</span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Data-related postings:"</span>, total_jobs)</span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Postings with salary:"</span>, salary_stats[<span class="st">"salary_postings"</span>])</span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Average salary midpoint:"</span>, salary_stats[<span class="st">"avg_salary_midpoint"</span>])</span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Remote postings:"</span>, remote_jobs)</span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Hybrid postings:"</span>, hybrid_jobs)</span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"On-site postings:"</span>, onsite_jobs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MARKET BASELINE
+------------------------------
+Data-related postings: 27
+Postings with salary: 5
+Average salary midpoint: 163840.0
+Remote postings: 12
+Hybrid postings: 4
+On-site postings: 3</code></pre>
+</div>
+</div>
+<p>Among the 27 data-related Insurance postings, remote work was the most common identified work arrangement, with 12 remote postings compared with 4 hybrid and 3 on-site postings. Salary information was limited to 5 postings, with an average annual salary midpoint of approximately $163,840, so salary findings should be interpreted cautiously.</p>
+<p>Skills were more consistently available. Analytics appeared in 59.3% of the postings, followed by Automation (22.2%) and Business Intelligence (18.5%). Technical data-engineering skills such as Airflow and BigQuery each appeared in 11.1% of the postings.</p>
+</section>
+<section id="market-baseline-visualizations" class="level3">
+<h3 class="anchored" data-anchor-id="market-baseline-visualizations">15. Market Baseline Visualizations</h3>
+<p>The following visualizations summarize work arrangement and the most frequently requested specialized skills among the identified data-related postings.</p>
+<div id="4b996681" class="cell" data-execution_count="201">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>work_arrangement_pd <span class="op">=</span> (</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    clean_df</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    .groupBy(<span class="st">"WORK_ARRANGEMENT"</span>)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    .count()</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    .orderBy(F.desc(<span class="st">"count"</span>))</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    .toPandas()</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">4</span>))</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>plt.bar(</span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>    work_arrangement_pd[<span class="st">"WORK_ARRANGEMENT"</span>],</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    work_arrangement_pd[<span class="st">"count"</span>]</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Data-Related Insurance Postings by Work Arrangement"</span>)</span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Work Arrangement"</span>)</span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Number of Postings"</span>)</span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="step2_pyspark_filter_insurance_files/figure-html/cell-16-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="bd96a26e" class="cell" data-execution_count="202">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>top_skills_pd <span class="op">=</span> (</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    top_specialized</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    .limit(<span class="dv">10</span>)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    .toPandas()</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    .sort_values(<span class="st">"percent_of_postings"</span>)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>plt.barh(</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    top_skills_pd[<span class="st">"SPECIALIZED_SKILL"</span>],</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    top_skills_pd[<span class="st">"percent_of_postings"</span>]</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Top Specialized Skills in Data-Related Insurance Postings"</span>)</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Percent of Postings"</span>)</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Skill"</span>)</span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="step2_pyspark_filter_insurance_files/figure-html/cell-17-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="a90c11b9" class="cell" data-execution_count="203">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save cleaned dataset</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>processed_dir <span class="op">=</span> project_root <span class="op">/</span> <span class="st">"data"</span> <span class="op">/</span> <span class="st">"processed"</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>processed_dir.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>processed_path <span class="op">=</span> (</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    processed_dir <span class="op">/</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"insurance_5241_data_roles_cleaned.csv"</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>clean_df.toPandas().to_csv(</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>    processed_path,</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span><span class="va">False</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Cleaned dataset saved to:"</span>, processed_path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Cleaned dataset saved to: /home/ubuntu/ad688group3.github.io/data/processed/insurance_5241_data_roles_cleaned.csv</code></pre>
+</div>
+</div>
+</section>
+<section id="key-findings-and-limitations" class="level3">
+<h3 class="anchored" data-anchor-id="key-findings-and-limitations">16. Key Findings and Limitations</h3>
+<p>The analysis identified 27 data-related job postings within Insurance Carriers (NAICS 5241). No duplicate job IDs were found.</p>
+<p>Remote work was the most common identified work arrangement, with 12 remote postings, compared with 4 hybrid and 3 on-site postings.</p>
+<p>Salary information was available for only 5 postings. Among those postings, the average annual salary midpoint was approximately $163,840. Because salary information was unavailable for most postings, this result should be interpreted cautiously.</p>
+<p>Skills information was more complete. Analytics was the most frequently identified specialized skill, appearing in 59.3% of postings. Automation appeared in 22.2%, Business Intelligence in 18.5%, and Airflow and BigQuery each appeared in 11.1%.</p>
+<p>Structured experience information was unavailable for all 27 postings, and valid state information was available for only a subset of postings. These limitations restrict conclusions about experience requirements and geographic demand.</p>
 <p>When done, stop Spark to free memory:</p>
-<div id="4b93ac39" class="cell" data-execution_count="52">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Release Spark's memory now that we're done with it.</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>spark.stop()</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Spark stopped."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="4b93ac39" class="cell" data-execution_count="204">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Release Spark's memory now that we're done with it.</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>spark.stop()</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Spark stopped."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Spark stopped.</code></pre>
 </div>
 </div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
