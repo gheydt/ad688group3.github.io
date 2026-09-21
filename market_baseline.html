@@ -217,7 +217,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The team identified <strong>27 data-related postings</strong> from the Insurance Carrier dataset after applying the project role filter.</p>
 <section id="load-the-cleaned-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="load-the-cleaned-dataset">Load the Cleaned Dataset</h2>
-<div id="771a85b5" class="cell" data-execution_count="1">
+<div id="20a20ebd" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -246,7 +246,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="job-volume-by-title" class="level2">
 <h2 class="anchored" data-anchor-id="job-volume-by-title">Job Volume by Title</h2>
-<div id="076bd6b6" class="cell" data-execution_count="2">
+<div id="2f19e17d" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>top_titles <span class="op">=</span> (</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"TITLE_CLEAN"</span>]</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .value_counts()</span>
@@ -273,7 +273,7 @@ Name: count, dtype: int64</code></pre>
 </section>
 <section id="salary-distribution" class="level2">
 <h2 class="anchored" data-anchor-id="salary-distribution">Salary Distribution</h2>
-<div id="a53ca3dd" class="cell" data-execution_count="3">
+<div id="d75475f9" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>salary_df <span class="op">=</span> df[</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"ANNUAL_SALARY_MIDPOINT"</span>].notna()</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>]</span>
@@ -303,7 +303,7 @@ Maximum salary midpoint: 280000.0</code></pre>
 </section>
 <section id="location-patterns" class="level2">
 <h2 class="anchored" data-anchor-id="location-patterns">Location Patterns</h2>
-<div id="1b37fc11" class="cell" data-execution_count="4">
+<div id="ce8bd2e4" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>state_counts <span class="op">=</span> (</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"CLEAN_STATE"</span>]</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .dropna()</span>
@@ -345,7 +345,7 @@ Name: count, dtype: int64</code></pre>
 </section>
 <section id="top-employers" class="level2">
 <h2 class="anchored" data-anchor-id="top-employers">Top Employers</h2>
-<div id="9ace060a" class="cell" data-execution_count="5">
+<div id="cee721b8" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>top_employers <span class="op">=</span> (</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"COMPANY_NAME"</span>]</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .dropna()</span>
