@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Step 3: Load the New Dataset – AD688 Project Group 3</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-3e9b1289f5f353c49b617ce48ad2bc38.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">AD688 Project Group 3</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../introduction.html"> 
+<span class="menu-text">Introduction</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../data_preparation.html"> 
+<span class="menu-text">Data Preparation</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../market_baseline.html"> 
+<span class="menu-text">Market Baseline</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../skill_gap_analysis.html"> 
+<span class="menu-text">Skill Gap Analysis</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../career_evaluation.html"> 
+<span class="menu-text">Career Evaluation</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../final_recommendations.html"> 
+<span class="menu-text">Final Recommendations</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup">1. Setup</a></li>
+  <li><a href="#download-the-new-dataset" id="toc-download-the-new-dataset" class="nav-link" data-scroll-target="#download-the-new-dataset">2. Download the new dataset</a></li>
+  <li><a href="#check-the-file-before-loading-it" id="toc-check-the-file-before-loading-it" class="nav-link" data-scroll-target="#check-the-file-before-loading-it">3. Check the file before loading it</a></li>
+  <li><a href="#load-with-spark" id="toc-load-with-spark" class="nav-link" data-scroll-target="#load-with-spark">4. Load with Spark</a></li>
+  <li><a href="#save-a-verified-copy-then-describe-it" id="toc-save-a-verified-copy-then-describe-it" class="nav-link" data-scroll-target="#save-a-verified-copy-then-describe-it">5. Save a verified copy, then describe it</a></li>
+  <li><a href="#old-dataset-versus-new-dataset" id="toc-old-dataset-versus-new-dataset" class="nav-link" data-scroll-target="#old-dataset-versus-new-dataset">6. Old dataset versus new dataset</a>
+  <ul class="collapse">
+  <li><a href="#what-the-numbers-say" id="toc-what-the-numbers-say" class="nav-link" data-scroll-target="#what-the-numbers-say">What the numbers say</a></li>
+  </ul></li>
+  <li><a href="#save-the-insurance-panel" id="toc-save-the-insurance-panel" class="nav-link" data-scroll-target="#save-the-insurance-panel">7. Save the insurance panel</a></li>
+  <li><a href="#step-2-export-versus-step-3-export" id="toc-step-2-export-versus-step-3-export" class="nav-link" data-scroll-target="#step-2-export-versus-step-3-export">8. Step 2 export versus Step 3 export</a></li>
+  <li><a href="#what-this-run-produced" id="toc-what-this-run-produced" class="nav-link" data-scroll-target="#what-this-run-produced">9. What this run produced</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Step 3: Load the New Dataset</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>AD688 Group 3, Module 3. My piece of this is loading the new dataset and getting it into a state the rest of the team can actually use. PySpark, running on the EC2 box.</p>
+<p>Four things happen below: pull the file down, check it before trusting it, load it and save a verified copy, then compare it against the dataset we used in Step 2.</p>
+<p>A note on the industry code. We put the NAICS question to the professor and never got an answer back, so this stays on 5241, the same cut Step 2 used. Running the identical query against the new data gives us far more to work with, so there is no reason to move off it. The insurance panel is saved in the same shape as the Step 2 export, so the two line up column for column.</p>
+<p>Nothing here touches Step 2’s notebook or files, and nothing here commits or pushes. Run top to bottom.</p>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">1. Setup</h2>
+<p>Imports and paths. Everything hangs off the project root rather than being hardcoded, so this runs the same on EC2, on a laptop, or from a fresh clone of the team repo.</p>
+<p>The big files, the 700 MB raw CSV and the Parquet copy, sit under <code>data/</code>. That folder is gitignored and stays that way: it is the course rule and the data is licensed. Only small outputs go to <code>outputs/step3/</code>.</p>
+<p>This cell also sets the keyword net used later to spot data roles, and the list of columns the project cannot work without. The load stops if any of those are missing.</p>
+<div id="2004a6d5" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> csv, sys, os, json</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> gdown</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> SparkSession, functions <span class="im">as</span> F</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> find_project_root():</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Walk up from the current folder until we find the project root (a folder holding</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">    data/, _quarto.yml or .git). Falls back to the current folder."""</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    here <span class="op">=</span> Path.cwd().resolve()</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> p <span class="kw">in</span> [here, <span class="op">*</span>here.parents]:</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (p <span class="op">/</span> <span class="st">"data"</span>).is_dir() <span class="kw">or</span> (p <span class="op">/</span> <span class="st">"_quarto.yml"</span>).exists() <span class="kw">or</span> (p <span class="op">/</span> <span class="st">".git"</span>).exists():</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> p</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> here</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_filled(c):</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""True when a column has a real value (not null, not blank)."""</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> F.col(c).isNotNull() <span class="op">&amp;</span> (F.trim(F.col(c).cast(<span class="st">"string"</span>)) <span class="op">!=</span> <span class="st">""</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>ROOT <span class="op">=</span> find_project_root()</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># New dataset: raw download, then a verified Parquet copy for the team. Named for what it</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co"># is (Lightcast job postings) and the year it covers (2024), matching the style of the</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2 folder MET_CareerCompass_2026.</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>RAW_DIR          <span class="op">=</span> ROOT <span class="op">/</span> <span class="st">"data"</span> <span class="op">/</span> <span class="st">"Lightcast_JobPostings_2024_raw"</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>RAW_CSV          <span class="op">=</span> RAW_DIR <span class="op">/</span> <span class="st">"lightcast_job_postings.csv"</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>VERIFIED_PARQUET <span class="op">=</span> ROOT <span class="op">/</span> <span class="st">"data"</span> <span class="op">/</span> <span class="st">"Lightcast_JobPostings_2024"</span> <span class="op">/</span> <span class="st">"lightcast_job_postings.parquet"</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Old dataset from Step 2 (read only, for the comparison).</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>OLD_DIR          <span class="op">=</span> ROOT <span class="op">/</span> <span class="st">"data"</span> <span class="op">/</span> <span class="st">"MET_CareerCompass_2026"</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Small outputs that are safe to share.</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>OUT_DIR          <span class="op">=</span> ROOT <span class="op">/</span> <span class="st">"outputs"</span> <span class="op">/</span> <span class="st">"step3"</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>OUT_DIR.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co"># The only source for the new data, from the M03_Proj instructions.</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>DATASET_ID    <span class="op">=</span> <span class="st">"1V2GCHGt2dkFGqVBeoUFckU4IhUgk4ocQ"</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>MIN_RAW_BYTES <span class="op">=</span> <span class="dv">100</span> <span class="op">*</span> <span class="dv">1024</span> <span class="op">*</span> <span class="dv">1024</span>   <span class="co"># a real copy is ~700 MB; anything under 100 MB is not the data</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Columns the project needs. The load stops if any is missing.</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>REQUIRED_COLUMNS <span class="op">=</span> [<span class="st">"ID"</span>, <span class="st">"POSTED"</span>, <span class="st">"TITLE_RAW"</span>, <span class="st">"NAICS_2022_4"</span>,</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"SALARY_FROM"</span>, <span class="st">"SALARY_TO"</span>, <span class="st">"MIN_YEARS_EXPERIENCE"</span>]</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="co"># The team's data-role keyword net (matched on the lower-cased raw title), reused as planned.</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Note: the Step 2 flag also matched " bi " (BI as a separate word). This planned net leaves it</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="co"># out. On the new data that term would add 11 postings (621 instead of 610); on the old data it</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="co"># adds none.</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>NET_REGEX <span class="op">=</span> (<span class="st">"data engineer|analytics engineer|etl|data pipeline|data platform|big data|"</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>             <span class="st">"ml engineer|machine learning engineer|data architect|database|data scientist|"</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>             <span class="st">"data science|data analyst|business intelligence|data governance|data management"</span>)</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Strict flag: the title itself says data engineer or analytics engineer.</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>STRICT_REGEX <span class="op">=</span> <span class="st">"data engineer|analytics engineer"</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Project root:"</span>, ROOT)</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Raw CSV     :"</span>, RAW_CSV)</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Parquet copy:"</span>, VERIFIED_PARQUET)</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Outputs     :"</span>, OUT_DIR)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Project root: /home/ubuntu/ad688
+Raw CSV     : /home/ubuntu/ad688/data/Lightcast_JobPostings_2024_raw/lightcast_job_postings.csv
+Parquet copy: /home/ubuntu/ad688/data/Lightcast_JobPostings_2024/lightcast_job_postings.parquet
+Outputs     : /home/ubuntu/ad688/outputs/step3</code></pre>
+</div>
+</div>
+</section>
+<section id="download-the-new-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="download-the-new-dataset">2. Download the new dataset</h2>
+<p>Pulls the file from Google Drive with <code>gdown</code>. It is about 700 MB, so the cell looks for a full-size copy first and skips the download when one is already there. No sense pulling that down on every run.</p>
+<div id="cedcf91b" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Download only if we do not already have a full-size copy.</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>RAW_DIR.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> RAW_CSV.exists() <span class="kw">and</span> RAW_CSV.stat().st_size <span class="op">&gt;</span> MIN_RAW_BYTES:</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Already downloaded, skipping the download."</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    gdown.download(<span class="bu">id</span><span class="op">=</span>DATASET_ID, output<span class="op">=</span><span class="bu">str</span>(RAW_CSV), quiet<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>raw_bytes <span class="op">=</span> RAW_CSV.stat().st_size</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"File:"</span>, RAW_CSV.name)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Size:"</span>, <span class="ss">f"</span><span class="sc">{</span>raw_bytes<span class="sc">:,}</span><span class="ss"> bytes (</span><span class="sc">{</span>raw_bytes <span class="op">/</span> <span class="dv">1024</span><span class="op">**</span><span class="dv">2</span><span class="sc">:,.0f}</span><span class="ss"> MB)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Already downloaded, skipping the download.
+File: lightcast_job_postings.csv
+Size: 716,669,689 bytes (683 MB)</code></pre>
+</div>
+</div>
+</section>
+<section id="check-the-file-before-loading-it" class="level2">
+<h2 class="anchored" data-anchor-id="check-the-file-before-loading-it">3. Check the file before loading it</h2>
+<p>Downloads fail quietly. You can end up with an HTML error page sitting there under a <code>.csv</code> name and not find out until something strange happens three cells later. So nothing gets loaded until it clears four checks:</p>
+<ol type="1">
+<li>Is it actually a CSV? Decided by reading the first bytes, not by trusting the file extension.</li>
+<li>Is it big enough? Anything under 100 MB is not the real dataset.</li>
+<li>How many rows are really in it? This is the one that catches people out. Job descriptions contain line breaks inside the quoted text, so counting lines gives about 13 million against 72,498 real rows. A proper CSV parser is the only way to get the true number.</li>
+<li>Are the columns the project needs all there?</li>
+</ol>
+<p>The row count from this cell gets reused further down to verify the Spark load, so it is worth getting right rather than eyeballing.</p>
+<div id="dcecd2c6" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) Format by file bytes, not by extension.</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(RAW_CSV, <span class="st">"rb"</span>) <span class="im">as</span> f:</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    head <span class="op">=</span> f.read(<span class="dv">4096</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>signatures <span class="op">=</span> {<span class="st">b"PAR1"</span>: <span class="st">"parquet"</span>, <span class="st">b"PK</span><span class="ch">\x03\x04</span><span class="st">"</span>: <span class="st">"zip/xlsx"</span>, <span class="st">b"</span><span class="ch">\x1f\x8b</span><span class="st">"</span>: <span class="st">"gzip"</span>}</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>detected <span class="op">=</span> <span class="st">"text"</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> sig, name <span class="kw">in</span> signatures.items():</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> head.startswith(sig):</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        detected <span class="op">=</span> name</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>has_bom     <span class="op">=</span> head.startswith(<span class="st">b"</span><span class="ch">\xef\xbb\xbf</span><span class="st">"</span>)            <span class="co"># byte-order mark at the very start</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>first_line  <span class="op">=</span> head.decode(<span class="st">"utf-8-sig"</span>, errors<span class="op">=</span><span class="st">"ignore"</span>).splitlines()[<span class="dv">0</span>]</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>looks_csv   <span class="op">=</span> detected <span class="op">==</span> <span class="st">"text"</span> <span class="kw">and</span> first_line.startswith(<span class="st">"ID,"</span>) <span class="kw">and</span> first_line.count(<span class="st">","</span>) <span class="op">&gt;</span> <span class="dv">50</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Detected format from bytes:"</span>, <span class="st">"csv"</span> <span class="cf">if</span> looks_csv <span class="cf">else</span> detected)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Starts with a byte-order mark (BOM):"</span>, has_bom)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> looks_csv, <span class="st">"The file does not look like the expected CSV. Do not load it."</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) Size check.</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> raw_bytes <span class="op">&gt;</span> MIN_RAW_BYTES, <span class="st">"File is too small to be the real dataset."</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Size check passed:"</span>, <span class="ss">f"</span><span class="sc">{</span>raw_bytes <span class="op">/</span> <span class="dv">1024</span><span class="op">**</span><span class="dv">2</span><span class="sc">:,.0f}</span><span class="ss"> MB"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Detected format from bytes: csv
+Starts with a byte-order mark (BOM): True
+Size check passed: 683 MB</code></pre>
+</div>
+</div>
+<div id="e62a7046" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) Independent row count with Python's CSV parser (streams the file, low memory).</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#    utf-8-sig strips the BOM. The field-size limit is raised because job descriptions are long.</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>csv.field_size_limit(<span class="dv">2</span><span class="op">**</span><span class="dv">31</span> <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>csv_rows, bad_rows, blank_id_rows, empty_rows, ids <span class="op">=</span> <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="bu">set</span>()</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(RAW_CSV, newline<span class="op">=</span><span class="st">""</span>, encoding<span class="op">=</span><span class="st">"utf-8-sig"</span>) <span class="im">as</span> f:</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    reader <span class="op">=</span> csv.reader(f)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    header <span class="op">=</span> <span class="bu">next</span>(reader)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    n_cols <span class="op">=</span> <span class="bu">len</span>(header)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    id_pos <span class="op">=</span> header.index(<span class="st">"ID"</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> row <span class="kw">in</span> reader:</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        csv_rows <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(row) <span class="op">!=</span> n_cols:</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>            bad_rows <span class="op">+=</span> <span class="dv">1</span>          <span class="co"># a row with the wrong number of fields would mean a broken parse</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> row[id_pos].strip() <span class="op">==</span> <span class="st">""</span>:</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>            blank_id_rows <span class="op">+=</span> <span class="dv">1</span>     <span class="co"># some source rows have no ID; we count them, we do not hide them</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="kw">not</span> <span class="bu">any</span>(v.strip() <span class="cf">for</span> v <span class="kw">in</span> row):</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>                empty_rows <span class="op">+=</span> <span class="dv">1</span>    <span class="co"># ...and some of those have no value in any column</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>            ids.add(row[id_pos])</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="co"># For contrast: a plain line count (this is the number NOT to use).</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(RAW_CSV, <span class="st">"rb"</span>) <span class="im">as</span> f:</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    plain_lines <span class="op">=</span> <span class="bu">sum</span>(chunk.count(<span class="st">b"</span><span class="ch">\n</span><span class="st">"</span>) <span class="cf">for</span> chunk <span class="kw">in</span> <span class="bu">iter</span>(<span class="kw">lambda</span>: f.read(<span class="dv">1</span> <span class="op">&lt;&lt;</span> <span class="dv">20</span>), <span class="st">b""</span>)) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Columns in header          :"</span>, n_cols)</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows (CSV parser)          :"</span>, <span class="ss">f"</span><span class="sc">{</span>csv_rows<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Plain line count minus head:"</span>, <span class="ss">f"</span><span class="sc">{</span>plain_lines<span class="sc">:,}</span><span class="ss">   (over-counts, because of line breaks inside quotes)"</span>)</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows with wrong field count:"</span>, bad_rows)</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows with a blank ID       :"</span>, blank_id_rows, <span class="ss">f"(of which entirely empty: </span><span class="sc">{</span>empty_rows<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Unique non-blank IDs       :"</span>, <span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(ids)<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Duplicate non-blank IDs    :"</span>, (csv_rows <span class="op">-</span> bad_rows <span class="op">-</span> blank_id_rows) <span class="op">-</span> <span class="bu">len</span>(ids))</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) Required columns.</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>missing <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> REQUIRED_COLUMNS <span class="cf">if</span> c <span class="kw">not</span> <span class="kw">in</span> header]</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Required columns missing   :"</span>, missing <span class="cf">if</span> missing <span class="cf">else</span> <span class="st">"none"</span>)</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> missing, <span class="ss">f"Missing required columns: </span><span class="sc">{</span>missing<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> bad_rows <span class="op">==</span> <span class="dv">0</span>, <span class="st">"Some rows have the wrong number of fields."</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Columns in header          : 131
+Rows (CSV parser)          : 72,498
+Plain line count minus head: 12,955,714   (over-counts, because of line breaks inside quotes)
+Rows with wrong field count: 0
+Rows with a blank ID       : 22 (of which entirely empty: 22)
+Unique non-blank IDs       : 72,476
+Duplicate non-blank IDs    : 0
+Required columns missing   : none</code></pre>
+</div>
+</div>
+</section>
+<section id="load-with-spark" class="level2">
+<h2 class="anchored" data-anchor-id="load-with-spark">4. Load with Spark</h2>
+<p>Three options matter here, and getting any of them wrong corrupts the load without throwing an error:</p>
+<ul>
+<li><code>multiLine</code> has to be on, same line-break reason as above. Without it Spark splits rows in the middle of job descriptions.</li>
+<li>Quote and escape are both <code>"</code>, which is how this file writes a quote inside a quoted field.</li>
+<li>The file opens with a byte-order mark, so the first column name arrives with an invisible character attached. Stripping it means the column is <code>ID</code> rather than something that looks like <code>ID</code> on screen but matches nothing.</li>
+</ul>
+<p>Parquet row groups are set deliberately small. This instance has 908 MB of RAM and the default sizes do not fit in it.</p>
+<div id="49730f19" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>spark <span class="op">=</span> (SparkSession.builder</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>         .appName(<span class="st">"AD688-Step3-LoadDataset"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>         .master(<span class="st">"local[1]"</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>         .config(<span class="st">"spark.driver.memory"</span>, <span class="st">"512m"</span>)                            <span class="co"># small instance, keep it small</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>         .config(<span class="st">"spark.ui.showConsoleProgress"</span>, <span class="st">"false"</span>)                  <span class="co"># keep notebook output clean</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>         .config(<span class="st">"spark.sql.shuffle.partitions"</span>, <span class="st">"4"</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>         .config(<span class="st">"spark.hadoop.parquet.block.size"</span>, <span class="bu">str</span>(<span class="dv">32</span> <span class="op">*</span> <span class="dv">1024</span> <span class="op">*</span> <span class="dv">1024</span>)) <span class="co"># smaller row groups = less memory</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>         .getOrCreate())</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>spark.sparkContext.setLogLevel(<span class="st">"ERROR"</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>raw <span class="op">=</span> (spark.read</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>       .option(<span class="st">"header"</span>, <span class="va">True</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>       .option(<span class="st">"multiLine"</span>, <span class="va">True</span>)            <span class="co"># line breaks inside quoted fields</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>       .option(<span class="st">"quote"</span>, <span class="st">'"'</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>       .option(<span class="st">"escape"</span>, <span class="st">'"'</span>)                <span class="co"># a doubled quote inside a field means one literal quote</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>       .option(<span class="st">"encoding"</span>, <span class="st">"UTF-8"</span>)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>       .option(<span class="st">"maxCharsPerColumn"</span>, <span class="op">-</span><span class="dv">1</span>)      <span class="co"># job descriptions can be long</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>       .csv(<span class="bu">str</span>(RAW_CSV)))</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Strip a leading byte-order mark from column names if Spark left one in.</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>raw <span class="op">=</span> raw.toDF(<span class="op">*</span>[c.lstrip(<span class="st">"</span><span class="ch">\ufeff</span><span class="st">"</span>).strip() <span class="cf">for</span> c <span class="kw">in</span> raw.columns])</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> raw.columns[<span class="dv">0</span>] <span class="op">==</span> <span class="st">"ID"</span>, <span class="ss">f"First column is </span><span class="sc">{</span>raw<span class="sc">.</span>columns[<span class="dv">0</span>]<span class="sc">!r}</span><span class="ss">, expected 'ID'"</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Columns read by Spark:"</span>, <span class="bu">len</span>(raw.columns), <span class="st">"| first column:"</span>, raw.columns[<span class="dv">0</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>WARNING: Using incubator modules: jdk.incubator.vector
+Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+/home/ubuntu/ad688/.venv/lib/python3.14/site-packages/pyspark/testing/utils.py:127: FutureWarning: PySpark does not yet fully support pandas &gt;= 3.0.0. Some features may not work correctly. It is recommended to use pandas &lt; 3.0.0 for now.
+  require_minimum_pandas_version()
+26/09/21 15:13:31 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Columns read by Spark: 131 | first column: ID</code></pre>
+</div>
+</div>
+</section>
+<section id="save-a-verified-copy-then-describe-it" class="level2">
+<h2 class="anchored" data-anchor-id="save-a-verified-copy-then-describe-it">5. Save a verified copy, then describe it</h2>
+<p>Writes the data out to Parquet. Smaller and faster to read than the CSV, and the same format the Step 2 dataset came in.</p>
+<p>The write is skipped when a finished copy is already in place, because parsing 700 MB of CSV is by far the slowest thing in this notebook. The checks underneath still run every time: the copy is read back and its row count, blank IDs and unique IDs are compared against what the CSV parser found in section 3. If any of those disagree the notebook stops rather than quietly carrying on with a partial copy.</p>
+<p>The Parquet copy lives in <code>data/Lightcast_JobPostings_2024/</code> and is gitignored.</p>
+<p>The cell after that builds a data dictionary: every column, a plain-English grouping, and how often each one is actually filled in. It counts in small batches, because doing all 131 columns in one pass, with the full job description text among them, runs this machine out of memory.</p>
+<div id="3688b0bb" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Write the Parquet copy (Spark parses the whole CSV once here).</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Skipped when a completed copy is already in place, the same way the download is skipped above.</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># The checks below still run on every pass, so the copy is re-verified against the source</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># whether it was just written or not.</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (VERIFIED_PARQUET <span class="op">/</span> <span class="st">"_SUCCESS"</span>).exists():</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Parquet copy already in place, skipping the write."</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    raw.write.mode(<span class="st">"overwrite"</span>).parquet(<span class="bu">str</span>(VERIFIED_PARQUET))</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the copy back and verify it against the independent CSV-parser results.</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>new <span class="op">=</span> spark.read.parquet(<span class="bu">str</span>(VERIFIED_PARQUET))</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>spark_rows <span class="op">=</span> new.count()</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows: CSV parser ="</span>, <span class="ss">f"</span><span class="sc">{</span>csv_rows<span class="sc">:,}</span><span class="ss">"</span>, <span class="st">"| Spark (Parquet copy) ="</span>, <span class="ss">f"</span><span class="sc">{</span>spark_rows<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> spark_rows <span class="op">==</span> csv_rows, <span class="st">"Spark row count does not match the CSV parser. Do not use this copy."</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(new.columns) <span class="op">==</span> n_cols, <span class="st">"Column count changed during the load."</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>blank_rows_df    <span class="op">=</span> new.<span class="bu">filter</span>(<span class="op">~</span>is_filled(<span class="st">"ID"</span>))</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>blank_ids        <span class="op">=</span> blank_rows_df.count()</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>spark_unique_ids <span class="op">=</span> new.<span class="bu">filter</span>(is_filled(<span class="st">"ID"</span>)).select(<span class="st">"ID"</span>).distinct().count()</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Blank-ID rows      : Spark ="</span>, blank_ids, <span class="st">"| CSV parser ="</span>, blank_id_rows)</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Unique non-blank IDs: Spark ="</span>, <span class="ss">f"</span><span class="sc">{</span>spark_unique_ids<span class="sc">:,}</span><span class="ss">"</span>, <span class="st">"| CSV parser ="</span>, <span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(ids)<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> blank_ids <span class="op">==</span> blank_id_rows <span class="kw">and</span> spark_unique_ids <span class="op">==</span> <span class="bu">len</span>(ids), <span class="st">"Spark and the CSV parser disagree on IDs."</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="co"># What do the blank-ID rows contain? (counts only)</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>blank_profile <span class="op">=</span> blank_rows_df.agg(</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    F.<span class="bu">sum</span>(F.when(is_filled(<span class="st">"POSTED"</span>), <span class="dv">1</span>).otherwise(<span class="dv">0</span>)).alias(<span class="st">"POSTED filled"</span>),</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>    F.<span class="bu">sum</span>(F.when(is_filled(<span class="st">"NAICS_2022_4"</span>), <span class="dv">1</span>).otherwise(<span class="dv">0</span>)).alias(<span class="st">"NAICS_2022_4 filled"</span>),</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>    F.<span class="bu">sum</span>(F.when(is_filled(<span class="st">"TITLE_RAW"</span>), <span class="dv">1</span>).otherwise(<span class="dv">0</span>)).alias(<span class="st">"TITLE_RAW filled"</span>),</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>).collect()[<span class="dv">0</span>].asDict()</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Among the blank-ID rows:"</span>, {k: <span class="bu">int</span>(v <span class="kw">or</span> <span class="dv">0</span>) <span class="cf">for</span> k, v <span class="kw">in</span> blank_profile.items()})</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Verified: the Parquet copy matches the source file."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Parquet copy already in place, skipping the write.
+Rows: CSV parser = 72,498 | Spark (Parquet copy) = 72,498
+Blank-ID rows      : Spark = 22 | CSV parser = 22
+Unique non-blank IDs: Spark = 72,476 | CSV parser = 72,476
+Among the blank-ID rows: {'POSTED filled': 0, 'NAICS_2022_4 filled': 0, 'TITLE_RAW filled': 0}
+Verified: the Parquet copy matches the source file.</code></pre>
+</div>
+</div>
+<div id="e6bb3576" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Data dictionary: every column, a plain-English group, and how many rows have a value.</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> column_group(name):</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Rough plain-English group for a column, based on its name."""</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    rules <span class="op">=</span> [</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>        ((<span class="st">"MODELED_"</span>, <span class="st">"LAST_UPDATED"</span>, <span class="st">"DUPLICATES"</span>, <span class="st">"POSTED"</span>, <span class="st">"EXPIRED"</span>, <span class="st">"DURATION"</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>          <span class="st">"SOURCE"</span>, <span class="st">"URL"</span>, <span class="st">"ACTIVE_"</span>, <span class="st">"ID"</span>), <span class="st">"Posting record"</span>),</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>        ((<span class="st">"BODY"</span>,), <span class="st">"Job description text"</span>),</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>        ((<span class="st">"TITLE"</span>,), <span class="st">"Job title"</span>),</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        ((<span class="st">"COMPANY"</span>,), <span class="st">"Employer"</span>),</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>        ((<span class="st">"EDUCATION"</span>, <span class="st">"MIN_EDULEVELS"</span>, <span class="st">"MAX_EDULEVELS"</span>, <span class="st">"CIP"</span>), <span class="st">"Education"</span>),</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>        ((<span class="st">"EMPLOYMENT_TYPE"</span>, <span class="st">"MIN_YEARS"</span>, <span class="st">"MAX_YEARS"</span>, <span class="st">"IS_INTERNSHIP"</span>), <span class="st">"Job type and experience"</span>),</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>        ((<span class="st">"SALARY"</span>, <span class="st">"ORIGINAL_PAY_PERIOD"</span>), <span class="st">"Pay"</span>),</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>        ((<span class="st">"REMOTE_TYPE"</span>,), <span class="st">"Remote work"</span>),</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>        ((<span class="st">"LOCATION"</span>, <span class="st">"CITY"</span>, <span class="st">"COUNTY"</span>, <span class="st">"MSA"</span>, <span class="st">"STATE"</span>), <span class="st">"Location"</span>),</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>        ((<span class="st">"NAICS"</span>,), <span class="st">"Industry code (NAICS)"</span>),</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>        ((<span class="st">"ONET"</span>, <span class="st">"SOC"</span>), <span class="st">"Occupation code (O*NET, SOC)"</span>),</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>        ((<span class="st">"SKILLS"</span>, <span class="st">"SPECIALIZED_SKILLS"</span>, <span class="st">"COMMON_SKILLS"</span>, <span class="st">"SOFTWARE_SKILLS"</span>, <span class="st">"CERTIFICATIONS"</span>), <span class="st">"Skills and certifications"</span>),</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>        ((<span class="st">"LIGHTCAST_SECTORS"</span>,), <span class="st">"Lightcast sector"</span>),</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> prefixes, label <span class="kw">in</span> rules:</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> name.startswith(prefixes):</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> label</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">"Other"</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Count filled values in small batches of columns. One pass over all 131 columns at once</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a><span class="co"># (including the very long BODY text) ran this small instance out of memory, so the long</span></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a><span class="co"># text column goes on its own and the rest go 10 at a time.</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> count_filled(cols):</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> new.agg(<span class="op">*</span>[F.<span class="bu">sum</span>(F.when(is_filled(c), <span class="dv">1</span>).otherwise(<span class="dv">0</span>)).alias(c) <span class="cf">for</span> c <span class="kw">in</span> cols]).collect()[<span class="dv">0</span>].asDict()</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>heavy <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> [<span class="st">"BODY"</span>] <span class="cf">if</span> c <span class="kw">in</span> new.columns]</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>rest  <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> new.columns <span class="cf">if</span> c <span class="kw">not</span> <span class="kw">in</span> heavy]</span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>counts <span class="op">=</span> {}</span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> cols <span class="kw">in</span> [heavy] <span class="op">*</span> <span class="bu">bool</span>(heavy) <span class="op">+</span> [rest[i:i <span class="op">+</span> <span class="dv">10</span>] <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">len</span>(rest), <span class="dv">10</span>)]:</span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>    counts.update(count_filled(cols))</span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>dictionary <span class="op">=</span> [</span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"position"</span>: i <span class="op">+</span> <span class="dv">1</span>, <span class="st">"column"</span>: c, <span class="st">"group"</span>: column_group(c),</span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>     <span class="st">"type_in_parquet"</span>: <span class="bu">dict</span>(new.dtypes)[c],</span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>     <span class="st">"rows_filled"</span>: <span class="bu">int</span>(counts[c]), <span class="st">"percent_filled"</span>: <span class="bu">round</span>(<span class="dv">100</span> <span class="op">*</span> counts[c] <span class="op">/</span> spark_rows, <span class="dv">1</span>)}</span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, c <span class="kw">in</span> <span class="bu">enumerate</span>(new.columns)</span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>dict_path <span class="op">=</span> OUT_DIR <span class="op">/</span> <span class="st">"data_dictionary.csv"</span></span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(dict_path, <span class="st">"w"</span>, newline<span class="op">=</span><span class="st">""</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>) <span class="im">as</span> f:</span>
+<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>    w <span class="op">=</span> csv.DictWriter(f, fieldnames<span class="op">=</span><span class="bu">list</span>(dictionary[<span class="dv">0</span>].keys()))</span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>    w.writeheader()</span>
+<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>    w.writerows(dictionary)</span>
+<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Saved:"</span>, dict_path, <span class="ss">f"(</span><span class="sc">{</span><span class="bu">len</span>(dictionary)<span class="sc">}</span><span class="ss"> columns)"</span>)</span>
+<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Required columns, share of rows filled:"</span>)</span>
+<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> dictionary:</span>
+<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> row[<span class="st">"column"</span>] <span class="kw">in</span> REQUIRED_COLUMNS <span class="op">+</span> [<span class="st">"SKILLS_NAME"</span>, <span class="st">"BODY"</span>]:</span>
+<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>row[<span class="st">'column'</span>]<span class="sc">:&lt;22}</span><span class="ss"> </span><span class="sc">{</span>row[<span class="st">'percent_filled'</span>]<span class="sc">:&gt;5}</span><span class="ss">%"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Saved: /home/ubuntu/ad688/outputs/step3/data_dictionary.csv (131 columns)
+Required columns, share of rows filled:
+  ID                     100.0%
+  POSTED                 100.0%
+  TITLE_RAW               99.9%
+  BODY                    99.9%
+  MIN_YEARS_EXPERIENCE    68.1%
+  SALARY_TO               44.7%
+  SALARY_FROM             44.7%
+  SKILLS_NAME             99.9%
+  NAICS_2022_4            99.9%</code></pre>
+</div>
+</div>
+</section>
+<section id="old-dataset-versus-new-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="old-dataset-versus-new-dataset">6. Old dataset versus new dataset</h2>
+<p>Same rules on both: same industry code, same keyword net, same strict data engineer test. Counts only here, no rows get saved.</p>
+<p>“Salary present” means <code>SALARY_FROM</code> has something in it. “Skills populated” means <code>SKILLS_NAME</code> is not blank.</p>
+<p>Worth noting which keyword net this uses. It is the planned one, which leaves out <code>" bi "</code> as a standalone word. Step 2’s flag included it. On the new data that single term pulls in 11 extra postings, 621 instead of 610. On the old data it changes nothing.</p>
+<div id="89a9c95c" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_posted():</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""POSTED as a real date. Handles the new file's M/d/yyyy and the old file's yyyy-MM-dd."""</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> F.coalesce(</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>        F.expr(<span class="st">"CAST(try_to_timestamp(CAST(POSTED AS STRING), 'M/d/yyyy') AS DATE)"</span>),</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        F.expr(<span class="st">"CAST(try_to_timestamp(SUBSTR(CAST(POSTED AS STRING), 1, 10), 'yyyy-MM-dd') AS DATE)"</span>),</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> profile(df):</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Counts for one dataset, all in a single pass."""</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    title      <span class="op">=</span> F.lower(F.col(<span class="st">"TITLE_RAW"</span>))</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    in_net     <span class="op">=</span> F.coalesce(title.rlike(NET_REGEX), F.lit(<span class="va">False</span>))</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    is_strict  <span class="op">=</span> F.coalesce(title.rlike(STRICT_REGEX), F.lit(<span class="va">False</span>))</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    is_ins     <span class="op">=</span> F.col(<span class="st">"NAICS_2022_4"</span>).cast(<span class="st">"string"</span>) <span class="op">==</span> <span class="st">"5241"</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    one_if     <span class="op">=</span> <span class="kw">lambda</span> cond: F.<span class="bu">sum</span>(F.when(cond, <span class="dv">1</span>).otherwise(<span class="dv">0</span>))</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    posted     <span class="op">=</span> parse_posted()</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> df.agg(</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>        F.count(F.lit(<span class="dv">1</span>)).alias(<span class="st">"total_rows"</span>),</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>        one_if(is_ins).alias(<span class="st">"insurance_5241_rows"</span>),</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>        one_if(is_ins <span class="op">&amp;</span> in_net).alias(<span class="st">"insurance_data_role_rows"</span>),</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>        one_if(is_ins <span class="op">&amp;</span> is_strict).alias(<span class="st">"insurance_strict_data_engineer_rows"</span>),</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>        one_if(is_ins <span class="op">&amp;</span> in_net <span class="op">&amp;</span> is_filled(<span class="st">"SALARY_FROM"</span>)).alias(<span class="st">"data_role_with_salary"</span>),</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>        one_if(is_ins <span class="op">&amp;</span> in_net <span class="op">&amp;</span> is_filled(<span class="st">"MIN_YEARS_EXPERIENCE"</span>)).alias(<span class="st">"data_role_with_min_years_experience"</span>),</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>        one_if(is_ins <span class="op">&amp;</span> is_filled(<span class="st">"SKILLS_NAME"</span>)).alias(<span class="st">"insurance_with_skills"</span>),</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>        F.<span class="bu">min</span>(posted).alias(<span class="st">"posted_first"</span>),</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>        F.<span class="bu">max</span>(posted).alias(<span class="st">"posted_last"</span>),</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>        one_if(F.col(<span class="st">"POSTED"</span>).isNotNull() <span class="op">&amp;</span> posted.isNull()).alias(<span class="st">"posted_unreadable"</span>),</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>    ).collect()[<span class="dv">0</span>].asDict()</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {k: (<span class="bu">str</span>(v) <span class="cf">if</span> k.startswith(<span class="st">"posted_"</span>) <span class="kw">and</span> k <span class="op">!=</span> <span class="st">"posted_unreadable"</span> <span class="cf">else</span> <span class="bu">int</span>(v)) <span class="cf">for</span> k, v <span class="kw">in</span> r.items()}</span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>old_files <span class="op">=</span> <span class="bu">sorted</span>(<span class="bu">str</span>(p) <span class="cf">for</span> p <span class="kw">in</span> OLD_DIR.glob(<span class="st">"*.parquet"</span>))</span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>old <span class="op">=</span> profile(spark.read.parquet(<span class="op">*</span>old_files))</span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>newp <span class="op">=</span> profile(new)</span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> [</span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"total_rows"</span>,                          <span class="st">"Total postings"</span>),</span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"insurance_5241_rows"</span>,                 <span class="st">"Insurance (NAICS 5241) postings"</span>),</span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"insurance_data_role_rows"</span>,            <span class="st">"  of those, matching the data-role keyword net"</span>),</span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"insurance_strict_data_engineer_rows"</span>, <span class="st">"  of those, strict data engineer / analytics engineer titles"</span>),</span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"data_role_with_salary"</span>,               <span class="st">"  data-role postings with a salary (SALARY_FROM)"</span>),</span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"data_role_with_min_years_experience"</span>, <span class="st">"  data-role postings with minimum years of experience"</span>),</span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"insurance_with_skills"</span>,               <span class="st">"Insurance postings with SKILLS_NAME filled"</span>),</span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"posted_first"</span>,                        <span class="st">"First POSTED date"</span>),</span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"posted_last"</span>,                         <span class="st">"Last POSTED date"</span>),</span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"posted_unreadable"</span>,                   <span class="st">"POSTED values that could not be read as a date"</span>),</span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fmt(v):</span>
+<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>v<span class="sc">:,}</span><span class="ss">"</span> <span class="cf">if</span> <span class="bu">isinstance</span>(v, <span class="bu">int</span>) <span class="cf">else</span> v</span>
+<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="st">'Measure'</span><span class="sc">:&lt;62}{</span><span class="st">'OLD (Step 2)'</span><span class="sc">:&gt;16}{</span><span class="st">'NEW (Step 3)'</span><span class="sc">:&gt;16}</span><span class="ss">"</span>)</span>
+<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">94</span>)</span>
+<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> key, label <span class="kw">in</span> labels:</span>
+<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>label<span class="sc">:&lt;62}{</span>fmt(old[key])<span class="sc">:&gt;16}{</span>fmt(newp[key])<span class="sc">:&gt;16}</span><span class="ss">"</span>)</span>
+<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the comparison (aggregate numbers only, no posting rows).</span></span>
+<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a>cmp_csv <span class="op">=</span> OUT_DIR <span class="op">/</span> <span class="st">"comparison_old_vs_new.csv"</span></span>
+<span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(cmp_csv, <span class="st">"w"</span>, newline<span class="op">=</span><span class="st">""</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>) <span class="im">as</span> f:</span>
+<span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a>    w <span class="op">=</span> csv.writer(f)</span>
+<span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a>    w.writerow([<span class="st">"measure"</span>, <span class="st">"old_step2_dataset"</span>, <span class="st">"new_step3_dataset"</span>])</span>
+<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> key, label <span class="kw">in</span> labels:</span>
+<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a>        w.writerow([label.strip(), old[key], newp[key]])</span>
+<span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Saved:"</span>, cmp_csv)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Measure                                                           OLD (Step 2)    NEW (Step 3)
+----------------------------------------------------------------------------------------------
+Total postings                                                         165,386          72,498
+Insurance (NAICS 5241) postings                                          1,895           1,908
+  of those, matching the data-role keyword net                              27             610
+  of those, strict data engineer / analytics engineer titles                 6              29
+  data-role postings with a salary (SALARY_FROM)                             5             405
+  data-role postings with minimum years of experience                        0             521
+Insurance postings with SKILLS_NAME filled                               1,271           1,908
+First POSTED date                                                   2026-01-02      2024-05-01
+Last POSTED date                                                    2026-07-21      2024-09-30
+POSTED values that could not be read as a date                               0               0
+
+Saved: /home/ubuntu/ad688/outputs/step3/comparison_old_vs_new.csv</code></pre>
+</div>
+</div>
+<div id="caa362ee" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the results against the numbers the team planned for. Any mismatch stops the notebook.</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>planned <span class="op">=</span> [</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"New total rows"</span>,                              <span class="dv">72_498</span>,       newp[<span class="st">"total_rows"</span>]),</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Old total rows"</span>,                              <span class="dv">165_386</span>,      old[<span class="st">"total_rows"</span>]),</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"New Insurance (5241) rows"</span>,                   <span class="dv">1_908</span>,        newp[<span class="st">"insurance_5241_rows"</span>]),</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"New 5241 x keyword net"</span>,                      <span class="dv">610</span>,          newp[<span class="st">"insurance_data_role_rows"</span>]),</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Old 5241 x keyword net"</span>,                      <span class="dv">27</span>,           old[<span class="st">"insurance_data_role_rows"</span>]),</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"New strict data engineer titles"</span>,             <span class="dv">29</span>,           newp[<span class="st">"insurance_strict_data_engineer_rows"</span>]),</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Old strict data engineer titles"</span>,             <span class="dv">6</span>,            old[<span class="st">"insurance_strict_data_engineer_rows"</span>]),</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"New data-role rows with salary"</span>,              <span class="dv">405</span>,          newp[<span class="st">"data_role_with_salary"</span>]),</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"New Insurance rows with SKILLS_NAME filled"</span>,  <span class="dv">1_908</span>,        newp[<span class="st">"insurance_with_skills"</span>]),</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"New first POSTED date"</span>,                       <span class="st">"2024-05-01"</span>, newp[<span class="st">"posted_first"</span>]),</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The planning notes said the range ended 9/9/2024. That is the last value when POSTED is</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># sorted as TEXT ("9/9/2024" sorts after "9/30/2024"). As real dates the last posting is</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2024-09-30, so that is the value we check against (see the text-versus-date lines below).</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"New last POSTED date (as real dates)"</span>,        <span class="st">"2024-09-30"</span>, newp[<span class="st">"posted_last"</span>]),</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>all_ok <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, expected, actual <span class="kw">in</span> planned:</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>    ok <span class="op">=</span> expected <span class="op">==</span> actual</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>    all_ok <span class="op">&amp;=</span> ok</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="st">'PASS'</span> <span class="cf">if</span> ok <span class="cf">else</span> <span class="st">'MISMATCH'</span><span class="sc">:&lt;9}{</span>name<span class="sc">:&lt;46}</span><span class="ss"> expected </span><span class="sc">{</span>fmt(expected)<span class="sc">:&gt;12}</span><span class="ss">   got </span><span class="sc">{</span>fmt(actual)<span class="sc">:&gt;12}</span><span class="ss">"</span>)</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> all_ok, <span class="st">"At least one number does not match the plan. Stop and report it before using this data."</span></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">All planned numbers reproduced."</span>)</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Why the last POSTED date is 2024-09-30 and not 9/9/2024: sorting the text is misleading.</span></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>text_max <span class="op">=</span> new.agg(F.<span class="bu">max</span>(<span class="st">"POSTED"</span>)).collect()[<span class="dv">0</span>][<span class="dv">0</span>]</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">POSTED sorted as text gives a last value of </span><span class="sc">{</span>text_max<span class="sc">!r}</span><span class="ss"> (misleading: '9/9/2024' sorts after '9/30/2024')."</span>)</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"POSTED read as real dates gives a last value of </span><span class="sc">{</span>newp[<span class="st">'posted_last'</span>]<span class="sc">}</span><span class="ss">."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>PASS     New total rows                                 expected       72,498   got       72,498
+PASS     Old total rows                                 expected      165,386   got      165,386
+PASS     New Insurance (5241) rows                      expected        1,908   got        1,908
+PASS     New 5241 x keyword net                         expected          610   got          610
+PASS     Old 5241 x keyword net                         expected           27   got           27
+PASS     New strict data engineer titles                expected           29   got           29
+PASS     Old strict data engineer titles                expected            6   got            6
+PASS     New data-role rows with salary                 expected          405   got          405
+PASS     New Insurance rows with SKILLS_NAME filled     expected        1,908   got        1,908
+PASS     New first POSTED date                          expected   2024-05-01   got   2024-05-01
+PASS     New last POSTED date (as real dates)           expected   2024-09-30   got   2024-09-30
+
+All planned numbers reproduced.
+
+POSTED sorted as text gives a last value of '9/9/2024' (misleading: '9/9/2024' sorts after '9/30/2024').
+POSTED read as real dates gives a last value of 2024-09-30.</code></pre>
+</div>
+</div>
+<section id="what-the-numbers-say" class="level3">
+<h3 class="anchored" data-anchor-id="what-the-numbers-say">What the numbers say</h3>
+<p>Same filter, new data, and the thin-data problem from Step 2 is gone. Step 2 gave 27 matching postings with a salary on 5 of them, which is not enough to build anything on. The new data gives hundreds, with salary on most of them.</p>
+<p>The catch is the window. The postings moved from 2026 back to 2024, so this is a different period rather than a bigger sample of the same one. That needs saying out loud any time these numbers get quoted.</p>
+<div id="ae10b1aa" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Data-role postings in Insurance : </span><span class="sc">{</span>old[<span class="st">'insurance_data_role_rows'</span>]<span class="sc">:,}</span><span class="ss"> (old)  -&gt;  </span><span class="sc">{</span>newp[<span class="st">'insurance_data_role_rows'</span>]<span class="sc">:,}</span><span class="ss"> (new)"</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Strict data engineer titles      : </span><span class="sc">{</span>old[<span class="st">'insurance_strict_data_engineer_rows'</span>]<span class="sc">:,}</span><span class="ss"> (old)  -&gt;  </span><span class="sc">{</span>newp[<span class="st">'insurance_strict_data_engineer_rows'</span>]<span class="sc">:,}</span><span class="ss"> (new)"</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Data-role postings with a salary : </span><span class="sc">{</span>old[<span class="st">'data_role_with_salary'</span>]<span class="sc">:,}</span><span class="ss"> of </span><span class="sc">{</span>old[<span class="st">'insurance_data_role_rows'</span>]<span class="sc">:,}</span><span class="ss"> (old)  -&gt;  </span><span class="sc">{</span>newp[<span class="st">'data_role_with_salary'</span>]<span class="sc">:,}</span><span class="ss"> of </span><span class="sc">{</span>newp[<span class="st">'insurance_data_role_rows'</span>]<span class="sc">:,}</span><span class="ss"> (new)"</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Posting dates                    : </span><span class="sc">{</span>old[<span class="st">'posted_first'</span>]<span class="sc">}</span><span class="ss"> to </span><span class="sc">{</span>old[<span class="st">'posted_last'</span>]<span class="sc">}</span><span class="ss"> (old)  -&gt;  </span><span class="sc">{</span>newp[<span class="st">'posted_first'</span>]<span class="sc">}</span><span class="ss"> to </span><span class="sc">{</span>newp[<span class="st">'posted_last'</span>]<span class="sc">}</span><span class="ss"> (new)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Data-role postings in Insurance : 27 (old)  -&gt;  610 (new)
+Strict data engineer titles      : 6 (old)  -&gt;  29 (new)
+Data-role postings with a salary : 5 of 27 (old)  -&gt;  405 of 610 (new)
+Posting dates                    : 2026-01-02 to 2026-07-21 (old)  -&gt;  2024-05-01 to 2024-09-30 (new)</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="save-the-insurance-panel" class="level2">
+<h2 class="anchored" data-anchor-id="save-the-insurance-panel">7. Save the insurance panel</h2>
+<p>Step 2 produced <code>insurance_5241_all_postings.csv</code> and <code>.xlsx</code>: every insurance posting, 34 columns, with <code>IS_DATA_ROLE_MATCH</code> sitting directly after <code>TITLE_CLEAN</code>. This builds the same thing from the new data, same columns in the same order, written the same way, so the two can be lined up column for column. The file carries a <code>_step3</code> suffix so it is obvious which step it came from once it leaves this folder.</p>
+<p>The flag is the part to pay attention to. It uses Step 2’s regex exactly, <code>" bi "</code> included. A column with the same name in two files has to mean the same thing in both, otherwise the name lies. The price of that is this file flags 621 rows while section 6 reports 610, since section 6 uses the planned net without that term. Both numbers are right. They answer different questions.</p>
+<div id="12dcc84a" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the Insurance panel in the same shape as the Step 2 export.</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># The flag uses the Step 2 regex exactly, including " bi " (BI as a separate word), so that</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># IS_DATA_ROLE_MATCH means the same thing in both files. It is why this file flags 621 rows</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># while the comparison above reports 610, which uses the planned net without " bi ".</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>STEP2_FLAG_REGEX <span class="op">=</span> (<span class="st">"data engineer|analytics engineer|etl|data pipeline|data platform|big data|"</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"ml engineer|machine learning engineer|data architect|database|data scientist|"</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"data science|data analyst|business intelligence| bi |data governance|"</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"data management"</span>)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="co"># The Step 2 export's 34 columns, in the Step 2 order. IS_DATA_ROLE_MATCH is the only derived</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="co"># column; every other one is an original Lightcast field.</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>STEP2_COLUMNS <span class="op">=</span> [<span class="st">"ID"</span>, <span class="st">"POSTED"</span>, <span class="st">"EXPIRED"</span>, <span class="st">"DURATION"</span>, <span class="st">"URL"</span>, <span class="st">"TITLE_RAW"</span>, <span class="st">"TITLE_NAME"</span>,</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"TITLE_CLEAN"</span>, <span class="st">"IS_DATA_ROLE_MATCH"</span>, <span class="st">"COMPANY_NAME"</span>, <span class="st">"COMPANY_IS_STAFFING"</span>,</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"EMPLOYMENT_TYPE_NAME"</span>, <span class="st">"MIN_YEARS_EXPERIENCE"</span>, <span class="st">"MAX_YEARS_EXPERIENCE"</span>,</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"IS_INTERNSHIP"</span>, <span class="st">"MIN_EDULEVELS_NAME"</span>, <span class="st">"MAX_EDULEVELS_NAME"</span>, <span class="st">"SALARY"</span>,</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"SALARY_FROM"</span>, <span class="st">"SALARY_TO"</span>, <span class="st">"ORIGINAL_PAY_PERIOD"</span>, <span class="st">"REMOTE_TYPE_NAME"</span>,</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"LOCATION"</span>, <span class="st">"CITY_NAME"</span>, <span class="st">"STATE_NAME"</span>, <span class="st">"MSA_NAME"</span>, <span class="st">"NAICS_2022_4"</span>,</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"SOC_2021_4_NAME"</span>, <span class="st">"ONET_NAME"</span>, <span class="st">"SKILLS_NAME"</span>, <span class="st">"SPECIALIZED_SKILLS_NAME"</span>,</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"COMMON_SKILLS_NAME"</span>, <span class="st">"SOFTWARE_SKILLS_NAME"</span>, <span class="st">"CERTIFICATIONS_NAME"</span>]</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>source_cols <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> STEP2_COLUMNS <span class="cf">if</span> c <span class="op">!=</span> <span class="st">"IS_DATA_ROLE_MATCH"</span>]</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>missing_cols <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> source_cols <span class="cf">if</span> c <span class="kw">not</span> <span class="kw">in</span> new.columns]</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> missing_cols, <span class="ss">f"The new dataset is missing Step 2 columns: </span><span class="sc">{</span>missing_cols<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>insurance <span class="op">=</span> (new</span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>             .<span class="bu">filter</span>(F.col(<span class="st">"NAICS_2022_4"</span>).cast(<span class="st">"string"</span>) <span class="op">==</span> <span class="st">"5241"</span>)</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>             .withColumn(<span class="st">"IS_DATA_ROLE_MATCH"</span>,</span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>                         F.when(F.lower(F.col(<span class="st">"TITLE_RAW"</span>)).rlike(STEP2_FLAG_REGEX), <span class="dv">1</span>).otherwise(<span class="dv">0</span>))</span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>             .select(<span class="op">*</span>STEP2_COLUMNS))</span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Same writer as Step 2 (pandas), so the two files are produced identically. The panel is</span></span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a><span class="co"># small enough for this to be safe: about 1,900 rows.</span></span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>pdf       <span class="op">=</span> insurance.toPandas()</span>
+<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>xlsx_path <span class="op">=</span> OUT_DIR <span class="op">/</span> <span class="st">"insurance_5241_all_postings_step3.xlsx"</span></span>
+<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a>csv_path  <span class="op">=</span> OUT_DIR <span class="op">/</span> <span class="st">"insurance_5241_all_postings_step3.csv"</span></span>
+<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a>pdf.to_excel(xlsx_path, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a>pdf.to_csv(csv_path, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>flagged <span class="op">=</span> <span class="bu">int</span>(pdf[<span class="st">"IS_DATA_ROLE_MATCH"</span>].<span class="bu">sum</span>())</span>
+<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows exported     :"</span>, <span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(pdf)<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Columns           :"</span>, <span class="bu">len</span>(pdf.columns))</span>
+<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Flagged as 1      :"</span>, flagged, <span class="st">"(Step 2 regex, includes ' bi ')"</span>)</span>
+<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"For contrast, the planned net without ' bi ' matched:"</span>, newp[<span class="st">"insurance_data_role_rows"</span>])</span>
+<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Excel:"</span>, xlsx_path)</span>
+<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"CSV  :"</span>, csv_path)</span>
+<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a><span class="co"># The panel must hold every Insurance posting counted in section 6, in the Step 2 shape.</span></span>
+<span id="cb22-49"><a href="#cb22-49" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(pdf) <span class="op">==</span> newp[<span class="st">"insurance_5241_rows"</span>], <span class="st">"Exported rows do not match the Insurance count above."</span></span>
+<span id="cb22-50"><a href="#cb22-50" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">list</span>(pdf.columns) <span class="op">==</span> STEP2_COLUMNS, <span class="st">"Column order does not match the Step 2 export."</span></span>
+<span id="cb22-51"><a href="#cb22-51" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(STEP2_COLUMNS) <span class="op">==</span> <span class="dv">34</span>, <span class="st">"The Step 2 export has 34 columns."</span></span>
+<span id="cb22-52"><a href="#cb22-52" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> flagged <span class="op">==</span> <span class="dv">621</span>, <span class="ss">f"Expected 621 flagged rows with the Step 2 regex, got </span><span class="sc">{</span>flagged<span class="sc">}</span><span class="ss">."</span></span>
+<span id="cb22-53"><a href="#cb22-53" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Matches the Step 2 export: 34 columns, same order, same flag definition."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/home/ubuntu/ad688/.venv/lib/python3.14/site-packages/pyspark/sql/pandas/conversion.py:298: FutureWarning: PySpark does not yet fully support pandas &gt;= 3.0.0. Some features may not work correctly. It is recommended to use pandas &lt; 3.0.0 for now.
+  require_minimum_pandas_version()
+/home/ubuntu/ad688/.venv/lib/python3.14/site-packages/pyspark/sql/pandas/conversion.py:348: UserWarning: toPandas attempted Arrow optimization because 'spark.sql.execution.arrow.pyspark.enabled' is set to true; however, failed by the reason below:
+  [PACKAGE_NOT_INSTALLED] PyArrow &gt;= 18.0.0 must be installed; however, it was not found.
+Attempting non-optimization as 'spark.sql.execution.arrow.pyspark.fallback.enabled' is set to true.
+  warn(msg)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows exported     : 1,908
+Columns           : 34
+Flagged as 1      : 621 (Step 2 regex, includes ' bi ')
+For contrast, the planned net without ' bi ' matched: 610
+Excel: /home/ubuntu/ad688/outputs/step3/insurance_5241_all_postings_step3.xlsx
+CSV  : /home/ubuntu/ad688/outputs/step3/insurance_5241_all_postings_step3.csv
+
+Matches the Step 2 export: 34 columns, same order, same flag definition.</code></pre>
+</div>
+</div>
+</section>
+<section id="step-2-export-versus-step-3-export" class="level2">
+<h2 class="anchored" data-anchor-id="step-2-export-versus-step-3-export">8. Step 2 export versus Step 3 export</h2>
+<p>Section 6 compared the two raw datasets. This compares the two finished export files, which is the narrower and more useful question, since those are the files the rest of the project actually touches.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>What it compares</th>
+<th>Scale</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>comparison_old_vs_new.csv</code></td>
+<td>the raw datasets, all industries</td>
+<td>165,386 against 72,498 postings</td>
+</tr>
+<tr class="even">
+<td><code>variance_analysis_step2_vs_step3.csv</code></td>
+<td>the two insurance exports</td>
+<td>1,895 against 1,908 rows</td>
+</tr>
+</tbody>
+</table>
+<p>Both exports use the same flag definition, so the flagged counts here are directly comparable. No Spark in this cell, it just reads the two CSVs off disk, so it runs in about a second.</p>
+<p>Two of the measures come out odd: the company count drops hard, and Step 2 reports more distinct states than there are states. Both are marked unexplained rather than written up as findings, because neither has been chased down yet.</p>
+<div id="333b71ae" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Variance analysis: the Step 2 export against the Step 3 export, file to file.</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Pure Python, no Spark needed, since both are finished CSVs on disk.</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>STEP2_EXPORT <span class="op">=</span> ROOT <span class="op">/</span> <span class="st">"outputs"</span> <span class="op">/</span> <span class="st">"step2"</span> <span class="op">/</span> <span class="st">"insurance_5241_all_postings.csv"</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>STEP3_EXPORT <span class="op">=</span> OUT_DIR <span class="op">/</span> <span class="st">"insurance_5241_all_postings_step3.csv"</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_posted_text(s):</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""POSTED as a real date. Step 2's file is yyyy-MM-dd, Step 3's is M/d/yyyy."""</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> (s <span class="kw">or</span> <span class="st">""</span>).strip()</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> fmt <span class="kw">in</span> (<span class="st">"%m/</span><span class="sc">%d</span><span class="st">/%Y"</span>, <span class="st">"%Y-%m-</span><span class="sc">%d</span><span class="st">"</span>):</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> datetime.strptime(s[:<span class="dv">10</span>], fmt).date()</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span> <span class="pp">ValueError</span>:</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">pass</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> export_profile(path):</span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Everything we want to compare, in one pass over a finished export."""</span></span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(path, newline<span class="op">=</span><span class="st">""</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>) <span class="im">as</span> f:</span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>        rows <span class="op">=</span> <span class="bu">list</span>(csv.DictReader(f))</span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>    filled   <span class="op">=</span> <span class="kw">lambda</span> c: <span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> r <span class="kw">in</span> rows <span class="cf">if</span> (r.get(c) <span class="kw">or</span> <span class="st">""</span>).strip())</span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>    distinct <span class="op">=</span> <span class="kw">lambda</span> c: <span class="bu">len</span>({(r.get(c) <span class="kw">or</span> <span class="st">""</span>).strip() <span class="cf">for</span> r <span class="kw">in</span> rows <span class="cf">if</span> (r.get(c) <span class="kw">or</span> <span class="st">""</span>).strip()})</span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>    flagged  <span class="op">=</span> [r <span class="cf">for</span> r <span class="kw">in</span> rows <span class="cf">if</span> r.get(<span class="st">"IS_DATA_ROLE_MATCH"</span>) <span class="op">==</span> <span class="st">"1"</span>]</span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>    dates    <span class="op">=</span> [d <span class="cf">for</span> d <span class="kw">in</span> (parse_posted_text(r.get(<span class="st">"POSTED"</span>)) <span class="cf">for</span> r <span class="kw">in</span> rows) <span class="cf">if</span> d]</span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>        <span class="st">"rows"</span>: <span class="bu">len</span>(rows),</span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>        <span class="st">"cols"</span>: <span class="bu">len</span>(rows[<span class="dv">0</span>]),</span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>        <span class="st">"flagged"</span>: <span class="bu">len</span>(flagged),</span>
+<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>        <span class="st">"salary"</span>: filled(<span class="st">"SALARY_FROM"</span>),</span>
+<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a>        <span class="st">"flagged_salary"</span>: <span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> r <span class="kw">in</span> flagged <span class="cf">if</span> (r.get(<span class="st">"SALARY_FROM"</span>) <span class="kw">or</span> <span class="st">""</span>).strip()),</span>
+<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a>        <span class="st">"minyears"</span>: filled(<span class="st">"MIN_YEARS_EXPERIENCE"</span>),</span>
+<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a>        <span class="st">"skills"</span>: filled(<span class="st">"SKILLS_NAME"</span>),</span>
+<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a>        <span class="st">"companies"</span>: distinct(<span class="st">"COMPANY_NAME"</span>),</span>
+<span id="cb25-35"><a href="#cb25-35" aria-hidden="true" tabindex="-1"></a>        <span class="st">"states"</span>: distinct(<span class="st">"STATE_NAME"</span>),</span>
+<span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a>        <span class="st">"first"</span>: <span class="bu">min</span>(dates).isoformat() <span class="cf">if</span> dates <span class="cf">else</span> <span class="st">"n/a"</span>,</span>
+<span id="cb25-37"><a href="#cb25-37" aria-hidden="true" tabindex="-1"></a>        <span class="st">"last"</span>: <span class="bu">max</span>(dates).isoformat() <span class="cf">if</span> dates <span class="cf">else</span> <span class="st">"n/a"</span>,</span>
+<span id="cb25-38"><a href="#cb25-38" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb25-39"><a href="#cb25-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-40"><a href="#cb25-40" aria-hidden="true" tabindex="-1"></a>s2, s3 <span class="op">=</span> export_profile(STEP2_EXPORT), export_profile(STEP3_EXPORT)</span>
+<span id="cb25-41"><a href="#cb25-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-42"><a href="#cb25-42" aria-hidden="true" tabindex="-1"></a><span class="co"># (label, key, kind, note). "count" gets a difference and a percent change, "date" does not.</span></span>
+<span id="cb25-43"><a href="#cb25-43" aria-hidden="true" tabindex="-1"></a>MEASURES <span class="op">=</span> [</span>
+<span id="cb25-44"><a href="#cb25-44" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Rows in the export"</span>, <span class="st">"rows"</span>, <span class="st">"count"</span>,</span>
+<span id="cb25-45"><a href="#cb25-45" aria-hidden="true" tabindex="-1"></a>     <span class="st">"Every Insurance NAICS 5241 posting in that step."</span>),</span>
+<span id="cb25-46"><a href="#cb25-46" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Columns"</span>, <span class="st">"cols"</span>, <span class="st">"count"</span>,</span>
+<span id="cb25-47"><a href="#cb25-47" aria-hidden="true" tabindex="-1"></a>     <span class="st">"Identical by design: the same 34 columns in the same order."</span>),</span>
+<span id="cb25-48"><a href="#cb25-48" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Flagged IS_DATA_ROLE_MATCH"</span>, <span class="st">"flagged"</span>, <span class="st">"count"</span>,</span>
+<span id="cb25-49"><a href="#cb25-49" aria-hidden="true" tabindex="-1"></a>     <span class="st">"Same regex in both files, including the ' bi ' term, so these are directly comparable."</span>),</span>
+<span id="cb25-50"><a href="#cb25-50" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Rows with SALARY_FROM"</span>, <span class="st">"salary"</span>, <span class="st">"count"</span>,</span>
+<span id="cb25-51"><a href="#cb25-51" aria-hidden="true" tabindex="-1"></a>     <span class="st">"Salary present anywhere in the Insurance panel."</span>),</span>
+<span id="cb25-52"><a href="#cb25-52" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Flagged rows with SALARY_FROM"</span>, <span class="st">"flagged_salary"</span>, <span class="st">"count"</span>,</span>
+<span id="cb25-53"><a href="#cb25-53" aria-hidden="true" tabindex="-1"></a>     <span class="st">"The number that matters: data-role postings we can actually analyse pay for."</span>),</span>
+<span id="cb25-54"><a href="#cb25-54" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Rows with MIN_YEARS_EXPERIENCE"</span>, <span class="st">"minyears"</span>, <span class="st">"count"</span>,</span>
+<span id="cb25-55"><a href="#cb25-55" aria-hidden="true" tabindex="-1"></a>     <span class="st">"Empty in Step 2, so experience analysis was impossible on the old data."</span>),</span>
+<span id="cb25-56"><a href="#cb25-56" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Rows with SKILLS_NAME"</span>, <span class="st">"skills"</span>, <span class="st">"count"</span>,</span>
+<span id="cb25-57"><a href="#cb25-57" aria-hidden="true" tabindex="-1"></a>     <span class="st">"Fully populated in Step 3."</span>),</span>
+<span id="cb25-58"><a href="#cb25-58" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Distinct COMPANY_NAME"</span>, <span class="st">"companies"</span>, <span class="st">"count"</span>,</span>
+<span id="cb25-59"><a href="#cb25-59" aria-hidden="true" tabindex="-1"></a>     <span class="st">"UNEXPLAINED: Step 3 has more rows but far fewer employers, so the new data is more "</span></span>
+<span id="cb25-60"><a href="#cb25-60" aria-hidden="true" tabindex="-1"></a>     <span class="st">"concentrated. Check before describing either as 'the market'."</span>),</span>
+<span id="cb25-61"><a href="#cb25-61" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Distinct STATE_NAME"</span>, <span class="st">"states"</span>, <span class="st">"count"</span>,</span>
+<span id="cb25-62"><a href="#cb25-62" aria-hidden="true" tabindex="-1"></a>     <span class="st">"UNEXPLAINED: 51 is clean (states plus DC), 97 is not a real state count, so Step 2's "</span></span>
+<span id="cb25-63"><a href="#cb25-63" aria-hidden="true" tabindex="-1"></a>     <span class="st">"field probably holds combined or multi-value entries. Check before mapping it."</span>),</span>
+<span id="cb25-64"><a href="#cb25-64" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"First posting date"</span>, <span class="st">"first"</span>, <span class="st">"date"</span>,</span>
+<span id="cb25-65"><a href="#cb25-65" aria-hidden="true" tabindex="-1"></a>     <span class="st">"Different time window, not just a bigger sample."</span>),</span>
+<span id="cb25-66"><a href="#cb25-66" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Last posting date"</span>, <span class="st">"last"</span>, <span class="st">"date"</span>,</span>
+<span id="cb25-67"><a href="#cb25-67" aria-hidden="true" tabindex="-1"></a>     <span class="st">"Different time window, not just a bigger sample."</span>),</span>
+<span id="cb25-68"><a href="#cb25-68" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb25-69"><a href="#cb25-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-70"><a href="#cb25-70" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> variance_row(label, key, kind, note):</span>
+<span id="cb25-71"><a href="#cb25-71" aria-hidden="true" tabindex="-1"></a>    a, b <span class="op">=</span> s2[key], s3[key]</span>
+<span id="cb25-72"><a href="#cb25-72" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> kind <span class="op">==</span> <span class="st">"date"</span>:</span>
+<span id="cb25-73"><a href="#cb25-73" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> [label, a, b, <span class="st">"n/a"</span>, <span class="st">"n/a"</span>, note]</span>
+<span id="cb25-74"><a href="#cb25-74" aria-hidden="true" tabindex="-1"></a>    diff <span class="op">=</span> b <span class="op">-</span> a</span>
+<span id="cb25-75"><a href="#cb25-75" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> a <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb25-76"><a href="#cb25-76" aria-hidden="true" tabindex="-1"></a>        change <span class="op">=</span> <span class="st">"n/a (Step 2 is zero)"</span></span>
+<span id="cb25-77"><a href="#cb25-77" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb25-78"><a href="#cb25-78" aria-hidden="true" tabindex="-1"></a>        change <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>(b <span class="op">-</span> a) <span class="op">/</span> a <span class="op">*</span> <span class="dv">100</span><span class="sc">:+.1f}</span><span class="ss">%"</span></span>
+<span id="cb25-79"><a href="#cb25-79" aria-hidden="true" tabindex="-1"></a>    share <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb25-80"><a href="#cb25-80" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> key <span class="kw">in</span> (<span class="st">"flagged"</span>, <span class="st">"salary"</span>, <span class="st">"minyears"</span>, <span class="st">"skills"</span>):</span>
+<span id="cb25-81"><a href="#cb25-81" aria-hidden="true" tabindex="-1"></a>        share <span class="op">=</span> <span class="ss">f" Share of rows: </span><span class="sc">{</span>a <span class="op">/</span> s2[<span class="st">'rows'</span>] <span class="op">*</span> <span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">% to </span><span class="sc">{</span>b <span class="op">/</span> s3[<span class="st">'rows'</span>] <span class="op">*</span> <span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">%."</span></span>
+<span id="cb25-82"><a href="#cb25-82" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [label, a, b, <span class="ss">f"</span><span class="sc">{</span>diff<span class="sc">:+,}</span><span class="ss">"</span>, change, note <span class="op">+</span> share]</span>
+<span id="cb25-83"><a href="#cb25-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-84"><a href="#cb25-84" aria-hidden="true" tabindex="-1"></a>variance <span class="op">=</span> [variance_row(<span class="op">*</span>m) <span class="cf">for</span> m <span class="kw">in</span> MEASURES]</span>
+<span id="cb25-85"><a href="#cb25-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-86"><a href="#cb25-86" aria-hidden="true" tabindex="-1"></a>var_path <span class="op">=</span> OUT_DIR <span class="op">/</span> <span class="st">"variance_analysis_step2_vs_step3.csv"</span></span>
+<span id="cb25-87"><a href="#cb25-87" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(var_path, <span class="st">"w"</span>, newline<span class="op">=</span><span class="st">""</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>) <span class="im">as</span> f:</span>
+<span id="cb25-88"><a href="#cb25-88" aria-hidden="true" tabindex="-1"></a>    w <span class="op">=</span> csv.writer(f)</span>
+<span id="cb25-89"><a href="#cb25-89" aria-hidden="true" tabindex="-1"></a>    w.writerow([<span class="st">"measure"</span>, <span class="st">"step2_export"</span>, <span class="st">"step3_export"</span>, <span class="st">"difference"</span>, <span class="st">"percent_change"</span>, <span class="st">"note"</span>])</span>
+<span id="cb25-90"><a href="#cb25-90" aria-hidden="true" tabindex="-1"></a>    w.writerows(variance)</span>
+<span id="cb25-91"><a href="#cb25-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-92"><a href="#cb25-92" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="st">'Measure'</span><span class="sc">:&lt;34}{</span><span class="st">'STEP 2'</span><span class="sc">:&gt;14}{</span><span class="st">'STEP 3'</span><span class="sc">:&gt;14}{</span><span class="st">'DIFF'</span><span class="sc">:&gt;12}</span><span class="ss">"</span>)</span>
+<span id="cb25-93"><a href="#cb25-93" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">74</span>)</span>
+<span id="cb25-94"><a href="#cb25-94" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> label, a, b, diff, change, _ <span class="kw">in</span> variance:</span>
+<span id="cb25-95"><a href="#cb25-95" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>label<span class="sc">:&lt;34}{</span><span class="bu">str</span>(a)<span class="sc">:&gt;14}{</span><span class="bu">str</span>(b)<span class="sc">:&gt;14}{</span>diff<span class="sc">:&gt;12}</span><span class="ss">"</span>)</span>
+<span id="cb25-96"><a href="#cb25-96" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Saved:"</span>, var_path)</span>
+<span id="cb25-97"><a href="#cb25-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-98"><a href="#cb25-98" aria-hidden="true" tabindex="-1"></a><span class="co"># Both files must have the identical schema, or this comparison is not like for like.</span></span>
+<span id="cb25-99"><a href="#cb25-99" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> s2[<span class="st">"cols"</span>] <span class="op">==</span> s3[<span class="st">"cols"</span>] <span class="op">==</span> <span class="dv">34</span>, <span class="st">"The two exports no longer share the 34-column schema."</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Measure                                   STEP 2        STEP 3        DIFF
+--------------------------------------------------------------------------
+Rows in the export                          1895          1908         +13
+Columns                                       34            34          +0
+Flagged IS_DATA_ROLE_MATCH                    27           621        +594
+Rows with SALARY_FROM                        472          1281        +809
+Flagged rows with SALARY_FROM                  5           416        +411
+Rows with MIN_YEARS_EXPERIENCE                 0          1622      +1,622
+Rows with SKILLS_NAME                       1271          1908        +637
+Distinct COMPANY_NAME                        873           126        -747
+Distinct STATE_NAME                           97            51         -46
+First posting date                    2026-02-04    2024-05-01         n/a
+Last posting date                     2026-07-17    2024-09-30         n/a
+
+Saved: /home/ubuntu/ad688/outputs/step3/variance_analysis_step2_vs_step3.csv</code></pre>
+</div>
+</div>
+</section>
+<section id="what-this-run-produced" class="level2">
+<h2 class="anchored" data-anchor-id="what-this-run-produced">9. What this run produced</h2>
+<ul>
+<li><code>outputs/step3/insurance_5241_all_postings_step3.csv</code> and <code>.xlsx</code>, 1,908 insurance postings in the same 34 columns as Step 2. This is the file the rest of the project works from.</li>
+<li>A verified Parquet copy in <code>data/Lightcast_JobPostings_2024/</code>, gitignored, never shared through git. Named for what the data is and the year it covers, the same way <code>MET_CareerCompass_2026</code> is.</li>
+<li><code>outputs/step3/data_dictionary.csv</code>, all 131 columns and how often each is filled in.</li>
+<li><code>outputs/step3/comparison_old_vs_new.csv</code>, the raw dataset counts from section 6.</li>
+<li><code>outputs/step3/variance_analysis_step2_vs_step3.csv</code>, the export against export comparison from section 8.</li>
+</ul>
+<p>One data note and one decision.</p>
+<p>The source file has 22 rows with no ID, and those same rows have no date, industry code or title either. Spark and the CSV parser agree on that, so it comes from the source and is not something the load did. They are kept so the row count matches the source, and they do not affect any number above.</p>
+<p>On the industry code: we asked the professor and never heard back, so this stays on 5241, the same cut as Step 2. Same query, new data, much stronger results. Keeping it is the easy call.</p>
+<p>Spark gets stopped below to hand the memory back.</p>
+<div id="5c77e7e3" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Release Spark's memory now that we're done with it.</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>spark.stop()</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Spark stopped."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Spark stopped.</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/gheydt\.github\.io\/ad688group3\.github\.io\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
