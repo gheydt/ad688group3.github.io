@@ -24,8 +24,27 @@ same copy with `gdown` (source: Module 3 Lab 2):
 gdown --folder "https://drive.google.com/drive/folders/11uTPfwHiRohl2ljSYeFuo0KKBUP_1vk4?usp=sharing" -O data/MET_CareerCompass_2026
 ```
 
-The notebooks read it from `data/MET_CareerCompass_2026/` and verify the row count against
-`data/MET_CareerCompass_2026/manifest.json` before running.
+The Step 2 notebook reads it from `data/MET_CareerCompass_2026/` and verifies the row count against
+`data/MET_CareerCompass_2026/manifest.json` before running. Step 3 reads it too, but only to compare
+the old numbers against the new ones.
+
+### The Step 3 dataset (2024)
+
+Step 3 uses a different file, from the Module 3 Project instructions: one Lightcast CSV of about
+700 MB covering May to September 2024. Same rule applies, it is not committed and it never will be.
+
+```bash
+gdown 1V2GCHGt2dkFGqVBeoUFckU4IhUgk4ocQ -O data/Lightcast_JobPostings_2024_raw/lightcast_job_postings.csv
+```
+
+You do not have to run that by hand. The Step 3 notebook downloads the file itself if a full-size
+copy is not already there, then checks it before trusting it: format read from the first bytes
+rather than the file extension, size, and a real row count from a CSV parser. That last one matters,
+because job descriptions contain line breaks inside quoted text, so counting lines gives about
+13 million against 72,498 actual rows.
+
+Once it passes, the notebook writes a verified Parquet copy to `data/Lightcast_JobPostings_2024/`.
+Both that folder and the `_raw` one are gitignored.
 
 ## Notebooks
 
@@ -33,5 +52,13 @@ The notebooks read it from `data/MET_CareerCompass_2026/` and verify the row cou
   (Insurance Carriers), and exports the handoff file for the cleaning + baseline step:
   - `../outputs/step2/insurance_5241_all_postings.xlsx`
   - `../outputs/step2/insurance_5241_all_postings.csv`
+
+- `step3_load_dataset.ipynb` - Step 3 (Module 3). Loads the 2024 dataset, checks it before trusting
+  it, saves a verified Parquet copy, and compares the new data against the Step 2 data. Exports the
+  same insurance panel in the same 34 columns as Step 2, so the two line up column for column:
+  - `../outputs/step3/insurance_5241_all_postings_step3.csv`
+
+  It also writes a data dictionary, an old versus new comparison, and a Step 2 against Step 3
+  variance analysis. Those stay local for now and are not in this repo.
 
 Runs on PySpark, matching the graded AWS EC2 environment per the syllabus.
