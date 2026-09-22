@@ -29,9 +29,11 @@ format:
       - brand
     css: styles.css
     toc: true
+    code-fold: true
+    code-summary: "Show code"
 execute:
   echo: true
   eval: true
-  code-fold: true
+  
 
 
