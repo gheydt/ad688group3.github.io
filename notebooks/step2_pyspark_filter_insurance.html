@@ -232,6 +232,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="start-spark-and-load-the-data">1. Start Spark and load the data</h2>
 <p>Spark is the query engine. We point it at the 17 Parquet files and load them as one table.</p>
 <div id="cbc2eb2c" class="cell" data-execution_count="187">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> SparkSession</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -284,6 +286,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows:"</span>, df.count())</span>
 <span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Columns:"</span>, <span class="bu">len</span>(df.columns))</span>
 <span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"SQL table 'jobs' is ready."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Dataset path: /home/ubuntu/ad688group3.github.io/outputs/step2/insurance_5241_all_postings.csv
 Dataset loaded successfully
@@ -297,10 +300,13 @@ SQL table 'jobs' is ready.</code></pre>
 <h2 class="anchored" data-anchor-id="register-the-data-as-a-sql-table">2. Register the data as a SQL table</h2>
 <p>This lets us query the postings with plain SQL and name the table <code>jobs</code>.</p>
 <div id="5c3650a1" class="cell" data-execution_count="188">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Register the DataFrame as a temporary SQL table named "jobs" so the next cell can</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># query it with plain SQL (SELECT / WHERE) instead of PySpark method chains.</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>df.createOrReplaceTempView(<span class="st">"jobs"</span>)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Table 'jobs' is ready to query."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Table 'jobs' is ready to query.</code></pre>
 </div>
@@ -312,6 +318,8 @@ SQL table 'jobs' is ready.</code></pre>
 <p>The one addition is a new column, <code>IS_DATA_ROLE_MATCH</code>, placed right after <code>TITLE_CLEAN</code>: it’s 1 for postings whose title matches our data-role keyword set (data engineer, data scientist, data analyst / BI, data architect / DBA, data governance, ML engineer, etc), and 0 for everything else.</p>
 <p>Sorting or filtering on this column in Excel is how the team can hone in on data roles specifically, without losing the rest of the dataset to work from.</p>
 <div id="c4980457" class="cell" data-execution_count="189">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This is still the full Insurance Carrier (NAICS 5241) slice - every role, nothing</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># filtered out. The only addition is IS_DATA_ROLE_MATCH, a 1/0 flag placed right after</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># TITLE_CLEAN, using our data-role keyword regex. Rows flagged 1 are the data-role subset.</span></span>
@@ -347,6 +355,7 @@ SQL table 'jobs' is ready.</code></pre>
 <span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>insurance.createOrReplaceTempView(<span class="st">"insurance_jobs"</span>)</span>
 <span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Insurance Carrier (NAICS 5241) postings:"</span>, insurance.count())</span>
 <span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows flagged IS_DATA_ROLE_MATCH = 1:"</span>, insurance.<span class="bu">filter</span>(<span class="st">"IS_DATA_ROLE_MATCH = 1"</span>).count())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Insurance Carrier (NAICS 5241) postings: 1895
 Rows flagged IS_DATA_ROLE_MATCH = 1: 27</code></pre>
@@ -357,12 +366,15 @@ Rows flagged IS_DATA_ROLE_MATCH = 1: 27</code></pre>
 <h2 class="anchored" data-anchor-id="see-the-results">4. See the results</h2>
 <p>A preview of the postings, and the most common job titles in this slice so the team can get a feel for what’s in here before deciding how to narrow it down.</p>
 <div id="f1a7f292" class="cell" data-execution_count="190">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Preview the postings, including the new flag, and the most common job titles.</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>insurance.select(<span class="st">"TITLE_RAW"</span>, <span class="st">"TITLE_NAME"</span>, <span class="st">"IS_DATA_ROLE_MATCH"</span>, <span class="st">"COMPANY_NAME"</span>,</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"STATE_NAME"</span>, <span class="st">"REMOTE_TYPE_NAME"</span>, <span class="st">"SALARY_FROM"</span>).show(<span class="dv">30</span>, truncate<span class="op">=</span><span class="va">False</span>)</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Most common job titles (TITLE_NAME), top 25:"</span>)</span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>insurance.groupBy(<span class="st">"TITLE_NAME"</span>).count().orderBy(<span class="st">"count"</span>, ascending<span class="op">=</span><span class="va">False</span>).show(<span class="dv">25</span>, truncate<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>+------------------------------------------------------------------------+------------------------+------------------+---------------------------+---------------------+----------------+-----------+
 |TITLE_RAW                                                               |TITLE_NAME              |IS_DATA_ROLE_MATCH|COMPANY_NAME               |STATE_NAME           |REMOTE_TYPE_NAME|SALARY_FROM|
@@ -437,6 +449,8 @@ only showing top 25 rows</code></pre>
 <h2 class="anchored" data-anchor-id="export-for-the-team-excel-csv">5. Export for the team (Excel + CSV)</h2>
 <p>This is bigger than the 27-row data-role cut (about 1,900 rows), but still small enough to pull into pandas and write out directly.</p>
 <div id="45c927d0" class="cell" data-execution_count="191">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pull the full Insurance Carrier slice into pandas and write it out as both Excel</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># and CSV, so the team has one shared file to review and narrow down from.</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
@@ -452,6 +466,7 @@ only showing top 25 rows</code></pre>
 <span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows exported:"</span>, <span class="bu">len</span>(pdf))</span>
 <span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Excel:"</span>, os.path.abspath(xlsx_path))</span>
 <span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"CSV:  "</span>, os.path.abspath(csv_path))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows exported: 1895
 Excel: /home/ubuntu/ad688group3.github.io/notebooks/outputs/step2/insurance_5241_all_postings.xlsx
@@ -471,6 +486,8 @@ CSV:   /home/ubuntu/ad688group3.github.io/notebooks/outputs/step2/insurance_5241
 <h2 class="anchored" data-anchor-id="core-variable-cleaning-and-market-baseline">7. Core Variable Cleaning and Market Baseline</h2>
 <p>This section continues from the Insurance Carrier (NAICS 5241) dataset prepared above. The analysis focuses on the data-related roles identified by <code>IS_DATA_ROLE_MATCH</code> and cleans the core variables needed for the market baseline analysis.</p>
 <div id="25927488" class="cell" data-execution_count="192">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select the data-related roles identified in the previous filtering step.</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>data_roles_df <span class="op">=</span> spark.sql(<span class="st">"""</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="st">SELECT *</span></span>
@@ -479,6 +496,7 @@ CSV:   /home/ubuntu/ad688group3.github.io/notebooks/outputs/step2/insurance_5241
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>)</span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Data-related postings:"</span>, data_roles_df.count())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Data-related postings: 27</code></pre>
 </div>
@@ -486,6 +504,8 @@ CSV:   /home/ubuntu/ad688group3.github.io/notebooks/outputs/step2/insurance_5241
 <section id="remove-duplicate-job-postings" class="level3">
 <h3 class="anchored" data-anchor-id="remove-duplicate-job-postings">8. Remove Duplicate Job Postings</h3>
 <div id="eb5c73d7" class="cell" data-execution_count="193">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>before <span class="op">=</span> data_roles_df.count()</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>clean_df <span class="op">=</span> data_roles_df.dropDuplicates([<span class="st">"ID"</span>])</span>
@@ -495,6 +515,7 @@ CSV:   /home/ubuntu/ad688group3.github.io/notebooks/outputs/step2/insurance_5241
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows before duplicate removal:"</span>, before)</span>
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows after duplicate removal:"</span>, after)</span>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Duplicates removed:"</span>, before <span class="op">-</span> after)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows before duplicate removal: 27
 Rows after duplicate removal: 27
@@ -506,6 +527,8 @@ Duplicates removed: 0</code></pre>
 <h3 class="anchored" data-anchor-id="clean-and-review-salary-variables">9. Clean and Review Salary Variables</h3>
 <p>Salary fields are reviewed for missing values and pay-period consistency before they are used in the market baseline analysis.</p>
 <div id="bc62db5e" class="cell" data-execution_count="194">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check salary availability and pay-period values</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>clean_df.createOrReplaceTempView(<span class="st">"clean_jobs"</span>)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -529,6 +552,7 @@ Duplicates removed: 0</code></pre>
 <span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="st">FROM clean_jobs</span></span>
 <span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="st">ORDER BY SALARY_FROM DESC</span></span>
 <span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>).show(<span class="dv">27</span>, truncate<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>+-------------------+--------+----------------+--------------+
 |ORIGINAL_PAY_PERIOD|postings|with_salary_from|with_salary_to|
@@ -577,6 +601,8 @@ Duplicates removed: 0</code></pre>
 <h2 class="anchored" data-anchor-id="salary">10. Salary</h2>
 <p>Salary information was available for 5 of the 27 data-related postings. The average annual salary midpoint among those postings was $163,840, with midpoint values ranging from $93,000 to $280,000. Missing salary values were left as missing rather than imputed.</p>
 <div id="37adbfb2" class="cell" data-execution_count="195">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> functions <span class="im">as</span> F</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>clean_df <span class="op">=</span> clean_df.withColumn(</span>
@@ -607,6 +633,7 @@ Duplicates removed: 0</code></pre>
 <span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="st">    ROUND(MAX(ANNUAL_SALARY_MIDPOINT), 2) AS maximum_salary_midpoint</span></span>
 <span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a><span class="st">FROM clean_jobs</span></span>
 <span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>).show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>+---------------------------------------------------------------------------------------------------+-----------+---------+-------------------+----------------------+
 |TITLE_CLEAN                                                                                        |SALARY_FROM|SALARY_TO|ORIGINAL_PAY_PERIOD|ANNUAL_SALARY_MIDPOINT|
@@ -652,6 +679,8 @@ Duplicates removed: 0</code></pre>
 <h3 class="anchored" data-anchor-id="clean-and-review-experience-requirements">11. Clean and Review Experience Requirements</h3>
 <p>Experience requirements were not available in the structured <code>MIN_YEARS_EXPERIENCE</code> or <code>MAX_YEARS_EXPERIENCE</code> fields for any of the 27 data-related postings. Because no structured experience values were available, these fields were retained as missing and excluded from the market baseline calculations.</p>
 <div id="0dc754c3" class="cell" data-execution_count="196">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>clean_df.select(</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"TITLE_CLEAN"</span>,</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MIN_YEARS_EXPERIENCE"</span>,</span>
@@ -667,6 +696,7 @@ Duplicates removed: 0</code></pre>
 <span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="st">    SUM(CASE WHEN MAX_YEARS_EXPERIENCE IS NOT NULL THEN 1 ELSE 0 END) AS with_max_experience</span></span>
 <span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="st">FROM clean_jobs</span></span>
 <span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>).show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>+---------------------------------------------------------------------------------------------------+--------------------+--------------------+
 |TITLE_CLEAN                                                                                        |MIN_YEARS_EXPERIENCE|MAX_YEARS_EXPERIENCE|
@@ -714,6 +744,8 @@ Duplicates removed: 0</code></pre>
 <p>Location fields were reviewed for missing and inconsistent values. The <code>STATE_NAME</code> field contains some non-state labels, so a cleaned state variable is created before geographic analysis. Remote-work categories are retained separately.</p>
 <p>Valid state information was available for only 9 of the 27 data-related postings, so geographic comparisons should be interpreted cautiously. Remote-work information was more complete, with 12 remote postings, 4 hybrid postings, 3 on-site postings, and 8 postings with an unknown work arrangement.</p>
 <div id="e475a338" class="cell" data-execution_count="197">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> functions <span class="im">as</span> F</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>valid_states <span class="op">=</span> [</span>
@@ -766,6 +798,7 @@ Duplicates removed: 0</code></pre>
 <span id="cb21-50"><a href="#cb21-50" aria-hidden="true" tabindex="-1"></a><span class="st">GROUP BY WORK_ARRANGEMENT</span></span>
 <span id="cb21-51"><a href="#cb21-51" aria-hidden="true" tabindex="-1"></a><span class="st">ORDER BY postings DESC</span></span>
 <span id="cb21-52"><a href="#cb21-52" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>).show(truncate<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>+--------------------+--------+
 |CLEAN_STATE         |postings|
@@ -798,6 +831,8 @@ Duplicates removed: 0</code></pre>
 <p>Skill fields are converted from stored list strings into individual skills so that the most frequently requested skills can be identified across the data-related postings.</p>
 <p>General skill information was available for 25 of the 27 data-related postings, and specialized skill information was available for 24 postings. The software-skill and certification fields contained no usable values, so they were excluded from the market baseline analysis.</p>
 <div id="de5d55b8" class="cell" data-execution_count="198">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> functions <span class="im">as</span> F</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.types <span class="im">import</span> ArrayType, StringType</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -838,6 +873,7 @@ Duplicates removed: 0</code></pre>
 <span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a>        F.when(F.size(<span class="st">"CERTIFICATIONS_ARRAY"</span>) <span class="op">&gt;</span> <span class="dv">0</span>, <span class="dv">1</span>).otherwise(<span class="dv">0</span>)</span>
 <span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a>    ).alias(<span class="st">"with_certifications"</span>)</span>
 <span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a>).show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>+--------------+-----------+-----------------------+--------------------+-------------------+
 |total_postings|with_skills|with_specialized_skills|with_software_skills|with_certifications|
@@ -848,6 +884,8 @@ Duplicates removed: 0</code></pre>
 </div>
 </div>
 <div id="702dce09" class="cell" data-execution_count="199">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>total_postings <span class="op">=</span> clean_df.count()</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>top_specialized <span class="op">=</span> (</span>
@@ -866,6 +904,7 @@ Duplicates removed: 0</code></pre>
 <span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>top_specialized.show(<span class="dv">15</span>, truncate<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>+---------------------+-----+-------------------+
 |SPECIALIZED_SKILL    |count|percent_of_postings|
@@ -894,6 +933,8 @@ only showing top 15 rows</code></pre>
 <h3 class="anchored" data-anchor-id="market-baseline-summary">14. Market Baseline Summary</h3>
 <p>The market baseline summarizes the 27 data-related postings identified within Insurance Carriers (NAICS 5241). The baseline focuses on job availability, salary information, work arrangement, geography, and commonly requested skills.</p>
 <div id="26c5ed26" class="cell" data-execution_count="200">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> functions <span class="im">as</span> F</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>total_jobs <span class="op">=</span> clean_df.count()</span>
@@ -923,6 +964,7 @@ only showing top 15 rows</code></pre>
 <span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Remote postings:"</span>, remote_jobs)</span>
 <span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Hybrid postings:"</span>, hybrid_jobs)</span>
 <span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"On-site postings:"</span>, onsite_jobs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>MARKET BASELINE
 ------------------------------
@@ -941,6 +983,8 @@ On-site postings: 3</code></pre>
 <h3 class="anchored" data-anchor-id="market-baseline-visualizations">15. Market Baseline Visualizations</h3>
 <p>The following visualizations summarize work arrangement and the most frequently requested specialized skills among the identified data-related postings.</p>
 <div id="4b996681" class="cell" data-execution_count="201">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>work_arrangement_pd <span class="op">=</span> (</span>
@@ -962,6 +1006,7 @@ On-site postings: 3</code></pre>
 <span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Number of Postings"</span>)</span>
 <span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
 <span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -971,6 +1016,8 @@ On-site postings: 3</code></pre>
 </div>
 </div>
 <div id="bd96a26e" class="cell" data-execution_count="202">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>top_skills_pd <span class="op">=</span> (</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    top_specialized</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    .limit(<span class="dv">10</span>)</span>
@@ -989,6 +1036,7 @@ On-site postings: 3</code></pre>
 <span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Skill"</span>)</span>
 <span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
 <span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -998,6 +1046,8 @@ On-site postings: 3</code></pre>
 </div>
 </div>
 <div id="a90c11b9" class="cell" data-execution_count="203">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save cleaned dataset</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>processed_dir <span class="op">=</span> project_root <span class="op">/</span> <span class="st">"data"</span> <span class="op">/</span> <span class="st">"processed"</span></span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>processed_dir.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
@@ -1013,6 +1063,7 @@ On-site postings: 3</code></pre>
 <span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Cleaned dataset saved to:"</span>, processed_path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Cleaned dataset saved to: /home/ubuntu/ad688group3.github.io/data/processed/insurance_5241_data_roles_cleaned.csv</code></pre>
 </div>
@@ -1027,9 +1078,12 @@ On-site postings: 3</code></pre>
 <p>Structured experience information was unavailable for all 27 postings, and valid state information was available for only a subset of postings. These limitations restrict conclusions about experience requirements and geographic demand.</p>
 <p>When done, stop Spark to free memory:</p>
 <div id="4b93ac39" class="cell" data-execution_count="204">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Release Spark's memory now that we're done with it.</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>spark.stop()</span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Spark stopped."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Spark stopped.</code></pre>
 </div>

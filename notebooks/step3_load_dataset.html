@@ -225,6 +225,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The big files, the 700 MB raw CSV and the Parquet copy, sit under <code>data/</code>. That folder is gitignored and stays that way: it is the course rule and the data is licensed. Only small outputs go to <code>outputs/step3/</code>.</p>
 <p>This cell also sets the keyword net used later to spot data roles, and the list of columns the project cannot work without. The load stops if any of those are missing.</p>
 <div id="2004a6d5" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> csv, sys, os, json</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -280,6 +282,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Raw CSV     :"</span>, RAW_CSV)</span>
 <span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Parquet copy:"</span>, VERIFIED_PARQUET)</span>
 <span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Outputs     :"</span>, OUT_DIR)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Project root: /home/ubuntu/ad688
 Raw CSV     : /home/ubuntu/ad688/data/Lightcast_JobPostings_2024_raw/lightcast_job_postings.csv
@@ -292,6 +295,8 @@ Outputs     : /home/ubuntu/ad688/outputs/step3</code></pre>
 <h2 class="anchored" data-anchor-id="download-the-new-dataset">2. Download the new dataset</h2>
 <p>Pulls the file from Google Drive with <code>gdown</code>. It is about 700 MB, so the cell looks for a full-size copy first and skips the download when one is already there. No sense pulling that down on every run.</p>
 <div id="cedcf91b" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Download only if we do not already have a full-size copy.</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>RAW_DIR.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> RAW_CSV.exists() <span class="kw">and</span> RAW_CSV.stat().st_size <span class="op">&gt;</span> MIN_RAW_BYTES:</span>
@@ -302,6 +307,7 @@ Outputs     : /home/ubuntu/ad688/outputs/step3</code></pre>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>raw_bytes <span class="op">=</span> RAW_CSV.stat().st_size</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"File:"</span>, RAW_CSV.name)</span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Size:"</span>, <span class="ss">f"</span><span class="sc">{</span>raw_bytes<span class="sc">:,}</span><span class="ss"> bytes (</span><span class="sc">{</span>raw_bytes <span class="op">/</span> <span class="dv">1024</span><span class="op">**</span><span class="dv">2</span><span class="sc">:,.0f}</span><span class="ss"> MB)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Already downloaded, skipping the download.
 File: lightcast_job_postings.csv
@@ -320,6 +326,8 @@ Size: 716,669,689 bytes (683 MB)</code></pre>
 </ol>
 <p>The row count from this cell gets reused further down to verify the Spark load, so it is worth getting right rather than eyeballing.</p>
 <div id="dcecd2c6" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) Format by file bytes, not by extension.</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(RAW_CSV, <span class="st">"rb"</span>) <span class="im">as</span> f:</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    head <span class="op">=</span> f.read(<span class="dv">4096</span>)</span>
@@ -340,6 +348,7 @@ Size: 716,669,689 bytes (683 MB)</code></pre>
 <span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) Size check.</span></span>
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> raw_bytes <span class="op">&gt;</span> MIN_RAW_BYTES, <span class="st">"File is too small to be the real dataset."</span></span>
 <span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Size check passed:"</span>, <span class="ss">f"</span><span class="sc">{</span>raw_bytes <span class="op">/</span> <span class="dv">1024</span><span class="op">**</span><span class="dv">2</span><span class="sc">:,.0f}</span><span class="ss"> MB"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Detected format from bytes: csv
 Starts with a byte-order mark (BOM): True
@@ -347,6 +356,8 @@ Size check passed: 683 MB</code></pre>
 </div>
 </div>
 <div id="e62a7046" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) Independent row count with Python's CSV parser (streams the file, low memory).</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#    utf-8-sig strips the BOM. The field-size limit is raised because job descriptions are long.</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>csv.field_size_limit(<span class="dv">2</span><span class="op">**</span><span class="dv">31</span> <span class="op">-</span> <span class="dv">1</span>)</span>
@@ -386,6 +397,7 @@ Size check passed: 683 MB</code></pre>
 <span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Required columns missing   :"</span>, missing <span class="cf">if</span> missing <span class="cf">else</span> <span class="st">"none"</span>)</span>
 <span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> missing, <span class="ss">f"Missing required columns: </span><span class="sc">{</span>missing<span class="sc">}</span><span class="ss">"</span></span>
 <span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> bad_rows <span class="op">==</span> <span class="dv">0</span>, <span class="st">"Some rows have the wrong number of fields."</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Columns in header          : 131
 Rows (CSV parser)          : 72,498
@@ -408,6 +420,8 @@ Required columns missing   : none</code></pre>
 </ul>
 <p>Parquet row groups are set deliberately small. This instance has 908 MB of RAM and the default sizes do not fit in it.</p>
 <div id="49730f19" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>spark <span class="op">=</span> (SparkSession.builder</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>         .appName(<span class="st">"AD688-Step3-LoadDataset"</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>         .master(<span class="st">"local[1]"</span>)</span>
@@ -431,6 +445,7 @@ Required columns missing   : none</code></pre>
 <span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>raw <span class="op">=</span> raw.toDF(<span class="op">*</span>[c.lstrip(<span class="st">"</span><span class="ch">\ufeff</span><span class="st">"</span>).strip() <span class="cf">for</span> c <span class="kw">in</span> raw.columns])</span>
 <span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> raw.columns[<span class="dv">0</span>] <span class="op">==</span> <span class="st">"ID"</span>, <span class="ss">f"First column is </span><span class="sc">{</span>raw<span class="sc">.</span>columns[<span class="dv">0</span>]<span class="sc">!r}</span><span class="ss">, expected 'ID'"</span></span>
 <span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Columns read by Spark:"</span>, <span class="bu">len</span>(raw.columns), <span class="st">"| first column:"</span>, raw.columns[<span class="dv">0</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stderr">
 <pre><code>WARNING: Using incubator modules: jdk.incubator.vector
 Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
@@ -452,6 +467,8 @@ To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLeve
 <p>The Parquet copy lives in <code>data/Lightcast_JobPostings_2024/</code> and is gitignored.</p>
 <p>The cell after that builds a data dictionary: every column, a plain-English grouping, and how often each one is actually filled in. It counts in small batches, because doing all 131 columns in one pass, with the full job description text among them, runs this machine out of memory.</p>
 <div id="3688b0bb" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Write the Parquet copy (Spark parses the whole CSV once here).</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Skipped when a completed copy is already in place, the same way the download is skipped above.</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># The checks below still run on every pass, so the copy is re-verified against the source</span></span>
@@ -484,6 +501,7 @@ To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLeve
 <span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>).collect()[<span class="dv">0</span>].asDict()</span>
 <span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Among the blank-ID rows:"</span>, {k: <span class="bu">int</span>(v <span class="kw">or</span> <span class="dv">0</span>) <span class="cf">for</span> k, v <span class="kw">in</span> blank_profile.items()})</span>
 <span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Verified: the Parquet copy matches the source file."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Parquet copy already in place, skipping the write.
 Rows: CSV parser = 72,498 | Spark (Parquet copy) = 72,498
@@ -494,6 +512,8 @@ Verified: the Parquet copy matches the source file.</code></pre>
 </div>
 </div>
 <div id="e6bb3576" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Data dictionary: every column, a plain-English group, and how many rows have a value.</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> column_group(name):</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Rough plain-English group for a column, based on its name."""</span></span>
@@ -548,6 +568,7 @@ Verified: the Parquet copy matches the source file.</code></pre>
 <span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> dictionary:</span>
 <span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> row[<span class="st">"column"</span>] <span class="kw">in</span> REQUIRED_COLUMNS <span class="op">+</span> [<span class="st">"SKILLS_NAME"</span>, <span class="st">"BODY"</span>]:</span>
 <span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>row[<span class="st">'column'</span>]<span class="sc">:&lt;22}</span><span class="ss"> </span><span class="sc">{</span>row[<span class="st">'percent_filled'</span>]<span class="sc">:&gt;5}</span><span class="ss">%"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Saved: /home/ubuntu/ad688/outputs/step3/data_dictionary.csv (131 columns)
 Required columns, share of rows filled:
@@ -569,6 +590,8 @@ Required columns, share of rows filled:
 <p>“Salary present” means <code>SALARY_FROM</code> has something in it. “Skills populated” means <code>SKILLS_NAME</code> is not blank.</p>
 <p>Worth noting which keyword net this uses. It is the planned one, which leaves out <code>" bi "</code> as a standalone word. Step 2’s flag included it. On the new data that single term pulls in 11 extra postings, 621 instead of 610. On the old data it changes nothing.</p>
 <div id="89a9c95c" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_posted():</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""POSTED as a real date. Handles the new file's M/d/yyyy and the old file's yyyy-MM-dd."""</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> F.coalesce(</span>
@@ -631,6 +654,7 @@ Required columns, share of rows filled:
 <span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> key, label <span class="kw">in</span> labels:</span>
 <span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a>        w.writerow([label.strip(), old[key], newp[key]])</span>
 <span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Saved:"</span>, cmp_csv)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Measure                                                           OLD (Step 2)    NEW (Step 3)
 ----------------------------------------------------------------------------------------------
@@ -649,6 +673,8 @@ Saved: /home/ubuntu/ad688/outputs/step3/comparison_old_vs_new.csv</code></pre>
 </div>
 </div>
 <div id="caa362ee" class="cell" data-execution_count="9">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the results against the numbers the team planned for. Any mismatch stops the notebook.</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>planned <span class="op">=</span> [</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"New total rows"</span>,                              <span class="dv">72_498</span>,       newp[<span class="st">"total_rows"</span>]),</span>
@@ -678,6 +704,7 @@ Saved: /home/ubuntu/ad688/outputs/step3/comparison_old_vs_new.csv</code></pre>
 <span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>text_max <span class="op">=</span> new.agg(F.<span class="bu">max</span>(<span class="st">"POSTED"</span>)).collect()[<span class="dv">0</span>][<span class="dv">0</span>]</span>
 <span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">POSTED sorted as text gives a last value of </span><span class="sc">{</span>text_max<span class="sc">!r}</span><span class="ss"> (misleading: '9/9/2024' sorts after '9/30/2024')."</span>)</span>
 <span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"POSTED read as real dates gives a last value of </span><span class="sc">{</span>newp[<span class="st">'posted_last'</span>]<span class="sc">}</span><span class="ss">."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>PASS     New total rows                                 expected       72,498   got       72,498
 PASS     Old total rows                                 expected      165,386   got      165,386
@@ -702,10 +729,13 @@ POSTED read as real dates gives a last value of 2024-09-30.</code></pre>
 <p>Same filter, new data, and the thin-data problem from Step 2 is gone. Step 2 gave 27 matching postings with a salary on 5 of them, which is not enough to build anything on. The new data gives hundreds, with salary on most of them.</p>
 <p>The catch is the window. The postings moved from 2026 back to 2024, so this is a different period rather than a bigger sample of the same one. That needs saying out loud any time these numbers get quoted.</p>
 <div id="ae10b1aa" class="cell" data-execution_count="10">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Data-role postings in Insurance : </span><span class="sc">{</span>old[<span class="st">'insurance_data_role_rows'</span>]<span class="sc">:,}</span><span class="ss"> (old)  -&gt;  </span><span class="sc">{</span>newp[<span class="st">'insurance_data_role_rows'</span>]<span class="sc">:,}</span><span class="ss"> (new)"</span>)</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Strict data engineer titles      : </span><span class="sc">{</span>old[<span class="st">'insurance_strict_data_engineer_rows'</span>]<span class="sc">:,}</span><span class="ss"> (old)  -&gt;  </span><span class="sc">{</span>newp[<span class="st">'insurance_strict_data_engineer_rows'</span>]<span class="sc">:,}</span><span class="ss"> (new)"</span>)</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Data-role postings with a salary : </span><span class="sc">{</span>old[<span class="st">'data_role_with_salary'</span>]<span class="sc">:,}</span><span class="ss"> of </span><span class="sc">{</span>old[<span class="st">'insurance_data_role_rows'</span>]<span class="sc">:,}</span><span class="ss"> (old)  -&gt;  </span><span class="sc">{</span>newp[<span class="st">'data_role_with_salary'</span>]<span class="sc">:,}</span><span class="ss"> of </span><span class="sc">{</span>newp[<span class="st">'insurance_data_role_rows'</span>]<span class="sc">:,}</span><span class="ss"> (new)"</span>)</span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Posting dates                    : </span><span class="sc">{</span>old[<span class="st">'posted_first'</span>]<span class="sc">}</span><span class="ss"> to </span><span class="sc">{</span>old[<span class="st">'posted_last'</span>]<span class="sc">}</span><span class="ss"> (old)  -&gt;  </span><span class="sc">{</span>newp[<span class="st">'posted_first'</span>]<span class="sc">}</span><span class="ss"> to </span><span class="sc">{</span>newp[<span class="st">'posted_last'</span>]<span class="sc">}</span><span class="ss"> (new)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Data-role postings in Insurance : 27 (old)  -&gt;  610 (new)
 Strict data engineer titles      : 6 (old)  -&gt;  29 (new)
@@ -720,6 +750,8 @@ Posting dates                    : 2026-01-02 to 2026-07-21 (old)  -&gt;  2024-0
 <p>Step 2 produced <code>insurance_5241_all_postings.csv</code> and <code>.xlsx</code>: every insurance posting, 34 columns, with <code>IS_DATA_ROLE_MATCH</code> sitting directly after <code>TITLE_CLEAN</code>. This builds the same thing from the new data, same columns in the same order, written the same way, so the two can be lined up column for column. The file carries a <code>_step3</code> suffix so it is obvious which step it came from once it leaves this folder.</p>
 <p>The flag is the part to pay attention to. It uses Step 2’s regex exactly, <code>" bi "</code> included. A column with the same name in two files has to mean the same thing in both, otherwise the name lies. The price of that is this file flags 621 rows while section 6 reports 610, since section 6 uses the planned net without that term. Both numbers are right. They answer different questions.</p>
 <div id="12dcc84a" class="cell" data-execution_count="11">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the Insurance panel in the same shape as the Step 2 export.</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># The flag uses the Step 2 regex exactly, including " bi " (BI as a separate word), so that</span></span>
@@ -773,6 +805,7 @@ Posting dates                    : 2026-01-02 to 2026-07-21 (old)  -&gt;  2024-0
 <span id="cb22-51"><a href="#cb22-51" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(STEP2_COLUMNS) <span class="op">==</span> <span class="dv">34</span>, <span class="st">"The Step 2 export has 34 columns."</span></span>
 <span id="cb22-52"><a href="#cb22-52" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> flagged <span class="op">==</span> <span class="dv">621</span>, <span class="ss">f"Expected 621 flagged rows with the Step 2 regex, got </span><span class="sc">{</span>flagged<span class="sc">}</span><span class="ss">."</span></span>
 <span id="cb22-53"><a href="#cb22-53" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Matches the Step 2 export: 34 columns, same order, same flag definition."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stderr">
 <pre><code>/home/ubuntu/ad688/.venv/lib/python3.14/site-packages/pyspark/sql/pandas/conversion.py:298: FutureWarning: PySpark does not yet fully support pandas &gt;= 3.0.0. Some features may not work correctly. It is recommended to use pandas &lt; 3.0.0 for now.
   require_minimum_pandas_version()
@@ -825,6 +858,8 @@ Matches the Step 2 export: 34 columns, same order, same flag definition.</code><
 <p>Both exports use the same flag definition, so the flagged counts here are directly comparable. No Spark in this cell, it just reads the two CSVs off disk, so it runs in about a second.</p>
 <p>Two of the measures come out odd: the company count drops hard, and Step 2 reports more distinct states than there are states. Both are marked unexplained rather than written up as findings, because neither has been chased down yet.</p>
 <div id="333b71ae" class="cell" data-execution_count="12">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Variance analysis: the Step 2 export against the Step 3 export, file to file.</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Pure Python, no Spark needed, since both are finished CSVs on disk.</span></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
@@ -924,6 +959,7 @@ Matches the Step 2 export: 34 columns, same order, same flag definition.</code><
 <span id="cb25-97"><a href="#cb25-97" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-98"><a href="#cb25-98" aria-hidden="true" tabindex="-1"></a><span class="co"># Both files must have the identical schema, or this comparison is not like for like.</span></span>
 <span id="cb25-99"><a href="#cb25-99" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> s2[<span class="st">"cols"</span>] <span class="op">==</span> s3[<span class="st">"cols"</span>] <span class="op">==</span> <span class="dv">34</span>, <span class="st">"The two exports no longer share the 34-column schema."</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Measure                                   STEP 2        STEP 3        DIFF
 --------------------------------------------------------------------------
@@ -957,9 +993,12 @@ Saved: /home/ubuntu/ad688/outputs/step3/variance_analysis_step2_vs_step3.csv</co
 <p>On the industry code: we asked the professor and never heard back, so this stays on 5241, the same cut as Step 2. Same query, new data, much stronger results. Keeping it is the easy call.</p>
 <p>Spark gets stopped below to hand the memory back.</p>
 <div id="5c77e7e3" class="cell" data-execution_count="13">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Release Spark's memory now that we're done with it.</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>spark.stop()</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Spark stopped."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Spark stopped.</code></pre>
 </div>
