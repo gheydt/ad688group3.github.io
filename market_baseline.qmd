@@ -1,12 +1,5 @@
 ---
 title: "Market Baseline"
-format:
-  html:
-    toc: true
-execute:
-  echo: true
-  eval: true
-  freeze: auto
 ---
 
 # Market Baseline
