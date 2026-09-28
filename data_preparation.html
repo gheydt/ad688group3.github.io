@@ -45,7 +45,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-3e9b1289f5f353c49b617ce48ad2bc38.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-55617497126496852ff9f5a59253c640.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -138,8 +138,16 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#data-filtering" id="toc-data-filtering" class="nav-link active" data-scroll-target="#data-filtering">Data Filtering</a></li>
+  <li><a href="#core-fields" id="toc-core-fields" class="nav-link" data-scroll-target="#core-fields">Core Fields</a></li>
+  <li><a href="#handling-of-erroneous-data" id="toc-handling-of-erroneous-data" class="nav-link" data-scroll-target="#handling-of-erroneous-data">Handling of Erroneous data</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -163,10 +171,26 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Add information on the Clean Core Variables here</p>
-<p>Specifically: how we handled duplicates, missing values, extreme outliers, and inconsistent labels</p>
+<section id="data-filtering" class="level2">
+<h2 class="anchored" data-anchor-id="data-filtering">Data Filtering</h2>
+<p>To start, we filtered our data to the NAICS code 5241 for the Insurance industry.</p>
+</section>
+<section id="core-fields" class="level2">
+<h2 class="anchored" data-anchor-id="core-fields">Core Fields</h2>
+<p>We added a role match field that has a value of 1 when any of the following phases appear in role titles in order to encompass all Data Engineer roles: - Data Engineer - Analytics Engineer - ETL - Data Pipeline - Data Platform - Big Data - Ml Engineer - Machine Learning Engineer - Data Architect - Database - Data Scientist - Data Science - Data Analyst - Business Intelligence - BI - Data Governance - Data Management</p>
+<p>We included the following as core identifiers and for metadata - ID - POSTED - EXPIRED - DURATION - URL</p>
+<p>We included three versions of titles - TITLE_RAW - TITLE_NAME - TITLE_CLEAN,</p>
+<p>We included the following employer information - COMPANY_NAME - COMPANY_IS_STAFFING - EMPLOYMENT_TYPE_NAME - NAICS_2022_4 - SOC_2021_4_NAME - ONET_NAME</p>
+<p>And the following position details and requirements - MIN_YEARS_EXPERIENCE - MAX_YEARS_EXPERIENCE - IS_INTERNSHIP - MIN_EDULEVELS_NAME - MAX_EDULEVELS_NAME - SALARY - SALARY_FROM - SALARY_TO - ORIGINAL_PAY_PERIOD - REMOTE_TYPE_NAME - LOCATION - CITY_NAME - STATE_NAME - MSA_NAME - SKILLS_NAME - SPECIALIZED_SKILLS_NAME - COMMON_SKILLS_NAME - SOFTWARE_SKILLS_NAME - CERTIFICATIONS_NAME</p>
+</section>
+<section id="handling-of-erroneous-data" class="level2">
+<h2 class="anchored" data-anchor-id="handling-of-erroneous-data">Handling of Erroneous data</h2>
+<p>We deleted any duplicates based on the ID field.</p>
+<p>Missing salary and experience information was left as missing as opposed to fully deleting these records and instead of attempting to impute values.</p>
+<p>Skill fields are converted from stored list strings into individual skills so that the most frequently requested skills can be identified across the data-related postings</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
