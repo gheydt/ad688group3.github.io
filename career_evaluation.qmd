@@ -1,3 +1,17 @@
 ---
 title: "Career Evaluation"
 ---
+
+We selected the career Data Engineer and related positions to be the career pathway we focus our analysis on. We also limited our analysis to the Insurance Industry, specifically the NAICS code of 5241. 
+
+Data Engineer roles are on the rise, with over 150,000 professionals and more than 20,000 new jobs created in the past year (365 Data Science). Data Engineers are responsible for designing, developing, and maintaining systems in addition to infrasture for large volumes of data. This includes processes to collect, store, and transform data into usable databases. This is an essential role in all data-driven organizations. 
+
+The Insurance industry is in a data science boom, as analytics and data science continue to improve predictive modeling and better pricing models. Big data and telematics have greatly increased the factors that Insurance companies can analyze and understand in order to better predict risks, reduce risks, and price accurately.
+
+## Sources
+
+- [Evolution of Data Engineers](https://www.snowflake.com/en/blog/evolution-of-the-data-engineer/)
+- [Data Engineer Job Outlook](https://365datascience.com/career-advice/data-engineer-job-outlook-2025/)
+- [365 Data Science](https://365datascience.com/career-advice/how-to-become-a-data-scientist-in-insurance/)
+- [Discover Data Science](https://www.discoverdatascience.org/industries/insurance/)
+- [The Institutes: Associate in Insurance Data Analytics](https://web.theinstitutes.org/designations/associate-insurance-data-analytics)

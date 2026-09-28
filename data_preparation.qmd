@@ -2,6 +2,76 @@
 title: "Data Preparation"
 ---
 
-Add information on the Clean Core Variables here
+## Data Filtering
 
-Specifically: how we handled duplicates, missing values, extreme outliers, and inconsistent labels
+To start, we filtered our data to the NAICS code 5241 for the Insurance industry.
+
+## Core Fields
+We added a role match field that has a value of 1 when any of the following phases appear in role titles in order to encompass all Data Engineer roles:
+- Data Engineer
+- Analytics Engineer
+- ETL
+- Data Pipeline
+- Data Platform
+- Big Data
+- Ml Engineer
+- Machine Learning Engineer
+- Data Architect
+- Database
+- Data Scientist
+- Data Science
+- Data Analyst
+- Business Intelligence
+- BI
+- Data Governance
+- Data Management
+
+We included the following as core identifiers and for metadata
+- ID
+- POSTED
+- EXPIRED
+- DURATION
+- URL
+
+We included three versions of titles
+- TITLE_RAW
+- TITLE_NAME
+- TITLE_CLEAN,
+
+We included the following employer information
+- COMPANY_NAME
+- COMPANY_IS_STAFFING
+- EMPLOYMENT_TYPE_NAME
+- NAICS_2022_4
+- SOC_2021_4_NAME
+- ONET_NAME
+
+And the following position details and requirements
+- MIN_YEARS_EXPERIENCE
+- MAX_YEARS_EXPERIENCE
+- IS_INTERNSHIP
+- MIN_EDULEVELS_NAME
+- MAX_EDULEVELS_NAME
+- SALARY
+- SALARY_FROM
+- SALARY_TO
+- ORIGINAL_PAY_PERIOD
+- REMOTE_TYPE_NAME
+- LOCATION
+- CITY_NAME
+- STATE_NAME
+- MSA_NAME
+- SKILLS_NAME
+- SPECIALIZED_SKILLS_NAME
+- COMMON_SKILLS_NAME
+- SOFTWARE_SKILLS_NAME
+- CERTIFICATIONS_NAME
+
+
+## Handling of Erroneous data
+
+We deleted any duplicates based on the ID field.
+
+Missing salary and experience information was left as missing as opposed to fully deleting these records and instead of attempting to impute values.
+
+Skill fields are converted from stored list strings into individual skills so that the most frequently requested skills can be identified across the data-related postings
