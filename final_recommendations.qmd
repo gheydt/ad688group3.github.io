@@ -1,3 +1,86 @@
 ---
 title: "Final Recommendations"
 ---
+
+Draft for team review.
+
+## Starting Point
+
+Source: Skill Gap Analysis page. 29 Insurance Data Engineer postings, three self-ratings on a 1 to 5 scale. Gap = market score minus team average.
+
+| Skill | Team average | Postings that list it | Gap | Priority |
+|---|---|---|---|---|
+| Cloud Computing | 1.33 | 93% | 3.67 | High |
+| Python | 1.33 | 86% | 3.67 | High |
+| Spark / PySpark | 1.00 | 62% | 3.00 | High |
+| Git & CI/CD | 2.00 | 93% | 3.00 | High |
+| ETL / Pipelines | 2.67 | 62% | 1.33 | Moderate |
+| SQL | 3.67 | 76% | 0.33 | Low |
+
+Target for every plan below: first skill from its current rating to 3 (Intermediate).
+
+## First Skill Per Person
+
+### Gabriel: Python
+
+- Evidence: rating 1, gap 4. Python is in 86% of postings and PySpark work builds on it.
+- Resource: the official Python Tutorial (docs.python.org/3/tutorial), then the PySpark labs in the course.
+- Action: finish the tutorial sections on control flow, data structures, functions, and modules. Done by Oct 14.
+- Action: turn the project data cleaning step into a plain script that Haben can run and review.
+- Next: ETL / Pipelines (rating 2, lowest on the team, gap 2).
+
+### Genevieve: Cloud (AWS)
+
+- Evidence: rating 1, gap 4. Cloud tools are in 93% of postings.
+- Resource: AWS Academy Cloud Foundations badge (course item, due Oct 7), then AWS Skill Builder, Cloud Practitioner Essentials (free, skillbuilder.aws).
+- Action: launch and stop an EC2 instance and read and write an S3 bucket in the Learner Lab without notes. Done by Oct 14.
+- Next: Python (rating 1, gap 4).
+
+### Haben: Spark / PySpark
+
+- Evidence: rating 1, gap 3. Spark is in 62% of postings. All four of Haben's high-priority gaps are 3, and Spark is the one at the floor.
+- Resource: the Module 5 Spark ML assignment (due Oct 7) and the Apache Spark Quick Start (spark.apache.org/docs/latest/quick-start.html).
+- Action: run the assignment pipeline end to end, then write one page of notes for Gabriel and Genevieve. Done by Oct 14.
+- Next: Git & CI/CD lead (rating 2, gap 3).
+
+### Everyone: Git & CI/CD
+
+- Evidence: all three rate 2, gap 3. Git or CI/CD is in 93% of postings.
+- Rule: every change to the team site goes through a branch and a pull request with one reviewer, starting now.
+- Resource: GitHub Skills (skills.github.com), the introduction course first, then the GitHub Actions course.
+- Done by Oct 12, before the report is submitted.
+
+## Timeline
+
+- Oct 1 to 7: course items due Oct 7 (Spark ML assignment, AWS Academy badge). Pull request rule starts.
+- Oct 8 to 14: report due Oct 12, presentation Oct 14. Each person shows the first-skill action item to the team.
+- Oct 15 to Nov 15: first skills to rating 3. Re-rate Nov 15.
+- Nov 16 to Dec 15: second skills to rating 3. Re-rate Dec 15 and rerun the gap comparison with the same method.
+- Keep the original ratings as the baseline. Store re-ratings in a separate file.
+
+## Covering Each Other's Gaps
+
+Cover goes to the highest current rating on the team.
+
+- Python: Haben (2) reviews Gabriel's and Genevieve's code.
+- Cloud: Haben (2) reviews cloud steps until Genevieve reaches 3.
+- Spark: nobody is above 1. Haben learns it first and teaches it. Run every Spark result on EC2 before it goes in the report.
+- Git: nobody is above 2. Haben leads the pull request process.
+- ETL and SQL: Haben and Genevieve (ETL 3, SQL 4) review Gabriel's work.
+- Insurance knowledge: Genevieve (4; Haben and Gabriel rate 1) reviews all insurance wording in the report.
+
+## Not a Priority
+
+- Databricks, Data Modeling, Databases / Snowflake, Data Quality: gap 0 on the Skill Gap page. Databricks is in 17% of postings.
+- SQL: gap 0.33. No separate plan.
+
+## Limits
+
+- Three self-ratings. No outside check.
+- Market score is the share of 29 postings that list a skill. It does not show the level employers expect.
+- Insurance knowledge is rated but not compared against postings.
+
+## Still to Add for the Final Version
+
+- Role, location, and employer recommendations from the Step 4 analytics (Module 5 requires them).
+- Team contributions.
