@@ -138,8 +138,26 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#starting-point" id="toc-starting-point" class="nav-link active" data-scroll-target="#starting-point">Starting Point</a></li>
+  <li><a href="#first-skill-per-person" id="toc-first-skill-per-person" class="nav-link" data-scroll-target="#first-skill-per-person">First Skill Per Person</a>
+  <ul class="collapse">
+  <li><a href="#gabriel-python" id="toc-gabriel-python" class="nav-link" data-scroll-target="#gabriel-python">Gabriel: Python</a></li>
+  <li><a href="#genevieve-cloud-aws" id="toc-genevieve-cloud-aws" class="nav-link" data-scroll-target="#genevieve-cloud-aws">Genevieve: Cloud (AWS)</a></li>
+  <li><a href="#haben-spark-pyspark" id="toc-haben-spark-pyspark" class="nav-link" data-scroll-target="#haben-spark-pyspark">Haben: Spark / PySpark</a></li>
+  <li><a href="#everyone-git-cicd" id="toc-everyone-git-cicd" class="nav-link" data-scroll-target="#everyone-git-cicd">Everyone: Git &amp; CI/CD</a></li>
+  </ul></li>
+  <li><a href="#timeline" id="toc-timeline" class="nav-link" data-scroll-target="#timeline">Timeline</a></li>
+  <li><a href="#covering-each-others-gaps" id="toc-covering-each-others-gaps" class="nav-link" data-scroll-target="#covering-each-others-gaps">Covering Each Other’s Gaps</a></li>
+  <li><a href="#not-a-priority" id="toc-not-a-priority" class="nav-link" data-scroll-target="#not-a-priority">Not a Priority</a></li>
+  <li><a href="#limits" id="toc-limits" class="nav-link" data-scroll-target="#limits">Limits</a></li>
+  <li><a href="#still-to-add-for-the-final-version" id="toc-still-to-add-for-the-final-version" class="nav-link" data-scroll-target="#still-to-add-for-the-final-version">Still to Add for the Final Version</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -163,8 +181,153 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<p>Draft for team review.</p>
+<section id="starting-point" class="level2">
+<h2 class="anchored" data-anchor-id="starting-point">Starting Point</h2>
+<p>Source: Skill Gap Analysis page. 29 Insurance Data Engineer postings, three self-ratings on a 1 to 5 scale. Gap = market score minus team average.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Skill</th>
+<th>Team average</th>
+<th>Postings that list it</th>
+<th>Gap</th>
+<th>Priority</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Cloud Computing</td>
+<td>1.33</td>
+<td>93%</td>
+<td>3.67</td>
+<td>High</td>
+</tr>
+<tr class="even">
+<td>Python</td>
+<td>1.33</td>
+<td>86%</td>
+<td>3.67</td>
+<td>High</td>
+</tr>
+<tr class="odd">
+<td>Spark / PySpark</td>
+<td>1.00</td>
+<td>62%</td>
+<td>3.00</td>
+<td>High</td>
+</tr>
+<tr class="even">
+<td>Git &amp; CI/CD</td>
+<td>2.00</td>
+<td>93%</td>
+<td>3.00</td>
+<td>High</td>
+</tr>
+<tr class="odd">
+<td>ETL / Pipelines</td>
+<td>2.67</td>
+<td>62%</td>
+<td>1.33</td>
+<td>Moderate</td>
+</tr>
+<tr class="even">
+<td>SQL</td>
+<td>3.67</td>
+<td>76%</td>
+<td>0.33</td>
+<td>Low</td>
+</tr>
+</tbody>
+</table>
+<p>Target for every plan below: first skill from its current rating to 3 (Intermediate).</p>
+</section>
+<section id="first-skill-per-person" class="level2">
+<h2 class="anchored" data-anchor-id="first-skill-per-person">First Skill Per Person</h2>
+<section id="gabriel-python" class="level3">
+<h3 class="anchored" data-anchor-id="gabriel-python">Gabriel: Python</h3>
+<ul>
+<li>Evidence: rating 1, gap 4. Python is in 86% of postings and PySpark work builds on it.</li>
+<li>Resource: the official Python Tutorial (docs.python.org/3/tutorial), then the PySpark labs in the course.</li>
+<li>Action: finish the tutorial sections on control flow, data structures, functions, and modules. Done by Oct 14.</li>
+<li>Action: turn the project data cleaning step into a plain script that Haben can run and review.</li>
+<li>Next: ETL / Pipelines (rating 2, lowest on the team, gap 2).</li>
+</ul>
+</section>
+<section id="genevieve-cloud-aws" class="level3">
+<h3 class="anchored" data-anchor-id="genevieve-cloud-aws">Genevieve: Cloud (AWS)</h3>
+<ul>
+<li>Evidence: rating 1, gap 4. Cloud tools are in 93% of postings.</li>
+<li>Resource: AWS Academy Cloud Foundations badge (course item, due Oct 7), then AWS Skill Builder, Cloud Practitioner Essentials (free, skillbuilder.aws).</li>
+<li>Action: launch and stop an EC2 instance and read and write an S3 bucket in the Learner Lab without notes. Done by Oct 14.</li>
+<li>Next: Python (rating 1, gap 4).</li>
+</ul>
+</section>
+<section id="haben-spark-pyspark" class="level3">
+<h3 class="anchored" data-anchor-id="haben-spark-pyspark">Haben: Spark / PySpark</h3>
+<ul>
+<li>Evidence: rating 1, gap 3. Spark is in 62% of postings. All four of Haben’s high-priority gaps are 3, and Spark is the one at the floor.</li>
+<li>Resource: the Module 5 Spark ML assignment (due Oct 7) and the Apache Spark Quick Start (spark.apache.org/docs/latest/quick-start.html).</li>
+<li>Action: run the assignment pipeline end to end, then write one page of notes for Gabriel and Genevieve. Done by Oct 14.</li>
+<li>Next: Git &amp; CI/CD lead (rating 2, gap 3).</li>
+</ul>
+</section>
+<section id="everyone-git-cicd" class="level3">
+<h3 class="anchored" data-anchor-id="everyone-git-cicd">Everyone: Git &amp; CI/CD</h3>
+<ul>
+<li>Evidence: all three rate 2, gap 3. Git or CI/CD is in 93% of postings.</li>
+<li>Rule: every change to the team site goes through a branch and a pull request with one reviewer, starting now.</li>
+<li>Resource: GitHub Skills (skills.github.com), the introduction course first, then the GitHub Actions course.</li>
+<li>Done by Oct 12, before the report is submitted.</li>
+</ul>
+</section>
+</section>
+<section id="timeline" class="level2">
+<h2 class="anchored" data-anchor-id="timeline">Timeline</h2>
+<ul>
+<li>Oct 1 to 7: course items due Oct 7 (Spark ML assignment, AWS Academy badge). Pull request rule starts.</li>
+<li>Oct 8 to 14: report due Oct 12, presentation Oct 14. Each person shows the first-skill action item to the team.</li>
+<li>Oct 15 to Nov 15: first skills to rating 3. Re-rate Nov 15.</li>
+<li>Nov 16 to Dec 15: second skills to rating 3. Re-rate Dec 15 and rerun the gap comparison with the same method.</li>
+<li>Keep the original ratings as the baseline. Store re-ratings in a separate file.</li>
+</ul>
+</section>
+<section id="covering-each-others-gaps" class="level2">
+<h2 class="anchored" data-anchor-id="covering-each-others-gaps">Covering Each Other’s Gaps</h2>
+<p>Cover goes to the highest current rating on the team.</p>
+<ul>
+<li>Python: Haben (2) reviews Gabriel’s and Genevieve’s code.</li>
+<li>Cloud: Haben (2) reviews cloud steps until Genevieve reaches 3.</li>
+<li>Spark: nobody is above 1. Haben learns it first and teaches it. Run every Spark result on EC2 before it goes in the report.</li>
+<li>Git: nobody is above 2. Haben leads the pull request process.</li>
+<li>ETL and SQL: Haben and Genevieve (ETL 3, SQL 4) review Gabriel’s work.</li>
+<li>Insurance knowledge: Genevieve (4; Haben and Gabriel rate 1) reviews all insurance wording in the report.</li>
+</ul>
+</section>
+<section id="not-a-priority" class="level2">
+<h2 class="anchored" data-anchor-id="not-a-priority">Not a Priority</h2>
+<ul>
+<li>Databricks, Data Modeling, Databases / Snowflake, Data Quality: gap 0 on the Skill Gap page. Databricks is in 17% of postings.</li>
+<li>SQL: gap 0.33. No separate plan.</li>
+</ul>
+</section>
+<section id="limits" class="level2">
+<h2 class="anchored" data-anchor-id="limits">Limits</h2>
+<ul>
+<li>Three self-ratings. No outside check.</li>
+<li>Market score is the share of 29 postings that list a skill. It does not show the level employers expect.</li>
+<li>Insurance knowledge is rated but not compared against postings.</li>
+</ul>
+</section>
+<section id="still-to-add-for-the-final-version" class="level2">
+<h2 class="anchored" data-anchor-id="still-to-add-for-the-final-version">Still to Add for the Final Version</h2>
+<ul>
+<li>Role, location, and employer recommendations from the Step 4 analytics (Module 5 requires them).</li>
+<li>Team contributions.</li>
+</ul>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
