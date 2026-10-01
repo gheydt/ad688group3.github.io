@@ -8,9 +8,7 @@ title: "Market Baseline"
 </style>
 ```
 
-# Market Baseline
-
-This market baseline examines data-related job postings within the Insurance Carrier industry (NAICS 5241). The analysis focuses on job volume, salary, location, experience requirements, work arrangement, hiring patterns, and specialized skills.
+This market baseline examines Data Engineer-related job postings within the Insurance Carrier industry (NAICS 5241). The analysis focuses on job volume, salary, location, experience requirements, work arrangement, hiring patterns, and specialized skills.
 
 It uses the 2024 Insurance Carrier dataset from Step 3 (1,908 postings in total). To match the Skill Gap Analysis page, the dataset was filtered to Data Engineer-related roles: Data Engineering, Analytics Engineer, Data Platform Engineer, ETL Engineer, and Data Warehouse Engineer titles. Every number on this page is calculated from that filtered data.
 
@@ -18,6 +16,7 @@ It uses the 2024 Insurance Carrier dataset from Step 3 (1,908 postings in total)
 #| echo: false
 import pandas as pd
 import json
+import re
 from collections import Counter
 from pathlib import Path
 import matplotlib.pyplot as plt
@@ -40,11 +39,17 @@ plt.rcParams.update({
     "figure.dpi": 130,
     "axes.spines.top": False,
     "axes.spines.right": False,
-    "axes.titlesize": 11,
+    "axes.titlesize": 13,
     "axes.titleweight": "bold",
-    "axes.labelsize": 10,
-    "font.size": 10,
+    "axes.labelsize": 12,
+    "font.size": 12,
+    "xtick.labelsize": 12,
+    "ytick.labelsize": 12,
 })
+
+# Footnote under each chart
+def source_note(fig, text):
+    fig.text(0.01, -0.03, text, fontsize=9.5, color="#555555", va="top")
 ```
 
 ## Load the 2024 Dataset
@@ -87,7 +92,7 @@ n_total = len(all_jobs)
 n = len(df)
 ```
 
-The team identified **`{python} n` data-related postings** from the 2024 Insurance Carrier dataset after applying the project role filter, out of `{python} f"{n_total:,}"` postings in total.
+The team identified **`{python} n` Data Engineer-related postings** from the 2024 Insurance Carrier dataset after applying the project role filter, out of `{python} f"{n_total:,}"` postings in total.
 
 ## Job Volume by Title
 
@@ -128,7 +133,7 @@ print("Average annual salary midpoint:", round(salary_mean))
 print("Range:", round(salary_min), "to", round(salary_max))
 print("Distinct salary values:", n_salary_levels)
 
-fig, ax = plt.subplots(figsize=(8, 4))
+fig, ax = plt.subplots(figsize=(7, 4))
 ax.hist(
     salary_df["SALARY"],
     bins=range(120000, 180000, 10000),
@@ -143,13 +148,13 @@ ax.text(
     4.55,
     f"Median ${salary_median:,.0f}",
     color=DARK,
-    fontsize=9,
+    fontsize=12,
 )
 ax.xaxis.set_major_formatter(FuncFormatter(lambda x, _: f"${x/1000:,.0f}K"))
-ax.set_title(f"Annual Salary Midpoint, Data Engineer-Related Insurance Postings (n = {n_salary})")
+ax.set_title(f"Annual Salary Midpoint, Data Engineer-Related\nInsurance Postings (n = {n_salary})")
 ax.set_xlabel("Annual salary midpoint")
 ax.set_ylabel("Number of postings")
-fig.text(0.01, -0.02, "Source: 2024 Insurance Carrier postings (Step 3), postings that list a salary.", fontsize=8, color="#666666")
+source_note(fig, "Source: 2024 Insurance Carrier postings (Step 3), postings that list a salary.")
 plt.tight_layout()
 plt.show()
 ```
@@ -163,6 +168,17 @@ Salary information was available for **`{python} n_salary` of the `{python} n` p
 
 Only **`{python} n_salary_levels` distinct salary values** appear among those `{python} n_salary` postings, so several postings repeat the same salary range. Because salary information was missing for `{python} n_salary_missing` postings and the remaining sample is small, these results should be interpreted cautiously.
 
+```{python}
+#| echo: false
+# A distinct job = same employer, same title, and same salary (a missing salary counts as one value).
+# Postings that differ only by office location collapse into one job. The charts above and below
+# still use all postings.
+distinct_df = df.drop_duplicates(subset=["COMPANY_NAME", "TITLE_CLEAN", "SALARY"])
+n_distinct = len(distinct_df)
+n_distinct_salary = int(distinct_df["SALARY"].notna().sum())
+distinct_salary_median = distinct_df["SALARY"].median()
+```
+
 ## Location Patterns
 
 ```{python}
@@ -175,14 +191,14 @@ state_counts
 ```{python}
 state_plot = state_counts.sort_values()
 
-fig, ax = plt.subplots(figsize=(8, 4.5))
+fig, ax = plt.subplots(figsize=(7, 4.5))
 bars = ax.barh(state_plot.index, state_plot.values, color=BLUE)
-ax.bar_label(bars, padding=3)
-ax.set_title(f"Postings by State, Data Engineer-Related Insurance Roles (n = {n_state})")
+ax.bar_label(bars, padding=3, fontsize=12)
+ax.set_title(f"Postings by State, Data Engineer-Related\nInsurance Roles (n = {n_state})")
 ax.set_xlabel("Number of postings")
 ax.set_ylabel("")
 ax.set_xlim(0, state_plot.max() + 1)
-fig.text(0.01, -0.02, "Source: 2024 Insurance Carrier postings (Step 3).", fontsize=8, color="#666666")
+source_note(fig, "Source: 2024 Insurance Carrier postings (Step 3).")
 plt.tight_layout()
 plt.show()
 ```
@@ -202,6 +218,32 @@ top_msa_text = ", ".join(top_msa_names[:-1]) + ", and " + top_msa_names[-1]
 
 Valid state information was available for **`{python} n_state` of the `{python} n` postings**, covering **`{python} n_states` states**. `{python} top_states_text` each had the most postings, with **`{python} top_state_n` each**, together accounting for about **`{python} f"{top_states_share:.0f}"`%** of the filtered postings. At the metropolitan-area level, the largest concentrations (`{python} top_msa_n` postings each) were in `{python} top_msa_text`. The state is the location listed on the posting, which may not be where remote work is actually done.
 
+```{python}
+#| echo: false
+lead_emp = df["COMPANY_NAME"].value_counts().index[0]
+lead_emp_df = df[df["COMPANY_NAME"] == lead_emp]
+lead_emp_states = sorted(lead_emp_df["STATE_NAME"].dropna().unique())
+lead_emp_states_text = ", ".join(lead_emp_states[:-1]) + ", and " + lead_emp_states[-1]
+lead_emp_n = len(lead_emp_df)
+lead_emp_state_n = int(lead_emp_df["STATE_NAME"].notna().sum())
+
+# The Hartford, Wisconsin posting and its Hartford, Connecticut twin
+hwi = df[df["CITY_NAME"] == "Hartford, WI"].iloc[0]
+hct = df[
+    (df["CITY_NAME"] == "Hartford, CT")
+    & (df["COMPANY_NAME"] == hwi["COMPANY_NAME"])
+    & (df["TITLE_CLEAN"] == hwi["TITLE_CLEAN"])
+    & (df["SALARY"] == hwi["SALARY"])
+    & (df["MIN_YEARS_EXPERIENCE"] == hwi["MIN_YEARS_EXPERIENCE"])
+]
+assert len(hct) == 1
+n_wi = int(state_counts["Wisconsin"])
+```
+
+The state ranking largely reflects office footprint rather than hiring demand by state. `{python} lead_emp` supplies `{python} lead_emp_n` of the postings and lists the same roles at its offices in `{python} lead_emp_states_text`, so those states rank high mostly because of one employer. In total, the `{python} n` postings are only `{python} n_distinct` distinct jobs (see Limitations).
+
+One `{python} hwi["COMPANY_NAME"]` posting is listed in Hartford, Wisconsin. The same title, salary, and `{python} f"{hwi['MIN_YEARS_EXPERIENCE']:g}"`-year experience requirement also appear in a `{python} hwi["COMPANY_NAME"]` posting for Hartford, Connecticut, which suggests the Wisconsin label is a location error in the source data. The posting is counted as listed, so Wisconsin's count of `{python} n_wi` includes it; it was not reassigned.
+
 ## Experience Requirements
 
 ```{python}
@@ -220,14 +262,14 @@ colors = [BLUE] * len(exp_counts) + [GREY]
 print("Postings with minimum years of experience:", n_exp, "of", n)
 print("Median minimum years required:", exp_median)
 
-fig, ax = plt.subplots(figsize=(8, 4))
+fig, ax = plt.subplots(figsize=(7, 4))
 bars = ax.bar(labels, values, color=colors)
-ax.bar_label(bars, padding=3)
-ax.set_title(f"Minimum Years of Experience Required (n = {n_exp} stated, {n_exp_missing} not stated)")
+ax.bar_label(bars, padding=3, fontsize=12)
+ax.set_title(f"Minimum Years of Experience Required\n(n = {n_exp} stated, {n_exp_missing} not stated)")
 ax.set_xlabel("Minimum years of experience")
 ax.set_ylabel("Number of postings")
 ax.set_ylim(0, max(values) + 1.5)
-fig.text(0.01, -0.02, "Source: 2024 Insurance Carrier postings (Step 3).", fontsize=8, color="#666666")
+source_note(fig, "Source: 2024 Insurance Carrier postings (Step 3).")
 plt.tight_layout()
 plt.show()
 ```
@@ -257,15 +299,15 @@ order = [c for c in ["Remote", "Hybrid Remote", "Not Remote", "Not specified"] i
 vals = [int(remote_counts[c]) for c in order]
 cols = [GREY if c == "Not specified" else BLUE for c in order]
 
-fig, ax = plt.subplots(figsize=(8, 3.5))
+fig, ax = plt.subplots(figsize=(7, 3.8))
 bars = ax.bar(order, vals, color=cols)
-ax.bar_label(bars, padding=3)
+ax.bar_label(bars, padding=3, fontsize=12)
 ax.set_title(f"Work Arrangement Listed in the Posting (n = {n})")
 ax.set_xlabel("Work arrangement")
 ax.set_ylabel("Number of postings")
 ax.set_ylim(0, max(vals) + 2.5)
 ax.yaxis.set_major_locator(MaxNLocator(integer=True))
-fig.text(0.01, -0.02, "Source: 2024 Insurance Carrier postings (Step 3). Not specified: the posting does not state an arrangement.", fontsize=8, color="#666666")
+source_note(fig, "Source: 2024 Insurance Carrier postings (Step 3).\nNot specified: the posting does not state an arrangement.")
 plt.tight_layout()
 plt.show()
 ```
@@ -324,14 +366,14 @@ top_skills_pct = (top_skills / n * 100).sort_values()
 
 print(top_skills_pct.sort_values(ascending=False).round(1))
 
-fig, ax = plt.subplots(figsize=(8, 4.5))
+fig, ax = plt.subplots(figsize=(7, 4.8))
 bars = ax.barh(top_skills_pct.index, top_skills_pct.values, color=BLUE)
-ax.bar_label(bars, labels=[f"{v:.0f}%" for v in top_skills_pct.values], padding=3)
-ax.set_title(f"Top 10 Specialized Skills, Share of Postings (n = {n})")
+ax.bar_label(bars, labels=[f"{v:.0f}%" for v in top_skills_pct.values], padding=3, fontsize=12)
+ax.set_title(f"Top 10 Specialized Skills,\nShare of Postings (n = {n})")
 ax.set_xlabel("Share of postings mentioning the skill (%)")
 ax.set_ylabel("")
 ax.set_xlim(0, 100)
-fig.text(0.01, -0.02, "Source: 2024 Insurance Carrier postings (Step 3), specialized skills field.", fontsize=8, color="#666666")
+source_note(fig, "Source: 2024 Insurance Carrier postings (Step 3), specialized skills field.")
 plt.tight_layout()
 plt.show()
 ```
@@ -343,7 +385,25 @@ def pct(k):
     return f"{sk[k][1] / n * 100:.1f}"
 ```
 
-Skills information was more complete than salary, experience, and work-arrangement information. "Data Engineering" is left out of the chart because it appears in every posting by definition of the role filter.
+```{python}
+#| echo: false
+# This page counts the exact skill label in the specialized skills column. The Skill Gap Analysis
+# page searches all four skill columns for any mention of SQL, which also matches variants.
+sql_label = "SQL (Programming Language)"
+n_sql_label = int(skill_counts[sql_label])
+all_skill_cols = ["SKILLS_NAME", "SPECIALIZED_SKILLS_NAME", "COMMON_SKILLS_NAME", "SOFTWARE_SKILLS_NAME"]
+sql_text = df[all_skill_cols].fillna("").astype(str).agg(" | ".join, axis=1).str.lower()
+n_sql_any = int(sql_text.str.contains(r"\bsql\b|structured query language", regex=True).sum())
+sql_variants = sorted({
+    s for cell in df["SPECIALIZED_SKILLS_NAME"].dropna() for s in json.loads(cell)
+    if re.search(r"\bsql\b|structured query language", s.lower()) and s != sql_label
+})
+sql_variants_text = ", ".join(sql_variants)
+```
+
+Skills information was more complete than salary, experience, and work-arrangement information. "Data Engineering" is left out of the chart because it appears in all `{python} n` postings.
+
+The share for SQL here (`{python} n_sql_label` of `{python} n`, `{python} f"{n_sql_label / n * 100:.0f}"`%) counts only postings tagged with the exact skill "`{python} sql_label`". The Skill Gap Analysis page searches all skill columns for any mention of SQL, which also catches `{python} sql_variants_text`, and so reports a higher share (`{python} n_sql_any` of `{python} n`, `{python} f"{n_sql_any / n * 100:.0f}"`%). Both figures are correct for the method each page uses.
 
 The strongest specialized-skill signals were:
 
@@ -360,6 +420,7 @@ The 2024 Insurance sample contained **`{python} n` Data Engineer-related posting
 Limitations:
 
 - **Small salary sample.** Salary was listed for only `{python} n_salary` of `{python} n` postings, with `{python} n_salary_levels` distinct salary values, so the salary figures are not representative of the entire Insurance Carrier data-job market.
+- **Duplicate listings.** The `{python} n` postings are only `{python} n_distinct` distinct jobs, because employers such as `{python} lead_emp` post the same job at several offices. A distinct job here means the same employer, the same title, and the same salary (a missing salary counts as one value). Among the `{python} n_distinct` distinct jobs, `{python} n_distinct_salary` list a salary, and their median annual salary midpoint is approximately $`{python} f"{distinct_salary_median:,.0f}"`, compared with $`{python} f"{salary_median:,.0f}"` across all postings. The charts above count every posting.
 - **Few employers.** The `{python} n` postings come from `{python} n_employers` employers, and `{python} top_emp` supplies about `{python} f"{top_emp_share:.0f}"`% of them.
 - **Missing experience and work-arrangement information.** Minimum experience was missing for `{python} n_exp_missing` postings and no work arrangement was stated for `{python} n_remote_unspecified`; neither was estimated.
 - **Location is the posting location.** Remote roles may be done from anywhere, so state counts show where the posting is listed, not where work must be done.
