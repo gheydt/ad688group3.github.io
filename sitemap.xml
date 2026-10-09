@@ -2,42 +2,46 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://gheydt.github.io/ad688group3.github.io/market_baseline.html</loc>
-    <lastmod>2026-10-05T21:25:37.513Z</lastmod>
+    <lastmod>2026-10-09T20:41:15.223Z</lastmod>
   </url>
   <url>
     <loc>https://gheydt.github.io/ad688group3.github.io/career_evaluation.html</loc>
-    <lastmod>2026-10-05T21:25:37.512Z</lastmod>
+    <lastmod>2026-10-09T20:41:15.222Z</lastmod>
   </url>
   <url>
     <loc>https://gheydt.github.io/ad688group3.github.io/final_recommendations.html</loc>
-    <lastmod>2026-10-05T21:25:37.512Z</lastmod>
+    <lastmod>2026-10-09T20:41:15.222Z</lastmod>
   </url>
   <url>
     <loc>https://gheydt.github.io/ad688group3.github.io/index.html</loc>
-    <lastmod>2026-10-05T21:25:37.513Z</lastmod>
+    <lastmod>2026-10-09T20:41:15.223Z</lastmod>
   </url>
   <url>
     <loc>https://gheydt.github.io/ad688group3.github.io/notebooks/step3_load_dataset.html</loc>
-    <lastmod>2026-10-05T21:25:37.514Z</lastmod>
+    <lastmod>2026-10-09T20:41:15.224Z</lastmod>
   </url>
   <url>
     <loc>https://gheydt.github.io/ad688group3.github.io/ml_methods.html</loc>
-    <lastmod>2026-10-05T21:25:37.513Z</lastmod>
+    <lastmod>2026-10-09T20:41:15.223Z</lastmod>
+  </url>
+  <url>
+    <loc>https://gheydt.github.io/ad688group3.github.io/notebooks/predictive_modeling.html</loc>
+    <lastmod>2026-10-09T20:41:15.224Z</lastmod>
   </url>
   <url>
     <loc>https://gheydt.github.io/ad688group3.github.io/notebooks/step2_pyspark_filter_insurance.html</loc>
-    <lastmod>2026-10-05T21:25:37.514Z</lastmod>
+    <lastmod>2026-10-09T20:41:15.224Z</lastmod>
   </url>
   <url>
     <loc>https://gheydt.github.io/ad688group3.github.io/introduction.html</loc>
-    <lastmod>2026-10-05T21:25:37.513Z</lastmod>
+    <lastmod>2026-10-09T20:41:15.223Z</lastmod>
   </url>
   <url>
     <loc>https://gheydt.github.io/ad688group3.github.io/data_preparation.html</loc>
-    <lastmod>2026-10-05T21:25:37.512Z</lastmod>
+    <lastmod>2026-10-09T20:41:15.222Z</lastmod>
   </url>
   <url>
     <loc>https://gheydt.github.io/ad688group3.github.io/skill_gap_analysis.html</loc>
-    <lastmod>2026-10-05T21:25:37.530Z</lastmod>
+    <lastmod>2026-10-09T20:41:15.241Z</lastmod>
   </url>
 </urlset>
