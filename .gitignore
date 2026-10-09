@@ -27,4 +27,4 @@ MET_CareerCompass_2026/
 *.parquet
 
 # Jupyter/Quarto build artifacts
-/_site/
+# /_site/
