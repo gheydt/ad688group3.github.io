@@ -1,1 +1,98 @@
 /* css styles */
+
+/* Main headings */
+h1, h2, h3, h4 {
+  color: #1565c0;
+  font-weight: 600;
+}
+
+/* Links */
+a {
+  color: #1e88e5;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #0d47a1;
+  text-decoration: underline;
+}
+
+/* Table of Contents */
+#TOC {
+  background-color: #e3f2fd;
+  border-left: 4px solid #42a5f5;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Navigation bar */
+.navbar {
+  background-color: #1565c0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: #1976d2;
+  border-color: #1976d2;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #1565c0;
+  border-color: #1565c0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(21, 101, 192, 0.3);
+}
+
+/* Cards */
+.card {
+  border-left: 5px solid #42a5f5;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Callout boxes */
+.callout-note {
+  border-left-color: #42a5f5;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Images */
+img {
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+img:hover {
+  transform: scale(1.02);
+}
+
+/* Body */
+body {
+  background-color: #f4f9ff;
+}
+
+/* Main content area */
+.quarto-container,
+.content,
+main {
+  background-color: white;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+/* Section spacing */
+section {
+  margin-bottom: 1.5rem;
+}
