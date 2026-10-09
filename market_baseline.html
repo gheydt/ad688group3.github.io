@@ -219,7 +219,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>It uses the 2024 Insurance Carrier dataset from Step 3 (1,908 postings in total). To match the Skill Gap Analysis page, the dataset was filtered to Data Engineer-related roles: Data Engineering, Analytics Engineer, Data Platform Engineer, ETL Engineer, and Data Warehouse Engineer titles. Every number on this page is calculated from that filtered data.</p>
 <section id="load-the-2024-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="load-the-2024-dataset">Load the 2024 Dataset</h2>
-<div id="7e30e6ac" class="cell" data-execution_count="2">
+<div id="09cbe159" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the 2024 (Step 3) Insurance dataset</span></span>
@@ -261,7 +261,7 @@ Data Engineer-related postings: 29</code></pre>
 </section>
 <section id="job-volume-by-title" class="level2">
 <h2 class="anchored" data-anchor-id="job-volume-by-title">Job Volume by Title</h2>
-<div id="6444190f" class="cell" data-execution_count="4">
+<div id="a9a69417" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>top_titles <span class="op">=</span> (</span>
@@ -291,7 +291,7 @@ Name: count, dtype: int64</code></pre>
 </section>
 <section id="salary-distribution" class="level2">
 <h2 class="anchored" data-anchor-id="salary-distribution">Salary Distribution</h2>
-<div id="aae6d5ef" class="cell" data-execution_count="6">
+<div id="b0e15f87" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>salary_df <span class="op">=</span> df[df[<span class="st">"SALARY"</span>].notna()]</span>
@@ -354,7 +354,7 @@ Distinct salary values: 6</code></pre>
 </section>
 <section id="location-patterns" class="level2">
 <h2 class="anchored" data-anchor-id="location-patterns">Location Patterns</h2>
-<div id="cc8cdee6" class="cell" data-execution_count="9">
+<div id="658ba774" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>state_counts <span class="op">=</span> df[<span class="st">"STATE_NAME"</span>].dropna().value_counts()</span>
@@ -377,7 +377,7 @@ New Jersey     1
 Name: count, dtype: int64</code></pre>
 </div>
 </div>
-<div id="c8cba550" class="cell" data-execution_count="10">
+<div id="260a8d8f" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>state_plot <span class="op">=</span> state_counts.sort_values()</span>
@@ -407,7 +407,7 @@ Name: count, dtype: int64</code></pre>
 </section>
 <section id="experience-requirements" class="level2">
 <h2 class="anchored" data-anchor-id="experience-requirements">Experience Requirements</h2>
-<div id="dc99a81d" class="cell" data-execution_count="13">
+<div id="fc665a65" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>exp <span class="op">=</span> df[<span class="st">"MIN_YEARS_EXPERIENCE"</span>]</span>
@@ -452,7 +452,7 @@ Median minimum years required: 5.0</code></pre>
 </section>
 <section id="remote-vs.-on-site-work" class="level2">
 <h2 class="anchored" data-anchor-id="remote-vs.-on-site-work">Remote vs.&nbsp;On-Site Work</h2>
-<div id="2107aa89" class="cell" data-execution_count="15">
+<div id="834cf802" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>remote_raw <span class="op">=</span> df[<span class="st">"REMOTE_TYPE_NAME"</span>].replace(<span class="st">"[None]"</span>, pd.NA)</span>
@@ -503,7 +503,7 @@ Name: count, dtype: int64</code></pre>
 </section>
 <section id="top-employers" class="level2">
 <h2 class="anchored" data-anchor-id="top-employers">Top Employers</h2>
-<div id="a5260107" class="cell" data-execution_count="17">
+<div id="fd7cedad" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>top_employers <span class="op">=</span> (</span>
@@ -531,7 +531,7 @@ Name: count, dtype: int64</code></pre>
 </section>
 <section id="top-specialized-skills" class="level2">
 <h2 class="anchored" data-anchor-id="top-specialized-skills">Top Specialized Skills</h2>
-<div id="ac17090d" class="cell" data-execution_count="19">
+<div id="f45235dc" class="cell" data-execution_count="19">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>skill_counts <span class="op">=</span> Counter()</span>
@@ -564,9 +564,9 @@ Amazon Web Services              72.4
 SQL (Programming Language)       62.1
 Machine Learning                 58.6
 Computer Science                 55.2
+Domain Knowledge                 51.7
 Emerging Technologies            51.7
 Gitlab                           51.7
-Domain Knowledge                 51.7
 Github                           48.3
 dtype: float64</code></pre>
 </div>
