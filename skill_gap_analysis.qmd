@@ -48,39 +48,35 @@ Development priority was classified as:
 
 A larger gap therefore represents a skill that appears frequently in the analyzed job postings but where the team's current proficiency is comparatively lower.
 
+
 ```{python}
+#| label: calculate-skill-gaps
+#| echo: false
+#| output: false
+from pathlib import Path
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Load team skill ratings
+project_root = Path.cwd()
+# 1. Load team ratings and cleaned job postings
 df_skills = pd.read_csv("data/team_skill_ratings.csv")
 
-# Convert skill-rating columns to numeric values
-skill_columns = df_skills.columns.drop("Name")
-
-df_skills[skill_columns] = df_skills[skill_columns].apply(
-    pd.to_numeric,
-    errors="coerce"
-)
-```
-
-```{python}
-# Load Insurance industry job-posting dataset
 jobs = pd.read_csv(
-    "outputs/step3/insurance_5241_all_postings_step3.csv",
+    project_root
+    / "outputs"
+    / "step3"
+    / "insurance_5241_all_postings_step3.csv",
     low_memory=False
 )
 
-# Structured skill fields used for market-skill analysis
-market_skill_columns = [
-    "SKILLS_NAME",
-    "SPECIALIZED_SKILLS_NAME",
-    "COMMON_SKILLS_NAME",
-    "SOFTWARE_SKILLS_NAME"
-]
 
-# Identify Data Engineer and closely related roles
+skill_columns = df_skills.columns.drop("Name")
+df_skills[skill_columns] = df_skills[skill_columns].apply(
+    pd.to_numeric, errors="coerce"
+)
+
+# 2. Select Data Engineer-related postings
 role_pattern = (
     r"\bdata engineer\b|"
     r"\bdata engineering\b|"
@@ -91,18 +87,18 @@ role_pattern = (
 )
 
 data_engineer_jobs = jobs[
-    jobs["TITLE_CLEAN"]
-    .fillna("")
-    .str.lower()
-    .str.contains(role_pattern, regex=True)
+    jobs["TITLE_CLEAN"].fillna("")
+    .str.contains(role_pattern, case=False, regex=True)
 ].copy()
 
-print(f"Total Insurance postings: {len(jobs):,}")
-print(f"Data Engineer-related postings: {len(data_engineer_jobs):,}")
-```
+# 3. Combine structured skill fields
+market_skill_columns = [
+    "SKILLS_NAME",
+    "SPECIALIZED_SKILLS_NAME",
+    "COMMON_SKILLS_NAME",
+    "SOFTWARE_SKILLS_NAME"
+]
 
-```{python}
-# Combine structured skill fields into one searchable field
 data_engineer_jobs["ALL_SKILLS"] = (
     data_engineer_jobs[market_skill_columns]
     .fillna("")
@@ -111,151 +107,220 @@ data_engineer_jobs["ALL_SKILLS"] = (
     .str.lower()
 )
 
-# Skill-search patterns
+# 4. Define technical skill patterns
 skill_patterns = {
-    "Python":
-        r"\bpython\b",
-
-    "SQL":
-        r"\bsql\b|structured query language",
-
+    "Python": r"\bpython\b",
+    "SQL": r"\bsql\b|structured query language",
     "ETL/ELT & Data Pipelines":
-        r"\betl\b|\belt\b|data pipeline|data pipelines|"
+        r"\betl\b|\belt\b|data pipelines?|"
         r"data integration|data ingestion|airflow|\bdbt\b",
-
     "Cloud Computing":
         r"\baws\b|amazon web services|\bazure\b|"
         r"\bgcp\b|google cloud|cloud computing",
-
     "Spark / PySpark":
         r"\bpyspark\b|apache spark|\bspark\b",
-
-    "Databricks":
-        r"\bdatabricks\b",
-
+    "Databricks": r"\bdatabricks\b",
     "Data Modeling & Warehousing":
         r"data modeling|data modelling|data model|"
-        r"data warehouse|data warehousing|dimensional model|"
-        r"star schema",
-
+        r"data warehouse|data warehousing|dimensional model|star schema",
     "Databases / Snowflake":
         r"\bsnowflake\b|database|postgresql|postgres|"
         r"\bmysql\b|\boracle\b|sql server",
-
     "Git & CI/CD":
         r"\bgit\b|github|gitlab|ci/cd|"
         r"continuous integration|continuous deployment",
-
     "Data Quality & Governance":
         r"data quality|data governance|data lineage|"
         r"metadata management|master data"
 }
-```
 
-```{python}
-# Calculate market demand for each skill
-market_results = []
-
+# 5. Calculate market demand
 total_postings = len(data_engineer_jobs)
 
-for skill, pattern in skill_patterns.items():
-
-    count = (
-        data_engineer_jobs["ALL_SKILLS"]
-        .str.contains(pattern, regex=True, na=False)
-        .sum()
-    )
-
-    percentage = (
-        count / total_postings * 100
-        if total_postings > 0
-        else 0
-    )
-
-    market_results.append({
+market_df = pd.DataFrame([
+    {
         "Skill": skill,
-        "Postings": count,
-        "Market Demand %": round(percentage, 2)
-    })
+        "Postings": int(
+            data_engineer_jobs["ALL_SKILLS"]
+            .str.contains(pattern, regex=True, na=False)
+            .sum()
+        )
+    }
+    for skill, pattern in skill_patterns.items()
+])
 
-market_df = pd.DataFrame(market_results)
+market_df["Market Demand %"] = (
+    market_df["Postings"] / total_postings * 100
+).round(2)
 
-
-# Convert market-demand percentage to 1–5 score
-def market_score(percentage):
-
-    if percentage >= 80:
+# Convert posting frequency into a 1–5 market score
+def market_score(pct):
+    if pct >= 80:
         return 5
-    elif percentage >= 60:
+    if pct >= 60:
         return 4
-    elif percentage >= 40:
+    if pct >= 40:
         return 3
-    elif percentage >= 20:
+    if pct >= 20:
         return 2
-    else:
-        return 1
-
+    return 1
 
 market_df["Market Score"] = (
-    market_df["Market Demand %"]
-    .apply(market_score)
+    market_df["Market Demand %"].apply(market_score)
 )
-```
 
-```{python}
-# Calculate team average for comparable skills
-comparison_skills = list(skill_patterns.keys())
-
-team_average = (
-    df_skills[comparison_skills]
+# 6. Calculate team averages
+team_average_df = (
+    df_skills[list(skill_patterns.keys())]
     .mean()
     .round(2)
+    .rename_axis("Skill")
+    .reset_index(name="Team Average")
 )
 
-team_average_df = team_average.reset_index()
-
-team_average_df.columns = [
-    "Skill",
-    "Team Average"
-]
-
-# Combine team and market results
-skill_gap_df = pd.merge(
-    team_average_df,
-    market_df,
-    on="Skill",
-    how="inner"
+# 7. Combine team and market results
+skill_gap_df = team_average_df.merge(
+    market_df, on="Skill", how="inner"
 )
 
-# Calculate skill gap
 skill_gap_df["Skill Gap"] = (
     skill_gap_df["Market Score"]
     - skill_gap_df["Team Average"]
 ).clip(lower=0).round(2)
 
-
-# Assign development priority
+# 8. Assign development priorities
 def gap_priority(gap):
-
     if gap >= 2:
         return "High"
-    elif gap >= 1:
+    if gap >= 1:
         return "Moderate"
-    else:
-        return "Low"
-
+    return "Low"
 
 skill_gap_df["Priority"] = (
-    skill_gap_df["Skill Gap"]
-    .apply(gap_priority)
+    skill_gap_df["Skill Gap"].apply(gap_priority)
 )
+
+print(f"Total Insurance postings: {len(jobs):,}")
+print(f"Data Engineer-related postings: {len(data_engineer_jobs):,}")
+
+
+# 9. Export Skill Gap Analysis results for Career Evaluation
+from pathlib import Path
+
+output_path = Path("processed/data_engineer_skill_gap_summary.csv")
+output_path.parent.mkdir(parents=True, exist_ok=True)
+
+skill_gap_df.to_csv(output_path, index=False)
+
 ```
+
+
+
+## Team Skill Levels
+
+Each team member assessed their proficiency in Data Engineering-related skills using a 1–5 scale, ranging from Beginner to Expert. These ratings provide the foundation for calculating the team's average proficiency and identifying development priorities.
+
+
+```{python}
+#| label: team-skill-levels
+#| echo: false
+#| output: asis
+
+from IPython.display import HTML, display
+
+# Create a copy without modifying original ratings
+team_table = df_skills.copy()
+
+# Use shorter column names for better readability
+team_table = team_table.rename(columns={
+    "ETL/ELT & Data Pipelines": "ETL / Pipelines",
+    "Cloud Computing": "Cloud",
+    "Spark / PySpark": "Spark",
+    "Data Modeling & Warehousing": "Data Modeling",
+    "Databases / Snowflake": "DB / Snowflake",
+    "Git & CI/CD": "Git / CI-CD",
+    "Data Quality & Governance": "Data Quality",
+    "Insurance Knowledge": "Insurance"
+})
+
+# Style table to match Skill Gap Summary
+team_styled = (
+    team_table.style
+    .hide(axis="index")
+    .set_table_styles([
+        {
+            "selector": "table",
+            "props": [
+                ("border-collapse", "separate"),
+                ("border-spacing", "0"),
+                ("width", "100%"),
+                ("border-radius", "8px"),
+                ("overflow", "hidden"),
+                ("font-size", "13px")
+            ]
+        },
+        {
+            "selector": "th",
+            "props": [
+                ("background-color", "#17324D"),
+                ("color", "#FFFFFF"),
+                ("font-weight", "600"),
+                ("padding", "12px 10px"),
+                ("text-align", "center"),
+                ("white-space", "nowrap")
+            ]
+        },
+        {
+            "selector": "td",
+            "props": [
+                ("padding", "12px 10px"),
+                ("border-bottom", "1px solid #E5E7EB"),
+                ("text-align", "center"),
+                ("color", "#1F2937")
+            ]
+        },
+        {
+            "selector": "tbody tr:nth-child(even)",
+            "props": [
+                ("background-color", "#F3F6FA")
+            ]
+        },
+        {
+            "selector": "tbody tr:nth-child(odd)",
+            "props": [
+                ("background-color", "#FFFFFF")
+            ]
+        },
+        {
+            "selector": "tbody td:first-child",
+            "props": [
+                ("text-align", "left"),
+                ("font-weight", "600"),
+                ("min-width", "140px")
+            ]
+        }
+    ])
+)
+
+# Scrollable container for mobile devices
+table_html = f"""
+<div style="overflow-x: auto; width: 100%; margin: 16px 0;">
+    {team_styled.to_html()}
+</div>
+"""
+
+display(HTML(table_html))
+```
+
+
 
 ## Team Skills vs. Market Demand
 
-The chart compares the team's average proficiency with the market-demand score for each Data Engineering skill. Larger differences between the two bars indicate larger potential skill-development needs.
+The chart compares the team's average proficiency with market demand converted to a 1–5 scale. Market demand reflects how frequently each skill appears in the Data Engineer-related job postings, not the level of proficiency required by employers.
 
 ```{python}
+#| echo: false
+#| output: false
 #| fig-width: 8.2
 #| fig-height: 6
 #| out-width: "95%"
@@ -336,7 +401,7 @@ ax.set_xticklabels(
     fontsize=8
 )
 ax.set_title(
-    "Team vs. Insurance Data Engineer Market Demand",
+    "Team Skills vs. Insurance Data Engineer Market Demand",
     fontsize=13,
     pad=10
 )
@@ -368,19 +433,24 @@ plt.show()
 
 The table below shows the exact **Team Average, Market Demand, Market Score, Skill Gap, and Development Priority** for each skill.
 
+
 ```{python}
+#| label: skill-gap-summary
+#| echo: false
+#| results: asis
+
 display_table = skill_gap_df.copy()
 
-display_table["Skill"] = (
-    display_table["Skill"]
-    .map(short_names)
-)
+# Shorten skill names
+display_table["Skill"] = display_table["Skill"].map(short_names)
 
+# Format market demand
 display_table["Market Demand"] = (
     display_table["Market Demand %"]
     .map(lambda x: f"{x:.0f}%")
 )
 
+# Select and sort columns
 display_table = (
     display_table[
         [
@@ -399,19 +469,82 @@ display_table = (
     .reset_index(drop=True)
 )
 
-display_table.style.hide(axis="index")
+# Custom table style
+table_style = (
+    display_table.style
+    .format({
+        "Team Average": "{:.2f}",
+        "Market Score": "{:.0f}",
+        "Skill Gap": "{:.2f}"
+    })
+    .hide(axis="index")
+    .set_table_styles([
+        {
+            "selector": "table",
+            "props": [
+                ("border-collapse", "separate"),
+                ("border-spacing", "0"),
+                ("width", "100%"),
+                ("border-radius", "10px"),
+                ("overflow", "hidden")
+            ]
+        },
+        {
+            "selector": "th",
+            "props": [
+                ("background-color", "#17324D"),
+                ("color", "#FFFFFF"),
+                ("font-weight", "600"),
+                ("padding", "12px"),
+                ("text-align", "left")
+            ]
+        },
+       {
+    "selector": "td",
+    "props": [
+        ("padding", "10px 12px"),
+        ("border-bottom", "1px solid #E5E7EB"),
+        ("text-align", "left"),
+        ("color", "#1F2937"),
+        ("font-size", "13px")
+    ]
+},
+        {
+            "selector": "tbody tr:nth-child(even)",
+            "props": [
+                ("background-color", "#F3F6FA")
+            ]
+        },
+        {
+            "selector": "tbody tr:nth-child(odd)",
+            "props": [
+                ("background-color", "#FFFFFF")
+            ]
+        }
+    ])
+    .map(
+        lambda value: (
+            "background-color: #FDE8E8; color: #A61B1B; font-weight: 600"
+            if value == "High"
+            else "background-color: #FFF3D6; color: #8A5A00; font-weight: 600"
+            if value == "Moderate"
+            else "background-color: #E4F5EA; color: #176B3A; font-weight: 600"
+        ),
+        subset=["Priority"]
+    )
+)
+
+from IPython.display import HTML, display
+display(HTML(table_style.to_html()))
 ```
+
 
 ## Key Findings
 
-The largest measured skill gaps are in Cloud Computing, Python, Git/CI-CD, and Spark/PySpark. These skills combine strong market demand with relatively low current team proficiency and therefore represent the highest development priorities.
+The Skill Gap Analysis identified several important areas for technical skill development among the team. Cloud Computing and Python showed the largest measured skill gaps (3.67 each), followed by Git/CI-CD and Spark/PySpark (3.00 each). These skills appeared frequently in the analyzed job postings, while the team's current proficiency ratings were relatively low, making them the highest priorities for further development.
 
-ETL/Pipelines shows a moderate gap. Although it appears frequently in the analyzed job postings, the team's current proficiency is stronger than in the highest-priority areas.
+ETL/Pipelines showed a moderate skill gap of 1.67, with market demand of 62% and a team average proficiency of 2.33. In comparison, SQL was one of the team's stronger technical skills, with a team average of 3.33 and a relatively small measured gap of 0.67. Data Quality, Data Modeling, DB/Snowflake, and Databricks showed no measured gaps under the current scoring method. However, a zero gap does not necessarily indicate that the team has mastered these skills or meets every employer's expectations.
 
-The team's SQL proficiency is relatively close to its market-demand score, resulting in only a small measured gap.
+Insurance Knowledge was included in the team's self-assessment but excluded from the quantitative skill-gap comparison because the structured job-posting data did not provide a directly comparable measure of industry-specific knowledge.
 
-Data Quality, Data Modeling, DB/Snowflake, and Databricks show little or no measured team-level gap under this scoring method.
-
-Insurance Knowledge was included in the team's self-assessment but excluded from the quantitative market comparison because the structured job-posting skill fields do not provide a directly comparable measure of Insurance domain knowledge.
-
-Because the market comparison is based on 29 Data Engineer-related postings, the results describe the skills observed in this analyzed sample rather than every Data Engineer position in the broader Insurance job market.
+The analysis was based on 29 Data Engineer-related job postings in the Insurance Carrier industry (NAICS 5241), published between May and September 2024. Market demand was converted into a 1–5 score based on how frequently each skill appeared in the postings, rather than the proficiency level required by employers. Therefore, the calculated skill gaps should be interpreted as indicators of development priorities rather than direct measurements of employer-required proficiency. These findings reflect the analyzed sample and should not be generalized to the entire insurance industry.

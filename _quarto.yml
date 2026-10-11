@@ -1,6 +1,12 @@
 project:
   type: website
 
+
+
+bibliography: references.bib
+csl: csl/econometrica.csl
+
+
 website:
   title: "AD688 Project Group 3: Job Market Analysis"
   navbar:

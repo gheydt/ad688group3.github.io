@@ -2,85 +2,257 @@
 title: "Final Recommendations"
 ---
 
-Draft for team review.
+This section provides career recommendations for students and entry-level applicants pursuing Data Engineering opportunities in the Insurance Carrier industry (NAICS 5241). The recommendations focus on **suitable career pathways, employment locations, potential employers, and technical skill development**.
 
-## Starting Point
+The findings indicate that Data Engineering offers attractive earning potential, but experience requirements and technical skill gaps can make direct entry challenging. Therefore, the recommendations emphasize practical ways to build qualifications, identify relevant opportunities, and prepare for long-term career growth.
 
-Source: Skill Gap Analysis page. 29 Insurance Data Engineer postings, three self-ratings on a 1 to 5 scale. Gap = market score minus team average.
+The recommendations build on the Career Evaluation, Market Baseline, and Skill Gap Analysis findings.
 
-| Skill | Team average | Postings that list it | Gap | Priority |
-|---|---|---|---|---|
-| Cloud Computing | 1.33 | 93% | 3.67 | High |
-| Python | 1.33 | 86% | 3.67 | High |
-| Spark / PySpark | 1.00 | 62% | 3.00 | High |
-| Git & CI/CD | 2.00 | 93% | 3.00 | High |
-| ETL / Pipelines | 2.67 | 62% | 1.33 | Moderate |
-| SQL | 3.67 | 76% | 0.33 | Low |
+## Career Pathways
 
-Target for every plan below: first skill from its current rating to 3 (Intermediate).
+Based on the Career Evaluation and Skill Gap Analysis findings, **entering Data Engineering directly may be challenging for students and entry-level applicants**. The analyzed positions had a median minimum experience requirement of five years, while several important technical skills require further development. Therefore, applicants should consider related entry-level positions that can provide practical experience before transitioning into Data Engineering.
 
-## First Skill Per Person
+**Data Analyst** is a recommended starting point for applicants with existing SQL knowledge. This role can help develop experience in querying databases, cleaning data, preparing reports, and working with business information. It provides a foundation for understanding how organizations use data to support decisions.
 
-### Gabriel: Python
+**Junior Data Engineer** is a more direct career pathway for applicants who have developed foundational Python, SQL, and ETL skills. Entry-level engineering responsibilities can help build experience with data pipelines, databases, and cloud technologies, preparing candidates for more advanced Data Engineering positions.
 
-- Evidence: rating 1, gap 4. Python is in 86% of postings and PySpark work builds on it.
-- Resource: the official Python Tutorial (docs.python.org/3/tutorial), then the PySpark labs in the course.
-- Action: finish the tutorial sections on control flow, data structures, functions, and modules. Done by Oct 14.
-- Action: turn the project data cleaning step into a plain script that Haben can run and review.
-- Next: ETL / Pipelines (rating 2, lowest on the team, gap 2).
+**Business Intelligence (BI) Analyst** is another potential entry-level pathway. This role provides opportunities to strengthen SQL, data modeling, reporting, and data visualization skills while gaining experience working with business stakeholders.
 
-### Genevieve: Cloud (AWS)
+Overall, **Data Analyst and BI Analyst positions are practical starting points, while Junior Data Engineer is the most direct pathway toward a long-term Data Engineering career**. Applicants should prioritize roles that offer opportunities to develop Python, SQL, cloud computing, and data pipeline skills.
 
-- Evidence: rating 1, gap 4. Cloud tools are in 93% of postings.
-- Resource: AWS Academy Cloud Foundations badge (course item, due Oct 7), then AWS Skill Builder, Cloud Practitioner Essentials (free, skillbuilder.aws).
-- Action: launch and stop an EC2 instance and read and write an S3 bucket in the Learner Lab without notes. Done by Oct 14.
-- Next: Python (rating 1, gap 4).
+## Locations
 
-### Haben: Spark / PySpark
+Location is an important consideration for applicants pursuing Data Engineering careers in the Insurance Carrier industry (NAICS 5241). The Market Baseline identified relevant job postings across **10 states**, indicating that opportunities are geographically distributed rather than limited to a single location.
 
-- Evidence: rating 1, gap 3. Spark is in 62% of postings. All four of Haben's high-priority gaps are 3, and Spark is the one at the floor.
-- Resource: the Module 5 Spark ML assignment (due Oct 7) and the Apache Spark Quick Start (spark.apache.org/docs/latest/quick-start.html).
-- Action: run the assignment pipeline end to end, then write one page of notes for Gabriel and Genevieve. Done by Oct 14.
-- Next: Git & CI/CD lead (rating 2, gap 3).
+For entry-level applicants, the recommended approach is to **prioritize locations with the highest concentration of relevant job postings**, while also considering access to internships, related data positions, and professional development opportunities. Areas with multiple potential employers may provide greater flexibility when searching for an initial position or transitioning into Data Engineering.
 
-### Everyone: Git & CI/CD
+Remote work should also be considered when evaluating opportunities. Nine of the 29 analyzed postings explicitly mentioned remote work, while 20 did not specify a work arrangement. Applicants should therefore **explore remote opportunities but verify each position's location and work requirements** before applying.
 
-- Evidence: all three rate 2, gap 3. Git or CI/CD is in 93% of postings.
-- Rule: every change to the team site goes through a branch and a pull request with one reviewer, starting now.
-- Resource: GitHub Skills (skills.github.com), the introduction course first, then the GitHub Actions course.
-- Done by Oct 12, before the report is submitted.
+Overall, applicants should focus on locations where relevant opportunities are available while remaining flexible about relocation, hybrid arrangements, and related entry-level roles. A broader geographic search may increase access to potential career pathways.
 
-## Timeline
+## Employers
 
-- Oct 1 to 7: course items due Oct 7 (Spark ML assignment, AWS Academy badge). Pull request rule starts.
-- Oct 8 to 14: report due Oct 12, presentation Oct 14. Each person shows the first-skill action item to the team.
-- Oct 15 to Nov 15: first skills to rating 3. Re-rate Nov 15.
-- Nov 16 to Dec 15: second skills to rating 3. Re-rate Dec 15 and rerun the gap comparison with the same method.
-- Keep the original ratings as the baseline. Store re-ratings in a separate file.
+The Market Baseline identified **seven employers** advertising Data Engineering and related positions within the Insurance Carrier industry (NAICS 5241). These findings suggest that applicants should consider both the number of available opportunities and the experience requirements when selecting potential employers.
 
-## Covering Each Other's Gaps
+**State Farm** is an important employer to consider because it accounted for approximately **52% of the 29 analyzed job postings**. This indicates a strong presence in the observed job market, although repeated advertisements do not necessarily represent separate vacancies. Applicants should review State Farm's opportunities while paying particular attention to required experience, technical skills, and entry-level eligibility.
 
-Cover goes to the highest current rating on the team.
+Rather than focusing exclusively on one employer, applicants should also explore the other insurance companies represented in the dataset. **A diversified employer search** may provide access to different technologies, work arrangements, and career-development opportunities. Applicants should prioritize organizations offering internships, junior-level positions, or related data roles that provide opportunities to develop practical Data Engineering skills.
 
-- Python: Haben (2) reviews Gabriel's and Genevieve's code.
-- Cloud: Haben (2) reviews cloud steps until Genevieve reaches 3.
-- Spark: nobody is above 1. Haben learns it first and teaches it. Run every Spark result on EC2 before it goes in the report.
-- Git: nobody is above 2. Haben leads the pull request process.
-- ETL and SQL: Haben and Genevieve (ETL 3, SQL 4) review Gabriel's work.
-- Insurance knowledge: Genevieve (4; Haben and Gabriel rate 1) reviews all insurance wording in the report.
+Overall, **State Farm is a priority employer to investigate based on posting volume**, but applicants should compare multiple organizations and focus on positions that align with their current qualifications and long-term career goals.
 
-## Not a Priority
 
-- Databricks, Data Modeling, Databases / Snowflake, Data Quality: gap 0 on the Skill Gap page. Databricks is in 17% of postings.
-- SQL: gap 0.33. No separate plan.
+## Skill Development Priorities
 
-## Limits
+The Skill Gap Analysis identified **Cloud Computing, Python, Git & CI/CD, and Spark / PySpark** as the highest-priority areas for technical development. These skills appeared frequently in the analyzed Data Engineering job postings, while the team's self-reported proficiency remained relatively low. Addressing these gaps would help improve readiness for Data Engineering careers in the Insurance Carrier industry.
 
-- Three self-ratings. No outside check.
-- Market score is the share of 29 postings that list a skill. It does not show the level employers expect.
-- Insurance knowledge is rated but not compared against postings.
+**Python and Cloud Computing** should be primary development priorities because they are important for building data pipelines, automating processing tasks, and managing cloud-based data infrastructure. Applicants should gain practical experience through programming exercises, cloud training, and projects involving data storage and transformation.
 
-## Still to Add for the Final Version
+**Git & CI/CD and Spark / PySpark** should also receive significant attention. Git supports collaboration and version control, while CI/CD practices help automate development workflows. Spark and PySpark provide experience processing larger datasets, making them valuable skills for more advanced Data Engineering responsibilities.
 
-- Role, location, and employer recommendations from the Step 4 analytics (Module 5 requires them).
-- Team contributions.
+Applicants should also strengthen **ETL/ELT and data pipeline development**, while building on their existing SQL knowledge. Combining these skills in practical projects can demonstrate the ability to collect, transform, validate, and manage data.
+
+Overall, the recommended approach is to **prioritize the largest skill gaps, develop hands-on projects, and build a portfolio demonstrating technical proficiency**. This provides a structured path toward stronger qualifications and greater career readiness.
+
+### Team Skill Readiness Matrix
+```{python}
+
+#| label: combined-skill-gap-matrix
+#| echo: false
+#| warning: false
+
+from pathlib import Path
+import pandas as pd
+
+team = pd.read_csv(Path("data/team_skill_ratings.csv"))
+market = pd.read_csv(
+    Path("processed/data_engineer_skill_gap_summary.csv")
+)
+
+# Show highest-priority skills first
+priority_order = {"High": 0, "Moderate": 1, "Low": 2}
+
+matrix = market.copy()
+matrix["_order"] = matrix["Priority"].map(priority_order)
+matrix = matrix.sort_values(
+    ["_order", "Skill Gap"],
+    ascending=[True, False]
+)
+
+members = {
+    "Haben": "Haben Gebre",
+    "Genevieve": "Genevieve Heydt",
+    "Gabriel": "Gabriel Gonzalez Brito"
+}
+
+# Calculate rating and individual gap for each person
+for short_name, full_name in members.items():
+    person = team.loc[
+        team["Name"].str.strip() == full_name
+    ]
+
+    if len(person) != 1:
+        raise ValueError(f"Check team rating name: {full_name}")
+
+    ratings = pd.to_numeric(
+        person.iloc[0][matrix["Skill"].tolist()],
+        errors="raise"
+    ).to_numpy()
+
+    scores = matrix["Market Score"].to_numpy()
+    gaps = (scores - ratings).clip(min=0).astype(int)
+
+    matrix[short_name] = [
+        f"{int(rating)} / {gap}"
+        for rating, gap in zip(ratings, gaps)
+    ]
+
+# Final display columns
+matrix = matrix[
+    [
+        "Skill",
+        "Haben",
+        "Genevieve",
+        "Gabriel",
+        "Team Average",
+        "Market Demand %",
+        "Priority"
+    ]
+].copy()
+
+matrix["Team Average"] = matrix["Team Average"].map("{:.2f}".format)
+matrix["Market Demand %"] = matrix["Market Demand %"].map(
+    lambda x: f"{x:.0f}%"
+)
+
+matrix = matrix.rename(columns={
+    "Team Average": "Team Avg",
+    "Market Demand %": "Postings"
+})
+
+# Color only the Priority labels
+priority_colors = {
+    "High": "#DC2626",
+    "Moderate": "#D97706",
+    "Low": "#15803D"
+}
+
+def color_priority(value):
+    color = priority_colors.get(value, "#1F2937")
+    return f"color: {color}; font-weight: bold;"
+
+styled_matrix = (
+    matrix.style
+    .hide(axis="index")
+    .set_properties(**{
+        "color": "#1F2937",
+        "text-align": "left",
+        "padding": "10px 12px"
+    })
+    .map(color_priority, subset=["Priority"])
+    .set_table_styles([
+        {
+            "selector": "thead th",
+            "props": [
+                ("background-color", "#17324D"),
+                ("color", "#FFFFFF"),
+                ("font-weight", "bold"),
+                ("text-align", "left"),
+                ("padding", "12px 10px")
+            ]
+        },
+        {
+            "selector": "tbody td",
+            "props": [
+                ("padding", "10px 12px"),
+                ("border-bottom", "1px solid #E5E7EB")
+            ]
+        },
+        {
+            "selector": "tbody tr:nth-child(odd) td",
+            "props": [("background-color", "#FFFFFF")]
+        },
+        {
+            "selector": "tbody tr:nth-child(even) td",
+            "props": [("background-color", "#F3F6FA")]
+        },
+        {
+            "selector": "table",
+            "props": [
+                ("border-collapse", "collapse"),
+                ("width", "100%")
+            ]
+        }
+    ])
+)
+
+display(styled_matrix)
+
+from IPython.display import display, Markdown
+
+display(Markdown(
+    "Each team member's score is shown as "
+    "**Skill Rating / Skill Gap**. For example, **2 / 3** means a "
+    "self-assessed skill rating of 2 out of 5 and a calculated gap of 3. "
+    "Larger gaps indicate higher development priorities."
+))
+
+```
+
+### Gabriel — Technical Development Plan
+
+Gabriel should prioritize **Python and Cloud Computing**, where his individual skill gaps are highest, followed by **Spark / PySpark and Git & CI/CD**. His existing intermediate skills in SQL, Data Modeling & Warehousing, Databases / Snowflake, and Data Quality & Governance provide a foundation for developing more advanced Data Engineering capabilities.
+
+He should begin with [DataCamp's Introduction to Python](https://www.datacamp.com/courses/intro-to-python-for-data-science), followed by [Intermediate Python](https://www.datacamp.com/courses/intermediate-python), to strengthen his programming foundation [@datacamp_intro_python; @datacamp_intermediate_python]. He can then apply these skills by developing reusable data-cleaning scripts and an ETL pipeline using Python and SQL. He should also gain practical cloud experience through [AWS Skill Builder](https://skillbuilder.aws/) [@aws_skill_builder] and introductory Amazon S3 and EC2 exercises. As his programming skills improve, he can explore Spark / PySpark and GitHub-based collaboration.
+
+**Development goal:** Build and document an end-to-end Python and SQL data pipeline on GitHub, incorporating cloud storage and progressing toward intermediate proficiency in his highest-priority skills.
+
+### Genevieve — Technical Development Plan
+
+Genevieve should prioritize **Python and Cloud Computing**, where her individual skill gaps are highest, followed by **Spark / PySpark and Git & CI/CD**. Her existing strengths in SQL, ETL/ELT, Data Modeling & Warehousing, Data Quality & Governance, and Insurance Knowledge provide a foundation for developing more advanced Data Engineering skills.
+
+She should begin with [DataCamp's Introduction to Python](https://www.datacamp.com/courses/intro-to-python-for-data-science), followed by [Intermediate Python](https://www.datacamp.com/courses/intermediate-python), to strengthen her programming abilities [@datacamp_intro_python; @datacamp_intermediate_python]. She can continue developing cloud knowledge through [AWS Skill Builder](https://skillbuilder.aws/) [@aws_skill_builder] and hands-on exercises involving Amazon EC2 and S3. With her existing SQL proficiency, [Intermediate SQL](https://www.datacamp.com/courses/intermediate-sql) [@datacamp_intermediate_sql] can provide opportunities to strengthen advanced querying skills. She should also practice integrating Python and SQL into cloud-based data pipelines.
+
+**Development goal:** Build and document a cloud-based data pipeline using Python, AWS, and SQL, demonstrating data ingestion, transformation, and storage while progressing toward intermediate proficiency in her highest-priority skills.
+
+### Haben — Technical Development Plan
+
+Haben should prioritize **Spark / PySpark, Python, Cloud Computing, and Git & CI/CD**, where his individual skill gaps are highest. His existing intermediate skills in SQL and Data Quality & Governance provide a foundation for developing stronger Data Engineering capabilities, particularly in large-scale data processing and cloud-based systems.
+
+He should strengthen his programming skills through [DataCamp's Introduction to Python](https://www.datacamp.com/courses/intro-to-python-for-data-science) and [Intermediate Python](https://www.datacamp.com/courses/intermediate-python) [@datacamp_intro_python; @datacamp_intermediate_python], while advancing his SQL knowledge through [Intermediate SQL](https://www.datacamp.com/courses/intermediate-sql) [@datacamp_intermediate_sql]. Building on his experience from the **Module 5 Spark Machine Learning assignment**, he should develop additional PySpark pipelines using the [Apache Spark documentation](https://spark.apache.org/docs/latest/) [@apache_spark]. He can also expand his cloud experience through hands-on AWS EC2 and S3 projects and use GitHub for version control and collaborative development.
+
+**Development goal:** Build and document an end-to-end data pipeline using Python, PySpark, SQL, and AWS, demonstrating data ingestion, transformation, validation, and cloud-based processing while progressing toward intermediate proficiency in his highest-priority skills.
+
+### Shared Team Development Plan
+
+The Individual Skill Gap Matrix identifies Git & CI/CD as a shared development priority, with all three team members reporting a proficiency level of 2 out of 5 and an individual skill gap of 3. Improving collaboration and version-control practices will help the team develop technical skills that are relevant to professional Data Engineering environments.
+
+The team should use GitHub branches, pull requests, and peer code reviews when collaborating on technical projects. Members can strengthen these skills through GitHub Skills and gradually introduce GitHub Actions to automate basic testing and validation. Each member should also contribute to a shared data pipeline project, applying Python, SQL, PySpark, and cloud technologies while documenting the development process.
+
+
+
+### Development Timeline
+
+The following timeline outlines the team's academic milestones and longer-term skill development goals. Each member aims to reach **Level 3 — Intermediate** in selected high-priority skills.
+
+| Period | Development Activities | Expected Outcome |
+|---|---|---|
+| **October 1–7, 2026** | Complete Spark ML assignment and AWS Academy coursework | Establish technical foundations |
+| **October 8–14, 2026** | Complete the final report (October 12), prepare for the presentation (October 14), and demonstrate initial skill-development activities | Final project submission and presentation |
+| **October 15–November 15, 2026** | Develop first-priority skills through Python, AWS, PySpark, and Git projects | Progress toward Level 3; reassess skills November 15 |
+| **November 16–December 15, 2026** | Strengthen second-priority skills, expand portfolio projects, and continue collaborative development | Reassess skills December 15 and compare results with the baseline |
+
+**Progress Measurement:** Preserve the original team ratings as the baseline and record future assessments separately. Evaluate progress using completed projects, demonstrated technical abilities, and updated self-assessments.
+
+### Collaborative Skill Development
+
+As the project concludes, team members can continue supporting each other's professional development by sharing their existing strengths and knowledge. **Haben** can contribute his intermediate skills in SQL and Data Quality & Governance, while **Genevieve** can share her stronger knowledge of SQL, ETL/ELT, and the insurance industry. **Gabriel** can contribute his strengths in SQL, Data Modeling & Warehousing, Databases / Snowflake, and Data Quality & Governance. Since all three members have beginner-level proficiency in Spark / PySpark, they can continue learning together through practical exercises and shared projects. By maintaining this collaboration beyond the course, the team can **address individual skill gaps, strengthen technical abilities, and improve long-term career readiness**.
+
+## Limitations
+
+The career and skill-development recommendations are based on **29 Data Engineering-related job postings from the Insurance Carrier industry (NAICS 5241)**. Because the sample represents a limited number of employers and positions, the findings may not reflect the entire insurance job market or current hiring conditions.
+
+The Skill Gap Analysis uses **self-reported proficiency ratings from three team members** on a scale of 1 to 5. These ratings have not been independently validated through technical assessments or professional evaluations. Additionally, the market demand scores are derived from how frequently skills appear in job postings, rather than the proficiency levels employers explicitly require. Therefore, the calculated skill gaps should be interpreted as **development indicators, not direct measures of job qualifications**.
+
+Insurance Knowledge was included in the team's self-assessment but excluded from the quantitative Skill Gap Matrix because a comparable market demand score was not available.
+
+The recommended career pathways, locations, and employers are based on the available market evidence and should not be treated as guarantees of employment. Applicants should review current job requirements, verify work arrangements, and consider their individual qualifications when making career decisions.

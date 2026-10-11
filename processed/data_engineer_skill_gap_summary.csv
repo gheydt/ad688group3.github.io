@@ -1,0 +1,11 @@
+Skill,Team Average,Postings,Market Demand %,Market Score,Skill Gap,Priority
+Python,1.33,25,86.21,5,3.67,High
+SQL,3.33,22,75.86,4,0.67,Low
+ETL/ELT & Data Pipelines,2.33,18,62.07,4,1.67,Moderate
+Cloud Computing,1.33,27,93.1,5,3.67,High
+Spark / PySpark,1.0,18,62.07,4,3.0,High
+Databricks,1.0,5,17.24,1,0.0,Low
+Data Modeling & Warehousing,2.67,10,34.48,2,0.0,Low
+Databases / Snowflake,2.0,10,34.48,2,0.0,Low
+Git & CI/CD,2.0,27,93.1,5,3.0,High
+Data Quality & Governance,3.0,12,41.38,3,0.0,Low

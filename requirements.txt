@@ -1,6 +1,12 @@
 pandas
 numpy
 matplotlib
+seaborn
+plotly
 jupyter
 ipykernel
+nbformat
+nbclient
+PyYAML
+jinja2
 pyspark==4.0.0

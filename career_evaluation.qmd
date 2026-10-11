@@ -2,16 +2,199 @@
 title: "Career Evaluation"
 ---
 
-We selected the career Data Engineer and related positions to be the career pathway we focus our analysis on. We also limited our analysis to the Insurance Industry, specifically the NAICS code of 5241. 
 
-Data Engineer roles are on the rise, with over 150,000 professionals and more than 20,000 new jobs created in the past year (365 Data Science). Data Engineers are responsible for designing, developing, and maintaining systems in addition to infrasture for large volumes of data. This includes processes to collect, store, and transform data into usable databases. This is an essential role in all data-driven organizations. 
+This project focuses on **Data Engineering and related career opportunities in the Insurance Carrier industry (NAICS 5241)**. The goal is to evaluate the career's opportunities, challenges, and accessibility for entry-level applicants. The evaluation is based on a combination of job market data, skill gap analysis, and industry trends.
 
-The Insurance industry is in a data science boom, as analytics and data science continue to improve predictive modeling and better pricing models. Big data and telematics have greatly increased the factors that Insurance companies can analyze and understand in order to better predict risks, reduce risks, and price accurately.
 
-## Sources
+Data Engineers design, develop, and maintain the systems and infrastructure needed to collect, store, process, and transform large volumes of data. Their work ensures that organizations have reliable and accessible data for analysis, reporting, and decision-making. As organizations increasingly rely on data-driven operations, Data Engineering has become an important technical career pathway [@snowflake_data_engineer; @datascience_job_outlook].
 
-- [Evolution of Data Engineers](https://www.snowflake.com/en/blog/evolution-of-the-data-engineer/)
-- [Data Engineer Job Outlook](https://365datascience.com/career-advice/data-engineer-job-outlook-2025/)
-- [365 Data Science](https://365datascience.com/career-advice/how-to-become-a-data-scientist-in-insurance/)
-- [Discover Data Science](https://www.discoverdatascience.org/industries/insurance/)
-- [The Institutes: Associate in Insurance Data Analytics](https://web.theinstitutes.org/designations/associate-insurance-data-analytics)
+The insurance industry depends heavily on data to assess risk, develop pricing models, detect fraud, and improve business decisions. Advances in big data analytics and telematics have expanded the information insurers can use to understand customer behavior and evaluate potential risks. As a result, Data Engineering plays an important role in supporting modern insurance operations [@datascience_insurance; @discoverdatascience_insurance].
+
+
+This career evaluation examines salary potential, employment opportunities, experience requirements, and technical skill readiness to assess whether Data Engineering is an attractive and attainable career path for entry-level applicants.
+
+## Career Evaluation Scorecard
+
+The following scorecard provides an overview of Data Engineering career opportunities and entry-level readiness in the Insurance Carrier industry (NAICS 5241).
+
+It highlights six important career factors: salary potential, job availability, work flexibility, experience requirements, technical skill gaps, and existing technical strengths.
+
+Together, these findings help job seekers understand the potential benefits of pursuing Data Engineering and the challenges they may face when entering the profession.
+```{python}
+#| label: career-scorecard
+#| echo: false
+#| warning: false
+
+import pandas as pd
+from IPython.display import display
+
+# Market Baseline findings are recorded below; skill scores load from CSV.
+# Update the market figures if the upstream Market Baseline changes.
+median_salary = 142230          # Annual advertised salary midpoint, 13 postings reporting pay
+posting_count = 29              # Data Engineering-related postings
+estimated_distinct_jobs = 13    # Deduplicated estimate, not verified individual openings
+employer_count = 7
+remote_count = 9                # Explicitly remote
+unspecified_work = 20           # Work arrangement not stated
+median_experience = 5           # Minimum years, among 22 postings reporting experience
+# Load the latest results exported by skill_gap_analysis.qmd.
+from pathlib import Path
+
+skill_gap_path = Path("processed/data_engineer_skill_gap_summary.csv")
+if not skill_gap_path.exists():
+    raise FileNotFoundError(
+        f"Missing {skill_gap_path}. Render skill_gap_analysis.qmd first "
+        "to generate the skill-gap summary."
+    )
+
+skill_gap_df = pd.read_csv(skill_gap_path)
+required_columns = {"Skill", "Skill Gap", "Team Average"}
+missing_columns = required_columns - set(skill_gap_df.columns)
+if missing_columns:
+    raise ValueError(f"Missing skill-gap CSV columns: {sorted(missing_columns)}")
+
+# Map short scorecard labels to the exact names in the skill-gap file.
+skill_labels = {
+    "Python": "Python",
+    "Cloud": "Cloud Computing",
+    "Git / CI-CD": "Git & CI/CD",
+    "Spark / PySpark": "Spark / PySpark",
+}
+
+def skill_row(skill_name):
+    rows = skill_gap_df.loc[skill_gap_df["Skill"] == skill_name]
+    if len(rows) != 1:
+        raise ValueError(
+            f"Expected exactly one row for {skill_name!r} in {skill_gap_path}; "
+            f"found {len(rows)}."
+        )
+    return rows.iloc[0]
+
+skill_gaps = {
+    label: float(skill_row(source_name)["Skill Gap"])
+    for label, source_name in skill_labels.items()
+}
+sql_team_average = float(skill_row("SQL")["Team Average"])
+skill_summary = ", ".join(
+    f"{skill} ({gap:.2f})" for skill, gap in skill_gaps.items()
+)
+
+scorecard = pd.DataFrame([
+    {
+        "Category": "Career Opportunity",
+        "Career Factor": "Salary Potential",
+        "Evidence": f"${median_salary:,.0f} median midpoint",
+        "Evaluation": "Attractive advertised pay",
+    },
+    {
+        "Category": "Career Opportunity",
+        "Career Factor": "Job Availability",
+        "Evidence": f"{estimated_distinct_jobs} estimated distinct jobs; {employer_count} employers",
+        "Evaluation": "Limited observed opportunities",
+    },
+    {
+        "Category": "Career Opportunity",
+        "Career Factor": "Work Flexibility",
+        "Evidence": f"{remote_count} remote; {unspecified_work} unspecified",
+        "Evaluation": "Uncertain flexibility",
+    },
+    {
+        "Category": "Career Readiness",
+        "Career Factor": "Experience Requirements",
+        "Evidence": f"{median_experience}-year median minimum",
+        "Evaluation": "Challenging for beginners",
+    },
+    {
+        "Category": "Career Readiness",
+        "Career Factor": "Technical Skill Gaps",
+        "Evidence": skill_summary,
+        "Evaluation": "Technical development needed",
+    },
+    {
+        "Category": "Career Readiness",
+        "Career Factor": "Existing Technical Strength",
+        "Evidence": f"SQL team average: {sql_team_average:.2f}/5",
+        "Evaluation": "SQL foundation",
+    },
+])
+
+# Display each category once while keeping the individual factors visible.
+display_scorecard = scorecard.copy()
+display_scorecard.loc[
+    display_scorecard["Category"].duplicated(), "Category"
+] = ""
+
+styled_scorecard = (
+    display_scorecard.style
+    .hide(axis="index")
+    .set_properties(**{
+        "color": "#1F2937",
+        "text-align": "left",
+        "padding": "10px 14px",
+    })
+    .set_table_styles([
+        {
+            "selector": "thead th",
+            "props": [
+                ("background-color", "#17324D"),
+                ("color", "#FFFFFF"),
+                ("font-weight", "bold"),
+                ("text-align", "left"),
+                ("padding", "12px 14px"),
+                ("border-bottom", "2px solid #17324D"),
+            ],
+        },
+        {
+            "selector": "tbody td",
+            "props": [
+                ("color", "#1F2937"),
+                ("padding", "10px 14px"),
+                ("border-bottom", "1px solid #E5E7EB"),
+            ],
+        },
+        {
+            "selector": "tbody tr:nth-child(odd) td",
+            "props": [("background-color", "#FFFFFF")],
+        },
+        {
+            "selector": "tbody tr:nth-child(even) td",
+            "props": [("background-color", "#F3F6FA")],
+        },
+        {
+            "selector": "table",
+            "props": [
+                ("border-collapse", "collapse"),
+                ("width", "100%"),
+            ],
+        },
+    ])
+)
+
+display(styled_scorecard)
+```
+
+## Career Opportunities
+
+Data Engineering in the Insurance Carrier industry (NAICS 5241) offers promising earning potential, although job availability and work flexibility present some limitations. The median advertised annual salary midpoint was approximately **$142,230**, suggesting attractive compensation for qualified professionals. However, this figure should not be considered representative of entry-level salaries. The 29 relevant job postings represented approximately **13 estimated distinct positions across seven employers**, indicating that opportunities in the analyzed market were concentrated among a relatively small number of employers.
+
+Work flexibility also remains uncertain. Nine postings explicitly mentioned remote work, while the remaining 20 did not specify a work arrangement. Although remote opportunities exist, the findings do not establish how widely flexible working arrangements are available. Overall, Data Engineering presents attractive earning potential, but applicants should consider the limited observed openings and explore opportunities across different employers and related data roles.
+
+## Career Readiness
+
+While Data Engineering offers promising career opportunities, entering the field can be challenging for students and entry-level job seekers. The median minimum experience requirement was **five years** among the 22 postings that specified experience, indicating that employers often seek candidates with previous professional experience. These requirements create barriers for beginners and suggest that gaining practical experience through internships, projects, or related entry-level positions may improve career readiness.
+
+Technical skills are another important factor in career preparation. The team's Skill Gap Analysis identified the largest gaps in **Python, Cloud Computing, Git / CI-CD, and Spark / PySpark**, highlighting areas that require further development. However, SQL emerged as a relative strength, with an average team proficiency of **3.33 out of 5**. This foundation can support further learning in databases, data pipelines, and cloud-based data processing. Overall, strengthening technical skills and gaining hands-on experience would help applicants become better prepared for Data Engineering positions in the insurance industry.
+
+## Conclusion
+
+The findings suggest that **Data Engineering is an attractive long-term career pathway in the Insurance Carrier industry (NAICS 5241), but entering the field can be challenging for entry-level applicants**. Competitive advertised salaries make the profession appealing, while experience requirements, technical skill gaps, and the limited number of observed opportunities present barriers for beginners.
+
+Despite these challenges, Data Engineering remains a realistic career goal with the right preparation. Applicants can improve their readiness by strengthening **Python, Cloud Computing, Git / CI-CD, and Spark / PySpark**, while building on their existing SQL knowledge. Developing practical projects, pursuing internships, and gaining experience in related entry-level positions can help bridge the gap between current qualifications and employer expectations.
+
+Overall, **Data Engineering offers promising career potential, but success requires continuous technical development and practical experience**.
+
+
+## References
+
+::: {#refs}
+:::
