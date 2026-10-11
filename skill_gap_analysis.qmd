@@ -2,8 +2,6 @@
 title: "Skill Gap Analysis"
 ---
 
-## Skill Gap Analysis
-
 This analysis evaluates how well the team's current skills align with the skills most frequently requested for Data Engineer-related roles in the Insurance industry.
 
 The analysis began with 1,908 Insurance industry job postings. To focus on our target career, the dataset was filtered to Data Engineer and closely related positions, including Data Engineering, Analytics Engineer, Data Platform Engineer, ETL Engineer, and Data Warehouse Engineer roles. This resulted in 29 Data Engineer-related job postings used for the market skill analysis.
