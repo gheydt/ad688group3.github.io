@@ -138,8 +138,19 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-data-behind-the-model" id="toc-the-data-behind-the-model" class="nav-link active" data-scroll-target="#the-data-behind-the-model">The data behind the model</a></li>
+  <li><a href="#what-the-model-uses" id="toc-what-the-model-uses" class="nav-link" data-scroll-target="#what-the-model-uses">What the model uses</a></li>
+  <li><a href="#how-we-checked-it" id="toc-how-we-checked-it" class="nav-link" data-scroll-target="#how-we-checked-it">How we checked it</a></li>
+  <li><a href="#what-goes-with-higher-pay" id="toc-what-goes-with-higher-pay" class="nav-link" data-scroll-target="#what-goes-with-higher-pay">What goes with higher pay</a></li>
+  <li><a href="#what-if-pay-for-a-job-seeker-profile" id="toc-what-if-pay-for-a-job-seeker-profile" class="nav-link" data-scroll-target="#what-if-pay-for-a-job-seeker-profile">What-if: pay for a job seeker profile</a></li>
+  <li><a href="#limitations-of-the-model" id="toc-limitations-of-the-model" class="nav-link" data-scroll-target="#limitations-of-the-model">Limitations of the model</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -163,8 +174,353 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<p>This page answers the project question with a model. <strong>Which skills and job features go with higher pay</strong> for data jobs at insurance carriers (NAICS 5241)? A job seeker can use the answer to decide which skill to learn next and to judge whether an advertised salary is fair for what the posting asks.</p>
+<p>We used <strong>Option A (Regression)</strong>. It is a linear model that predicts a posting’s advertised annual salary from the skills it asks for, the experience it requires, the seniority of the title and the work arrangement.</p>
+<section id="the-data-behind-the-model" class="level2">
+<h2 class="anchored" data-anchor-id="the-data-behind-the-model">The data behind the model</h2>
+<div id="cell-salary-model-sample" class="cell" data-execution_count="2">
+<div id="salary-model-sample" class="cell-output cell-output-display cell-output-markdown">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 42%">
+<col style="width: 57%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th style="text-align: right;">Postings</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>All insurance carrier data postings in the 2024 dataset</td>
+<td style="text-align: right;">1,908</td>
+</tr>
+<tr class="even">
+<td>Postings that state a salary</td>
+<td style="text-align: right;">1,204</td>
+</tr>
+<tr class="odd">
+<td>After removing internships</td>
+<td style="text-align: right;">1,196</td>
+</tr>
+<tr class="even">
+<td><strong>Distinct jobs used in the model</strong> (repeat listings removed)</td>
+<td style="text-align: right;"><strong>395</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The model uses the full 1,908-post insurance file and not only the 29 Data Engineer postings because 29 jobs with only 13 listing pay is too few to fit a trustworthy model. All of these jobs are in the same data occupation family (government occupation group <em>Data Scientists</em> which includes analysts, engineers and architects) so what drives pay here is a fair guide for a Data Engineer job seeker in the same industry.</p>
+<p>Many employers post the same job in dozens of cities with the same title and pay. We kept one copy of each employer, title and salary combination. Without this step the model would mostly learn from a handful of heavily reposted jobs and copies of the same job would show up on both sides of the accuracy test, which makes the model look better than it is.</p>
+</section>
+<section id="what-the-model-uses" class="level2">
+<h2 class="anchored" data-anchor-id="what-the-model-uses">What the model uses</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>What it captures</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Advertised salary</strong> (what we predict)</td>
+<td>Annual salary from the posting. The model works on its logarithm, so each result reads as a percentage difference in pay.</td>
+</tr>
+<tr class="even">
+<td><strong>10 skill flags</strong></td>
+<td>Whether the posting asks for each of the ten Data Engineering skills from our Skill Gap Analysis, using the same matching rules.</td>
+</tr>
+<tr class="odd">
+<td><strong>Years of experience</strong></td>
+<td>Minimum years the posting requires (capped at 15). Missing values were filled with the median and flagged.</td>
+</tr>
+<tr class="even">
+<td><strong>Senior title / junior title</strong></td>
+<td>Title words such as senior, lead, principal, manager or architect, versus junior, associate, entry or assistant.</td>
+</tr>
+<tr class="odd">
+<td><strong>Fully remote / hybrid</strong></td>
+<td>Work arrangement, compared with on-site or not stated.</td>
+</tr>
+<tr class="even">
+<td><strong>Degree required</strong></td>
+<td>The posting asks for a bachelor’s degree or higher.</td>
+</tr>
+<tr class="odd">
+<td><strong>Core data role</strong></td>
+<td>The posting’s title matched the core data-role list from Step 3.</td>
+</tr>
+</tbody>
+</table>
+<p>Each result compares two otherwise similar postings. For example a posting that asks for cloud skills is compared with one that has the same experience, seniority and other skills but does not ask for cloud.</p>
+</section>
+<section id="how-we-checked-it" class="level2">
+<h2 class="anchored" data-anchor-id="how-we-checked-it">How we checked it</h2>
+<div id="cell-salary-model-evaluation" class="cell" data-execution_count="3">
+<div id="salary-model-evaluation" class="cell-output cell-output-display cell-output-markdown">
+<p>We tested the model on jobs it had not seen. We split the 395 jobs into five groups and trained on four and predicted the fifth, then rotated through all five and repeated the whole test ten times with different shuffles. The table compares the model with the simplest possible guess which is predicting the middle (median) salary for every job.</p>
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th>Measure</th>
+<th style="text-align: right;">Salary model</th>
+<th style="text-align: right;">Median guess</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Typical error, MAE (average dollars off)</td>
+<td style="text-align: right;">$21,011</td>
+<td style="text-align: right;">$27,740</td>
+</tr>
+<tr class="even">
+<td>RMSE (penalizes big misses more)</td>
+<td style="text-align: right;">$27,203</td>
+<td style="text-align: right;">$35,511</td>
+</tr>
+<tr class="odd">
+<td>R² (share of pay differences explained)</td>
+<td style="text-align: right;">0.37</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+</tbody>
+</table>
+<p>On jobs it had not seen the model’s typical miss is about <strong>$21,011</strong> which is <strong>24% smaller</strong> than guessing the median. It explains about <strong>37%</strong> of the differences in pay between jobs. That makes it a useful guide to what matters but not an exact salary calculator. The rest of the variation comes from things a posting does not show like the employer’s pay bands, the city and the negotiation.</p>
+</div>
+</div>
+<div id="cell-fig-salary-predicted-vs-actual" class="cell" data-execution_count="4">
+<div class="cell-output cell-output-display">
+<div id="fig-salary-predicted-vs-actual" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-salary-predicted-vs-actual-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="ml_methods_files/figure-html/fig-salary-predicted-vs-actual-output-1.png" width="903" height="709" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-salary-predicted-vs-actual-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Predicted versus advertised salary for jobs the model had not seen. Points on the diagonal line are perfect predictions.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The model pulls predictions toward the middle. It clearly underestimates the best-paid jobs and overestimates the lowest-paid ones so for a job seeker it is more reliable for typical mid-career postings than for the extremes.</p>
+</section>
+<section id="what-goes-with-higher-pay" class="level2">
+<h2 class="anchored" data-anchor-id="what-goes-with-higher-pay">What goes with higher pay</h2>
+<div id="cell-fig-salary-drivers" class="cell" data-execution_count="5">
+<div class="cell-output cell-output-display">
+<div id="fig-salary-drivers" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-salary-drivers-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="ml_methods_files/figure-html/fig-salary-drivers-output-1.png" width="1111" height="948" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-salary-drivers-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Estimated pay difference for each feature, holding the others equal. Lines show the 95% confidence range and dark blue bars are features whose range does not cross zero.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-salary-drivers-table" class="cell" data-execution_count="6">
+<div id="salary-drivers-table" class="cell-output cell-output-display cell-output-markdown">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th>Feature</th>
+<th style="text-align: right;">Pay difference</th>
+<th style="text-align: right;">95% range</th>
+<th style="text-align: center;">Clear signal</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Cloud Computing</td>
+<td style="text-align: right;">+17.8%</td>
+<td style="text-align: right;">+9.1% to +27.3%</td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr class="even">
+<td>Senior title</td>
+<td style="text-align: right;">+13.7%</td>
+<td style="text-align: right;">+7.5% to +20.2%</td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr class="odd">
+<td>Hybrid</td>
+<td style="text-align: right;">+9.1%</td>
+<td style="text-align: right;">-1.9% to +21.4%</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr class="even">
+<td>ETL/ELT &amp; Data Pipelines</td>
+<td style="text-align: right;">+7.9%</td>
+<td style="text-align: right;">+1.4% to +14.8%</td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr class="odd">
+<td>Spark / PySpark</td>
+<td style="text-align: right;">+6.4%</td>
+<td style="text-align: right;">-7.0% to +21.6%</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr class="even">
+<td>Years of experience</td>
+<td style="text-align: right;">+4.5%</td>
+<td style="text-align: right;">+3.4% to +5.5%</td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr class="odd">
+<td>Python</td>
+<td style="text-align: right;">+2.4%</td>
+<td style="text-align: right;">-3.5% to +8.8%</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr class="even">
+<td>Core data role</td>
+<td style="text-align: right;">+2.3%</td>
+<td style="text-align: right;">-3.6% to +8.6%</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr class="odd">
+<td>Git &amp; CI/CD</td>
+<td style="text-align: right;">+1.0%</td>
+<td style="text-align: right;">-7.2% to +9.9%</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr class="even">
+<td>Fully remote</td>
+<td style="text-align: right;">+0.8%</td>
+<td style="text-align: right;">-4.4% to +6.3%</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr class="odd">
+<td>Degree required</td>
+<td style="text-align: right;">+0.4%</td>
+<td style="text-align: right;">-4.8% to +5.9%</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr class="even">
+<td>Data Quality &amp; Governance</td>
+<td style="text-align: right;">-1.9%</td>
+<td style="text-align: right;">-7.8% to +4.4%</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr class="odd">
+<td>Databases / Snowflake</td>
+<td style="text-align: right;">-2.5%</td>
+<td style="text-align: right;">-7.5% to +2.8%</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr class="even">
+<td>Data Modeling &amp; Warehousing</td>
+<td style="text-align: right;">-4.6%</td>
+<td style="text-align: right;">-10.1% to +1.2%</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr class="odd">
+<td>Databricks</td>
+<td style="text-align: right;">-4.8%</td>
+<td style="text-align: right;">-13.1% to +4.2%</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr class="even">
+<td>SQL</td>
+<td style="text-align: right;">-4.9%</td>
+<td style="text-align: right;">-10.5% to +1.1%</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr class="odd">
+<td>Junior title</td>
+<td style="text-align: right;">-17.1%</td>
+<td style="text-align: right;">-26.4% to -6.7%</td>
+<td style="text-align: center;">Yes</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="cell-salary-drivers-reading" class="cell" data-execution_count="7">
+<div id="salary-drivers-reading" class="cell-output cell-output-display cell-output-markdown">
+<p><strong>What this means for a job seeker</strong></p>
+<ul>
+<li><strong>Cloud computing is the skill with the clearest pay premium.</strong> Postings that ask for AWS, Azure or Google Cloud advertise about <strong>18% more</strong> than similar postings that do not. Cloud is also one of our team’s two largest skill gaps (team average 1.3 out of 5) so it is the best first skill to invest in.</li>
+<li><strong>Data pipeline skills (ETL/ELT) add about 8%.</strong> This is the everyday work of a Data Engineer. The effect is smaller and less certain than cloud (its range starts just above zero) but it points the same way.</li>
+<li><strong>Experience and seniority matter most overall.</strong> Each extra year of required experience goes with about <strong>4% more</strong> pay. A senior title goes with about <strong>14% more</strong> and a junior title with about <strong>17% less</strong>. Entry-level offers will sit well below the market median and pay grows quickly in the first years.</li>
+<li><strong>SQL and Python are the entry ticket, not a pay premium.</strong> Once the other features are accounted for neither one moves pay by a clear amount. SQL appears in about 52% of these jobs and Python in about 25% including lower-paid analyst roles so they get you hired more than they get you paid more. They are still required.</li>
+<li><strong>Remote work does not cost pay.</strong> Fully remote postings advertise about the same as on-site ones (+0.8%) so a job seeker can target remote roles without expecting a pay cut.</li>
+<li><strong>Spark, Databricks, Git and the other skills show no clear effect.</strong> Few postings in this sample ask for them (Spark appears in about 3% of jobs) so the model cannot tell their effect apart from zero. That is a gap in the evidence and not proof that they do not matter.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="what-if-pay-for-a-job-seeker-profile" class="level2">
+<h2 class="anchored" data-anchor-id="what-if-pay-for-a-job-seeker-profile">What-if: pay for a job seeker profile</h2>
+<p>The model can price a specific kind of posting. Each row below is a Data Engineer type posting (core data role, bachelor’s degree, fully remote and no senior or junior title unless the row says so) that asks for SQL and Python. We then add skills and experience one step at a time.</p>
+<div id="salary-what-if" class="cell" data-execution_count="8">
+<div id="salary-what-if-1" class="cell-output cell-output-display cell-output-markdown">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 42%">
+<col style="width: 57%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Posting asks for SQL and Python, plus…</th>
+<th style="text-align: right;">Predicted advertised salary</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Entry level: junior title, 1 year</td>
+<td style="text-align: right;">$74,866</td>
+</tr>
+<tr class="even">
+<td>2 years of experience</td>
+<td style="text-align: right;">$94,350</td>
+</tr>
+<tr class="odd">
+<td>2 years, plus cloud</td>
+<td style="text-align: right;">$111,160</td>
+</tr>
+<tr class="even">
+<td>2 years, plus cloud and pipelines</td>
+<td style="text-align: right;">$119,902</td>
+</tr>
+<tr class="odd">
+<td>5 years, plus cloud and pipelines</td>
+<td style="text-align: right;">$136,711</td>
+</tr>
+<tr class="even">
+<td>Senior title, 7 years, cloud and pipelines</td>
+<td style="text-align: right;">$169,592</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="salary-what-if-2" class="cell-output cell-output-display cell-output-markdown">
+<p>For a graduate with about two years of relevant experience adding cloud and pipeline skills moves the predicted advertised salary from about <strong>$94,350</strong> to about <strong>$119,902</strong>. That is roughly <strong>$25,552</strong> more a year. These are estimates of what employers advertise with a typical error of about $21,011 and not guaranteed offers.</p>
+</div>
+</div>
+</section>
+<section id="limitations-of-the-model" class="level2">
+<h2 class="anchored" data-anchor-id="limitations-of-the-model">Limitations of the model</h2>
+<ul>
+<li><strong>It shows association, not cause.</strong> Postings that ask for cloud skills may also be at better-paying teams. Learning cloud makes a candidate eligible for those postings and does not raise pay on its own.</li>
+<li><strong>A few employers dominate.</strong> UnitedHealth Group (with its Optum unit) and Humana posted the largest share of the jobs so their pay practices shape the results.</li>
+<li><strong>Advertised pay is not offered pay.</strong> Only postings that state a salary are included and the figure is usually the midpoint of the advertised range.</li>
+<li><strong>It is less accurate for employers it has never seen.</strong> When whole employers are left out of training the typical miss grows to about $23,000.</li>
+<li><strong>Rare skills cannot be measured well.</strong> Spark, Databricks and Git appear in too few postings for the model to estimate their effect.</li>
+<li><strong>It covers 2024 insurance carriers only.</strong> Results may not carry over to other industries or later years.</li>
+</ul>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
