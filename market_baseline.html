@@ -26,45 +26,10 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -108,6 +73,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 <link rel="stylesheet" href="styles.css">
@@ -178,8 +146,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#load-the-2024-dataset" id="toc-load-the-2024-dataset" class="nav-link active" data-scroll-target="#load-the-2024-dataset">Load the 2024 Dataset</a></li>
-  <li><a href="#job-volume-by-title" id="toc-job-volume-by-title" class="nav-link" data-scroll-target="#job-volume-by-title">Job Volume by Title</a></li>
+  <li><a href="#job-volume-by-title" id="toc-job-volume-by-title" class="nav-link active" data-scroll-target="#job-volume-by-title">Job Volume by Title</a></li>
   <li><a href="#salary-distribution" id="toc-salary-distribution" class="nav-link" data-scroll-target="#salary-distribution">Salary Distribution</a></li>
   <li><a href="#location-patterns" id="toc-location-patterns" class="nav-link" data-scroll-target="#location-patterns">Location Patterns</a></li>
   <li><a href="#experience-requirements" id="toc-experience-requirements" class="nav-link" data-scroll-target="#experience-requirements">Experience Requirements</a></li>
@@ -217,134 +184,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 <p>This market baseline examines Data Engineer-related job postings within the Insurance Carrier industry (NAICS 5241). The analysis focuses on job volume, salary, location, experience requirements, work arrangement, hiring patterns, and specialized skills.</p>
 <p>It uses the 2024 Insurance Carrier dataset from Step 3 (1,908 postings in total). To match the Skill Gap Analysis page, the dataset was filtered to Data Engineer-related roles: Data Engineering, Analytics Engineer, Data Platform Engineer, ETL Engineer, and Data Warehouse Engineer titles. Every number on this page is calculated from that filtered data.</p>
-<section id="load-the-2024-dataset" class="level2">
-<h2 class="anchored" data-anchor-id="load-the-2024-dataset">Load the 2024 Dataset</h2>
-<div id="09cbe159" class="cell" data-execution_count="2">
-<details class="code-fold">
-<summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the 2024 (Step 3) Insurance dataset</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>data_path <span class="op">=</span> (</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    project_root</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">/</span> <span class="st">"outputs"</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">/</span> <span class="st">"step3"</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">/</span> <span class="st">"insurance_5241_all_postings_step3.csv"</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>all_jobs <span class="op">=</span> pd.read_csv(data_path, low_memory<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Same Data Engineer-related role filter as the Skill Gap Analysis page</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>role_pattern <span class="op">=</span> (</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="vs">r"</span><span class="dv">\b</span><span class="vs">data engineer</span><span class="dv">\b</span><span class="cf">|</span><span class="vs">"</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="vs">r"</span><span class="dv">\b</span><span class="vs">data engineering</span><span class="dv">\b</span><span class="cf">|</span><span class="vs">"</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="vs">r"</span><span class="dv">\b</span><span class="vs">analytics engineer</span><span class="dv">\b</span><span class="cf">|</span><span class="vs">"</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="vs">r"</span><span class="dv">\b</span><span class="vs">data platform engineer</span><span class="dv">\b</span><span class="cf">|</span><span class="vs">"</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="vs">r"</span><span class="dv">\b</span><span class="vs">etl </span>(?:<span class="vs">developer</span><span class="cf">|</span><span class="vs">engineer</span>)<span class="dv">\b</span><span class="cf">|</span><span class="vs">"</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="vs">r"</span><span class="dv">\b</span><span class="vs">data warehouse </span>(?:<span class="vs">developer</span><span class="cf">|</span><span class="vs">engineer</span>)<span class="dv">\b</span><span class="vs">"</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> all_jobs[</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    all_jobs[<span class="st">"TITLE_CLEAN"</span>]</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    .fillna(<span class="st">""</span>)</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">str</span>.lower()</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">str</span>.contains(role_pattern, regex<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>].copy()</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Total Insurance postings (2024):"</span>, <span class="bu">len</span>(all_jobs))</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Data Engineer-related postings:"</span>, <span class="bu">len</span>(df))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Total Insurance postings (2024): 1908
-Data Engineer-related postings: 29</code></pre>
-</div>
-</div>
 <p>The team identified <strong>29 Data Engineer-related postings</strong> from the 2024 Insurance Carrier dataset after applying the project role filter, out of 1,908 postings in total.</p>
-</section>
 <section id="job-volume-by-title" class="level2">
 <h2 class="anchored" data-anchor-id="job-volume-by-title">Job Volume by Title</h2>
-<div id="a9a69417" class="cell" data-execution_count="4">
-<details class="code-fold">
-<summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>top_titles <span class="op">=</span> (</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"TITLE_CLEAN"</span>]</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .value_counts()</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">10</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>top_titles</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-display" data-execution_count="4">
-<pre><code>TITLE_CLEAN
-data analytics engineer                               8
-data engineer analytics                               7
-data engineering analyst remote                       3
-sr analyst data engineer                              2
-data engineer ii data analytics                       2
-sr data engineer customer analytics hybrid            2
-sr people analytics data engineer                     2
-data engineering analyst                              1
-senior data analytics engineer                        1
-senior data analyst principal data engineer remote    1
-Name: count, dtype: int64</code></pre>
-</div>
-</div>
 <p>The filtered dataset contains <strong>29 postings</strong> spread across <strong>10 distinct title variations</strong>. The most common title is “data analytics engineer” with 8 postings. Titles are variations of Data Engineer, Analytics Engineer, and Data Engineering Analyst roles.</p>
 </section>
 <section id="salary-distribution" class="level2">
 <h2 class="anchored" data-anchor-id="salary-distribution">Salary Distribution</h2>
-<div id="b0e15f87" class="cell" data-execution_count="6">
-<details class="code-fold">
-<summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>salary_df <span class="op">=</span> df[df[<span class="st">"SALARY"</span>].notna()]</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>n_salary <span class="op">=</span> <span class="bu">len</span>(salary_df)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>salary_median <span class="op">=</span> salary_df[<span class="st">"SALARY"</span>].median()</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>salary_mean <span class="op">=</span> salary_df[<span class="st">"SALARY"</span>].mean()</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>salary_min <span class="op">=</span> salary_df[<span class="st">"SALARY"</span>].<span class="bu">min</span>()</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>salary_max <span class="op">=</span> salary_df[<span class="st">"SALARY"</span>].<span class="bu">max</span>()</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>n_salary_levels <span class="op">=</span> salary_df[<span class="st">"SALARY"</span>].nunique()</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Postings with salary:"</span>, n_salary, <span class="st">"of"</span>, n)</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Median annual salary midpoint:"</span>, <span class="bu">round</span>(salary_median))</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Average annual salary midpoint:"</span>, <span class="bu">round</span>(salary_mean))</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Range:"</span>, <span class="bu">round</span>(salary_min), <span class="st">"to"</span>, <span class="bu">round</span>(salary_max))</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Distinct salary values:"</span>, n_salary_levels)</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">4</span>))</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>ax.hist(</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    salary_df[<span class="st">"SALARY"</span>],</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    bins<span class="op">=</span><span class="bu">range</span>(<span class="dv">120000</span>, <span class="dv">180000</span>, <span class="dv">10000</span>),</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>BLUE,</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    edgecolor<span class="op">=</span><span class="st">"white"</span>,</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, <span class="dv">5</span>)</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>ax.yaxis.set_major_locator(MaxNLocator(integer<span class="op">=</span><span class="va">True</span>))</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>ax.axvline(salary_median, color<span class="op">=</span>DARK, linestyle<span class="op">=</span><span class="st">"--"</span>, linewidth<span class="op">=</span><span class="fl">1.2</span>)</span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>ax.text(</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    salary_median <span class="op">+</span> <span class="dv">1500</span>,</span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    <span class="fl">4.55</span>,</span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"Median $</span><span class="sc">{</span>salary_median<span class="sc">:,.0f}</span><span class="ss">"</span>,</span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>DARK,</span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>    fontsize<span class="op">=</span><span class="dv">12</span>,</span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_formatter(FuncFormatter(<span class="kw">lambda</span> x, _: <span class="ss">f"$</span><span class="sc">{</span>x<span class="op">/</span><span class="dv">1000</span><span class="sc">:,.0f}</span><span class="ss">K"</span>))</span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f"Annual Salary Midpoint, Data Engineer-Related</span><span class="ch">\n</span><span class="ss">Insurance Postings (n = </span><span class="sc">{</span>n_salary<span class="sc">}</span><span class="ss">)"</span>)</span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Annual salary midpoint"</span>)</span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Number of postings"</span>)</span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>source_note(fig, <span class="st">"Source: 2024 Insurance Carrier postings (Step 3), postings that list a salary."</span>)</span>
-<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Postings with salary: 13 of 29
-Median annual salary midpoint: 142230
-Average annual salary midpoint: 140990
-Range: 127000 to 161625
-Distinct salary values: 6</code></pre>
-</div>
+<div id="cell-salary-distribution" class="cell" data-fig-height="4.5" data-fig-width="7" data-execution_count="3">
 <div class="cell-output cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="market_baseline_files/figure-html/cell-7-output-2.png" width="900" height="555" class="figure-img"></p>
+<p><img src="market_baseline_files/figure-html/salary-distribution-output-1.png" id="salary-distribution" class="quarto-figure quarto-figure-center anchored figure-img" width="900" height="621"></p>
 </figure>
 </div>
 </div>
@@ -354,49 +205,11 @@ Distinct salary values: 6</code></pre>
 </section>
 <section id="location-patterns" class="level2">
 <h2 class="anchored" data-anchor-id="location-patterns">Location Patterns</h2>
-<div id="658ba774" class="cell" data-execution_count="9">
-<details class="code-fold">
-<summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>state_counts <span class="op">=</span> df[<span class="st">"STATE_NAME"</span>].dropna().value_counts()</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>n_state <span class="op">=</span> <span class="bu">int</span>(state_counts.<span class="bu">sum</span>())</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>state_counts</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-display" data-execution_count="9">
-<pre><code>STATE_NAME
-Texas          4
-Georgia        4
-Wisconsin      4
-Arizona        4
-Minnesota      3
-Illinois       3
-Connecticut    3
-Ohio           2
-Colorado       1
-New Jersey     1
-Name: count, dtype: int64</code></pre>
-</div>
-</div>
-<div id="260a8d8f" class="cell" data-execution_count="10">
-<details class="code-fold">
-<summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>state_plot <span class="op">=</span> state_counts.sort_values()</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="fl">4.5</span>))</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>bars <span class="op">=</span> ax.barh(state_plot.index, state_plot.values, color<span class="op">=</span>BLUE)</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>ax.bar_label(bars, padding<span class="op">=</span><span class="dv">3</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f"Postings by State, Data Engineer-Related</span><span class="ch">\n</span><span class="ss">Insurance Roles (n = </span><span class="sc">{</span>n_state<span class="sc">}</span><span class="ss">)"</span>)</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Number of postings"</span>)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">""</span>)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="dv">0</span>, state_plot.<span class="bu">max</span>() <span class="op">+</span> <span class="dv">1</span>)</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>source_note(fig, <span class="st">"Source: 2024 Insurance Carrier postings (Step 3)."</span>)</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div id="cell-location-patterns" class="cell" data-fig-height="4.5" data-fig-width="7" data-execution_count="4">
 <div class="cell-output cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="market_baseline_files/figure-html/cell-11-output-1.png" width="903" height="622" class="figure-img"></p>
+<p><img src="market_baseline_files/figure-html/location-patterns-output-1.png" id="location-patterns" class="quarto-figure quarto-figure-center anchored figure-img" width="903" height="622"></p>
 </figure>
 </div>
 </div>
@@ -407,43 +220,11 @@ Name: count, dtype: int64</code></pre>
 </section>
 <section id="experience-requirements" class="level2">
 <h2 class="anchored" data-anchor-id="experience-requirements">Experience Requirements</h2>
-<div id="fc665a65" class="cell" data-execution_count="13">
-<details class="code-fold">
-<summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>exp <span class="op">=</span> df[<span class="st">"MIN_YEARS_EXPERIENCE"</span>]</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>n_exp <span class="op">=</span> <span class="bu">int</span>(exp.notna().<span class="bu">sum</span>())</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>exp_median <span class="op">=</span> exp.median()</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>exp_counts <span class="op">=</span> exp.dropna().astype(<span class="bu">int</span>).value_counts().sort_index()</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> [<span class="ss">f"</span><span class="sc">{</span>y<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> y <span class="kw">in</span> exp_counts.index]</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> <span class="bu">list</span>(exp_counts.values)</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>n_exp_missing <span class="op">=</span> n <span class="op">-</span> n_exp</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>labels.append(<span class="st">"Not stated"</span>)</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>values.append(n_exp_missing)</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [BLUE] <span class="op">*</span> <span class="bu">len</span>(exp_counts) <span class="op">+</span> [GREY]</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Postings with minimum years of experience:"</span>, n_exp, <span class="st">"of"</span>, n)</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Median minimum years required:"</span>, exp_median)</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">4</span>))</span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>bars <span class="op">=</span> ax.bar(labels, values, color<span class="op">=</span>colors)</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>ax.bar_label(bars, padding<span class="op">=</span><span class="dv">3</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f"Minimum Years of Experience Required</span><span class="ch">\n</span><span class="ss">(n = </span><span class="sc">{</span>n_exp<span class="sc">}</span><span class="ss"> stated, </span><span class="sc">{</span>n_exp_missing<span class="sc">}</span><span class="ss"> not stated)"</span>)</span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Minimum years of experience"</span>)</span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Number of postings"</span>)</span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, <span class="bu">max</span>(values) <span class="op">+</span> <span class="fl">1.5</span>)</span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>source_note(fig, <span class="st">"Source: 2024 Insurance Carrier postings (Step 3)."</span>)</span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Postings with minimum years of experience: 22 of 29
-Median minimum years required: 5.0</code></pre>
-</div>
+<div id="cell-experience-requirements" class="cell" data-fig-height="4.5" data-fig-width="7" data-execution_count="5">
 <div class="cell-output cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="market_baseline_files/figure-html/cell-14-output-2.png" width="903" height="555" class="figure-img"></p>
+<p><img src="market_baseline_files/figure-html/experience-requirements-output-1.png" id="experience-requirements" class="quarto-figure quarto-figure-center anchored figure-img" width="903" height="621"></p>
 </figure>
 </div>
 </div>
@@ -452,43 +233,11 @@ Median minimum years required: 5.0</code></pre>
 </section>
 <section id="remote-vs.-on-site-work" class="level2">
 <h2 class="anchored" data-anchor-id="remote-vs.-on-site-work">Remote vs.&nbsp;On-Site Work</h2>
-<div id="834cf802" class="cell" data-execution_count="15">
-<details class="code-fold">
-<summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>remote_raw <span class="op">=</span> df[<span class="st">"REMOTE_TYPE_NAME"</span>].replace(<span class="st">"[None]"</span>, pd.NA)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>remote_counts <span class="op">=</span> remote_raw.fillna(<span class="st">"Not specified"</span>).value_counts()</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>n_remote <span class="op">=</span> <span class="bu">int</span>(remote_counts.get(<span class="st">"Remote"</span>, <span class="dv">0</span>))</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>n_remote_unspecified <span class="op">=</span> <span class="bu">int</span>(remote_counts.get(<span class="st">"Not specified"</span>, <span class="dv">0</span>))</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(remote_counts)</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>order <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> [<span class="st">"Remote"</span>, <span class="st">"Hybrid Remote"</span>, <span class="st">"Not Remote"</span>, <span class="st">"Not specified"</span>] <span class="cf">if</span> c <span class="kw">in</span> remote_counts.index]</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>vals <span class="op">=</span> [<span class="bu">int</span>(remote_counts[c]) <span class="cf">for</span> c <span class="kw">in</span> order]</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> [GREY <span class="cf">if</span> c <span class="op">==</span> <span class="st">"Not specified"</span> <span class="cf">else</span> BLUE <span class="cf">for</span> c <span class="kw">in</span> order]</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="fl">3.8</span>))</span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>bars <span class="op">=</span> ax.bar(order, vals, color<span class="op">=</span>cols)</span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>ax.bar_label(bars, padding<span class="op">=</span><span class="dv">3</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f"Work Arrangement Listed in the Posting (n = </span><span class="sc">{</span>n<span class="sc">}</span><span class="ss">)"</span>)</span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Work arrangement"</span>)</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Number of postings"</span>)</span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, <span class="bu">max</span>(vals) <span class="op">+</span> <span class="fl">2.5</span>)</span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>ax.yaxis.set_major_locator(MaxNLocator(integer<span class="op">=</span><span class="va">True</span>))</span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>source_note(fig, <span class="st">"Source: 2024 Insurance Carrier postings (Step 3).</span><span class="ch">\n</span><span class="st">Not specified: the posting does not state an arrangement."</span>)</span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>REMOTE_TYPE_NAME
-Not specified    20
-Remote            9
-Name: count, dtype: int64</code></pre>
-</div>
+<div id="cell-remote-vs-onsite" class="cell" data-fig-height="3.8" data-fig-width="7" data-execution_count="6">
 <div class="cell-output cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="market_baseline_files/figure-html/cell-16-output-2.png" width="903" height="552" class="figure-img"></p>
+<p><img src="market_baseline_files/figure-html/remote-vs-onsite-output-1.png" id="remote-vs-onsite" class="quarto-figure quarto-figure-center anchored figure-img" width="903" height="552"></p>
 </figure>
 </div>
 </div>
@@ -503,77 +252,91 @@ Name: count, dtype: int64</code></pre>
 </section>
 <section id="top-employers" class="level2">
 <h2 class="anchored" data-anchor-id="top-employers">Top Employers</h2>
-<div id="fd7cedad" class="cell" data-execution_count="17">
-<details class="code-fold">
-<summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>top_employers <span class="op">=</span> (</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"COMPANY_NAME"</span>]</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .dropna()</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    .value_counts()</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">10</span>)</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>top_employers</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-display" data-execution_count="17">
-<pre><code>COMPANY_NAME
-State Farm             15
-UnitedHealth Group      3
-Northwestern Mutual     3
-Nationwide              2
-Optum                   2
-Travelers               2
-Selective Insurance     2
-Name: count, dtype: int64</code></pre>
+<div id="cell-top-employers" class="cell" data-execution_count="7">
+<div id="top-employers" class="cell-output cell-output-display">
+<style type="text/css">
+#T_386a7 thead th {
+  background-color: #17324D;
+  color: #FFFFFF;
+  font-weight: bold;
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 2px solid #17324D;
+}
+#T_386a7 tbody td {
+  color: #1F2937;
+  padding: 9px 14px;
+  border-bottom: 1px solid #E5E7EB;
+}
+#T_386a7 tbody tr:nth-child(odd) td {
+  background-color: #FFFFFF;
+}
+#T_386a7 tbody tr:nth-child(even) td {
+  background-color: #F3F6FA;
+}
+#T_386a7 table {
+  border-collapse: collapse;
+  width: 100%;
+}
+</style>
+
+<table id="T_386a7" class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th id="T_386a7_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">Employer</th>
+<th id="T_386a7_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">Postings</th>
+<th id="T_386a7_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">Postings (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td id="T_386a7_row0_col0" class="data row0 col0">State Farm</td>
+<td id="T_386a7_row0_col1" class="data row0 col1">15</td>
+<td id="T_386a7_row0_col2" class="data row0 col2">51.7%</td>
+</tr>
+<tr class="even">
+<td id="T_386a7_row1_col0" class="data row1 col0">UnitedHealth Group</td>
+<td id="T_386a7_row1_col1" class="data row1 col1">3</td>
+<td id="T_386a7_row1_col2" class="data row1 col2">10.3%</td>
+</tr>
+<tr class="odd">
+<td id="T_386a7_row2_col0" class="data row2 col0">Northwestern Mutual</td>
+<td id="T_386a7_row2_col1" class="data row2 col1">3</td>
+<td id="T_386a7_row2_col2" class="data row2 col2">10.3%</td>
+</tr>
+<tr class="even">
+<td id="T_386a7_row3_col0" class="data row3 col0">Nationwide</td>
+<td id="T_386a7_row3_col1" class="data row3 col1">2</td>
+<td id="T_386a7_row3_col2" class="data row3 col2">6.9%</td>
+</tr>
+<tr class="odd">
+<td id="T_386a7_row4_col0" class="data row4 col0">Optum</td>
+<td id="T_386a7_row4_col1" class="data row4 col1">2</td>
+<td id="T_386a7_row4_col2" class="data row4 col2">6.9%</td>
+</tr>
+<tr class="even">
+<td id="T_386a7_row5_col0" class="data row5 col0">Travelers</td>
+<td id="T_386a7_row5_col1" class="data row5 col1">2</td>
+<td id="T_386a7_row5_col2" class="data row5 col2">6.9%</td>
+</tr>
+<tr class="odd">
+<td id="T_386a7_row6_col0" class="data row6 col0">Selective Insurance</td>
+<td id="T_386a7_row6_col1" class="data row6 col1">2</td>
+<td id="T_386a7_row6_col2" class="data row6 col2">6.9%</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <p>The 29 postings come from only <strong>7 employers</strong>. <strong>State Farm</strong> alone accounts for 15 of them (about 52%), so the sample reflects a small group of large insurers rather than the whole industry.</p>
 </section>
 <section id="top-specialized-skills" class="level2">
 <h2 class="anchored" data-anchor-id="top-specialized-skills">Top Specialized Skills</h2>
-<div id="f45235dc" class="cell" data-execution_count="19">
-<details class="code-fold">
-<summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>skill_counts <span class="op">=</span> Counter()</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> cell <span class="kw">in</span> df[<span class="st">"SPECIALIZED_SKILLS_NAME"</span>].dropna():</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    skill_counts.update(<span class="bu">set</span>(json.loads(cell)))</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># "Data Engineering" appears in every posting because of the role filter</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>skill_counts.pop(<span class="st">"Data Engineering"</span>, <span class="va">None</span>)</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>top_skills <span class="op">=</span> pd.Series(<span class="bu">dict</span>(skill_counts.most_common(<span class="dv">10</span>)))</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>top_skills_pct <span class="op">=</span> (top_skills <span class="op">/</span> n <span class="op">*</span> <span class="dv">100</span>).sort_values()</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(top_skills_pct.sort_values(ascending<span class="op">=</span><span class="va">False</span>).<span class="bu">round</span>(<span class="dv">1</span>))</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="fl">4.8</span>))</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>bars <span class="op">=</span> ax.barh(top_skills_pct.index, top_skills_pct.values, color<span class="op">=</span>BLUE)</span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>ax.bar_label(bars, labels<span class="op">=</span>[<span class="ss">f"</span><span class="sc">{</span>v<span class="sc">:.0f}</span><span class="ss">%"</span> <span class="cf">for</span> v <span class="kw">in</span> top_skills_pct.values], padding<span class="op">=</span><span class="dv">3</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f"Top 10 Specialized Skills,</span><span class="ch">\n</span><span class="ss">Share of Postings (n = </span><span class="sc">{</span>n<span class="sc">}</span><span class="ss">)"</span>)</span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Share of postings mentioning the skill (%)"</span>)</span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">""</span>)</span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="dv">0</span>, <span class="dv">100</span>)</span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>source_note(fig, <span class="st">"Source: 2024 Insurance Carrier postings (Step 3), specialized skills field."</span>)</span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Python (Programming Language)    86.2
-Data Analysis                    75.9
-Amazon Web Services              72.4
-SQL (Programming Language)       62.1
-Machine Learning                 58.6
-Computer Science                 55.2
-Domain Knowledge                 51.7
-Emerging Technologies            51.7
-Gitlab                           51.7
-Github                           48.3
-dtype: float64</code></pre>
-</div>
+<div id="cell-top-specialized-skills" class="cell" data-fig-height="4.8" data-fig-width="7" data-execution_count="8">
 <div class="cell-output cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="market_baseline_files/figure-html/cell-20-output-2.png" width="902" height="662" class="figure-img"></p>
+<p><img src="market_baseline_files/figure-html/top-specialized-skills-output-1.png" id="top-specialized-skills" class="quarto-figure quarto-figure-center anchored figure-img" width="902" height="661"></p>
 </figure>
 </div>
 </div>
@@ -600,7 +363,7 @@ dtype: float64</code></pre>
 <li><strong>Missing experience and work-arrangement information.</strong> Minimum experience was missing for 7 postings and no work arrangement was stated for 20; neither was estimated.</li>
 <li><strong>Location is the posting location.</strong> Remote roles may be done from anywhere, so state counts show where the posting is listed, not where work must be done.</li>
 </ul>
-<p>Skills information was considerably more complete. Python (Programming Language), Data Analysis, Amazon Web Services, and SQL (Programming Language) were among the most frequently identified specialized skills.</p>
+<p>Skills information was more complete than salary and work-arrangement information. <strong>Python (Programming Language), Data Analysis, Amazon Web Services, and SQL (Programming Language)</strong> were among the most frequently identified specialized skills in the filtered postings. These findings provide a useful starting point for the project’s Skill Gap Analysis, although the small, employer-concentrated sample limits broader generalization.</p>
 
 
 </section>

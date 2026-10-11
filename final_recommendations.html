@@ -26,10 +26,29 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -73,6 +92,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 <link rel="stylesheet" href="styles.css">
@@ -143,19 +165,20 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#starting-point" id="toc-starting-point" class="nav-link active" data-scroll-target="#starting-point">Starting Point</a></li>
-  <li><a href="#first-skill-per-person" id="toc-first-skill-per-person" class="nav-link" data-scroll-target="#first-skill-per-person">First Skill Per Person</a>
+  <li><a href="#career-pathways" id="toc-career-pathways" class="nav-link active" data-scroll-target="#career-pathways">Career Pathways</a></li>
+  <li><a href="#locations" id="toc-locations" class="nav-link" data-scroll-target="#locations">Locations</a></li>
+  <li><a href="#employers" id="toc-employers" class="nav-link" data-scroll-target="#employers">Employers</a></li>
+  <li><a href="#skill-development-priorities" id="toc-skill-development-priorities" class="nav-link" data-scroll-target="#skill-development-priorities">Skill Development Priorities</a>
   <ul class="collapse">
-  <li><a href="#gabriel-python" id="toc-gabriel-python" class="nav-link" data-scroll-target="#gabriel-python">Gabriel: Python</a></li>
-  <li><a href="#genevieve-cloud-aws" id="toc-genevieve-cloud-aws" class="nav-link" data-scroll-target="#genevieve-cloud-aws">Genevieve: Cloud (AWS)</a></li>
-  <li><a href="#haben-spark-pyspark" id="toc-haben-spark-pyspark" class="nav-link" data-scroll-target="#haben-spark-pyspark">Haben: Spark / PySpark</a></li>
-  <li><a href="#everyone-git-cicd" id="toc-everyone-git-cicd" class="nav-link" data-scroll-target="#everyone-git-cicd">Everyone: Git &amp; CI/CD</a></li>
+  <li><a href="#team-skill-readiness-matrix" id="toc-team-skill-readiness-matrix" class="nav-link" data-scroll-target="#team-skill-readiness-matrix">Team Skill Readiness Matrix</a></li>
+  <li><a href="#gabriel-technical-development-plan" id="toc-gabriel-technical-development-plan" class="nav-link" data-scroll-target="#gabriel-technical-development-plan">Gabriel — Technical Development Plan</a></li>
+  <li><a href="#genevieve-technical-development-plan" id="toc-genevieve-technical-development-plan" class="nav-link" data-scroll-target="#genevieve-technical-development-plan">Genevieve — Technical Development Plan</a></li>
+  <li><a href="#haben-technical-development-plan" id="toc-haben-technical-development-plan" class="nav-link" data-scroll-target="#haben-technical-development-plan">Haben — Technical Development Plan</a></li>
+  <li><a href="#shared-team-development-plan" id="toc-shared-team-development-plan" class="nav-link" data-scroll-target="#shared-team-development-plan">Shared Team Development Plan</a></li>
+  <li><a href="#development-timeline" id="toc-development-timeline" class="nav-link" data-scroll-target="#development-timeline">Development Timeline</a></li>
+  <li><a href="#collaborative-skill-development" id="toc-collaborative-skill-development" class="nav-link" data-scroll-target="#collaborative-skill-development">Collaborative Skill Development</a></li>
   </ul></li>
-  <li><a href="#timeline" id="toc-timeline" class="nav-link" data-scroll-target="#timeline">Timeline</a></li>
-  <li><a href="#covering-each-others-gaps" id="toc-covering-each-others-gaps" class="nav-link" data-scroll-target="#covering-each-others-gaps">Covering Each Other’s Gaps</a></li>
-  <li><a href="#not-a-priority" id="toc-not-a-priority" class="nav-link" data-scroll-target="#not-a-priority">Not a Priority</a></li>
-  <li><a href="#limits" id="toc-limits" class="nav-link" data-scroll-target="#limits">Limits</a></li>
-  <li><a href="#still-to-add-for-the-final-version" id="toc-still-to-add-for-the-final-version" class="nav-link" data-scroll-target="#still-to-add-for-the-final-version">Still to Add for the Final Version</a></li>
+  <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations">Limitations</a></li>
   </ul>
 </nav>
     </div>
@@ -181,155 +204,300 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Draft for team review.</p>
-<section id="starting-point" class="level2">
-<h2 class="anchored" data-anchor-id="starting-point">Starting Point</h2>
-<p>Source: Skill Gap Analysis page. 29 Insurance Data Engineer postings, three self-ratings on a 1 to 5 scale. Gap = market score minus team average.</p>
-<table class="caption-top table">
+<p>This section provides career recommendations for students and entry-level applicants pursuing Data Engineering opportunities in the Insurance Carrier industry (NAICS 5241). The recommendations focus on <strong>suitable career pathways, employment locations, potential employers, and technical skill development</strong>.</p>
+<p>The findings indicate that Data Engineering offers attractive earning potential, but experience requirements and technical skill gaps can make direct entry challenging. Therefore, the recommendations emphasize practical ways to build qualifications, identify relevant opportunities, and prepare for long-term career growth.</p>
+<p>The recommendations build on the Career Evaluation, Market Baseline, and Skill Gap Analysis findings.</p>
+<section id="career-pathways" class="level2">
+<h2 class="anchored" data-anchor-id="career-pathways">Career Pathways</h2>
+<p>Based on the Career Evaluation and Skill Gap Analysis findings, <strong>entering Data Engineering directly may be challenging for students and entry-level applicants</strong>. The analyzed positions had a median minimum experience requirement of five years, while several important technical skills require further development. Therefore, applicants should consider related entry-level positions that can provide practical experience before transitioning into Data Engineering.</p>
+<p><strong>Data Analyst</strong> is a recommended starting point for applicants with existing SQL knowledge. This role can help develop experience in querying databases, cleaning data, preparing reports, and working with business information. It provides a foundation for understanding how organizations use data to support decisions.</p>
+<p><strong>Junior Data Engineer</strong> is a more direct career pathway for applicants who have developed foundational Python, SQL, and ETL skills. Entry-level engineering responsibilities can help build experience with data pipelines, databases, and cloud technologies, preparing candidates for more advanced Data Engineering positions.</p>
+<p><strong>Business Intelligence (BI) Analyst</strong> is another potential entry-level pathway. This role provides opportunities to strengthen SQL, data modeling, reporting, and data visualization skills while gaining experience working with business stakeholders.</p>
+<p>Overall, <strong>Data Analyst and BI Analyst positions are practical starting points, while Junior Data Engineer is the most direct pathway toward a long-term Data Engineering career</strong>. Applicants should prioritize roles that offer opportunities to develop Python, SQL, cloud computing, and data pipeline skills.</p>
+</section>
+<section id="locations" class="level2">
+<h2 class="anchored" data-anchor-id="locations">Locations</h2>
+<p>Location is an important consideration for applicants pursuing Data Engineering careers in the Insurance Carrier industry (NAICS 5241). The Market Baseline identified relevant job postings across <strong>10 states</strong>, indicating that opportunities are geographically distributed rather than limited to a single location.</p>
+<p>For entry-level applicants, the recommended approach is to <strong>prioritize locations with the highest concentration of relevant job postings</strong>, while also considering access to internships, related data positions, and professional development opportunities. Areas with multiple potential employers may provide greater flexibility when searching for an initial position or transitioning into Data Engineering.</p>
+<p>Remote work should also be considered when evaluating opportunities. Nine of the 29 analyzed postings explicitly mentioned remote work, while 20 did not specify a work arrangement. Applicants should therefore <strong>explore remote opportunities but verify each position’s location and work requirements</strong> before applying.</p>
+<p>Overall, applicants should focus on locations where relevant opportunities are available while remaining flexible about relocation, hybrid arrangements, and related entry-level roles. A broader geographic search may increase access to potential career pathways.</p>
+</section>
+<section id="employers" class="level2">
+<h2 class="anchored" data-anchor-id="employers">Employers</h2>
+<p>The Market Baseline identified <strong>seven employers</strong> advertising Data Engineering and related positions within the Insurance Carrier industry (NAICS 5241). These findings suggest that applicants should consider both the number of available opportunities and the experience requirements when selecting potential employers.</p>
+<p><strong>State Farm</strong> is an important employer to consider because it accounted for approximately <strong>52% of the 29 analyzed job postings</strong>. This indicates a strong presence in the observed job market, although repeated advertisements do not necessarily represent separate vacancies. Applicants should review State Farm’s opportunities while paying particular attention to required experience, technical skills, and entry-level eligibility.</p>
+<p>Rather than focusing exclusively on one employer, applicants should also explore the other insurance companies represented in the dataset. <strong>A diversified employer search</strong> may provide access to different technologies, work arrangements, and career-development opportunities. Applicants should prioritize organizations offering internships, junior-level positions, or related data roles that provide opportunities to develop practical Data Engineering skills.</p>
+<p>Overall, <strong>State Farm is a priority employer to investigate based on posting volume</strong>, but applicants should compare multiple organizations and focus on positions that align with their current qualifications and long-term career goals.</p>
+</section>
+<section id="skill-development-priorities" class="level2">
+<h2 class="anchored" data-anchor-id="skill-development-priorities">Skill Development Priorities</h2>
+<p>The Skill Gap Analysis identified <strong>Cloud Computing, Python, Git &amp; CI/CD, and Spark / PySpark</strong> as the highest-priority areas for technical development. These skills appeared frequently in the analyzed Data Engineering job postings, while the team’s self-reported proficiency remained relatively low. Addressing these gaps would help improve readiness for Data Engineering careers in the Insurance Carrier industry.</p>
+<p><strong>Python and Cloud Computing</strong> should be primary development priorities because they are important for building data pipelines, automating processing tasks, and managing cloud-based data infrastructure. Applicants should gain practical experience through programming exercises, cloud training, and projects involving data storage and transformation.</p>
+<p><strong>Git &amp; CI/CD and Spark / PySpark</strong> should also receive significant attention. Git supports collaboration and version control, while CI/CD practices help automate development workflows. Spark and PySpark provide experience processing larger datasets, making them valuable skills for more advanced Data Engineering responsibilities.</p>
+<p>Applicants should also strengthen <strong>ETL/ELT and data pipeline development</strong>, while building on their existing SQL knowledge. Combining these skills in practical projects can demonstrate the ability to collect, transform, validate, and manage data.</p>
+<p>Overall, the recommended approach is to <strong>prioritize the largest skill gaps, develop hands-on projects, and build a portfolio demonstrating technical proficiency</strong>. This provides a structured path toward stronger qualifications and greater career readiness.</p>
+<section id="team-skill-readiness-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="team-skill-readiness-matrix">Team Skill Readiness Matrix</h3>
+<div id="combined-skill-gap-matrix" class="cell" data-execution_count="1">
+<div id="combined-skill-gap-matrix-1" class="cell-output cell-output-display">
+<style type="text/css">
+#T_5bfed thead th {
+  background-color: #17324D;
+  color: #FFFFFF;
+  font-weight: bold;
+  text-align: left;
+  padding: 12px 10px;
+}
+#T_5bfed tbody td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #E5E7EB;
+}
+#T_5bfed tbody tr:nth-child(odd) td {
+  background-color: #FFFFFF;
+}
+#T_5bfed tbody tr:nth-child(even) td {
+  background-color: #F3F6FA;
+}
+#T_5bfed table {
+  border-collapse: collapse;
+  width: 100%;
+}
+#T_5bfed_row0_col0, #T_5bfed_row0_col1, #T_5bfed_row0_col2, #T_5bfed_row0_col3, #T_5bfed_row0_col4, #T_5bfed_row0_col5, #T_5bfed_row1_col0, #T_5bfed_row1_col1, #T_5bfed_row1_col2, #T_5bfed_row1_col3, #T_5bfed_row1_col4, #T_5bfed_row1_col5, #T_5bfed_row2_col0, #T_5bfed_row2_col1, #T_5bfed_row2_col2, #T_5bfed_row2_col3, #T_5bfed_row2_col4, #T_5bfed_row2_col5, #T_5bfed_row3_col0, #T_5bfed_row3_col1, #T_5bfed_row3_col2, #T_5bfed_row3_col3, #T_5bfed_row3_col4, #T_5bfed_row3_col5, #T_5bfed_row4_col0, #T_5bfed_row4_col1, #T_5bfed_row4_col2, #T_5bfed_row4_col3, #T_5bfed_row4_col4, #T_5bfed_row4_col5, #T_5bfed_row5_col0, #T_5bfed_row5_col1, #T_5bfed_row5_col2, #T_5bfed_row5_col3, #T_5bfed_row5_col4, #T_5bfed_row5_col5, #T_5bfed_row6_col0, #T_5bfed_row6_col1, #T_5bfed_row6_col2, #T_5bfed_row6_col3, #T_5bfed_row6_col4, #T_5bfed_row6_col5, #T_5bfed_row7_col0, #T_5bfed_row7_col1, #T_5bfed_row7_col2, #T_5bfed_row7_col3, #T_5bfed_row7_col4, #T_5bfed_row7_col5, #T_5bfed_row8_col0, #T_5bfed_row8_col1, #T_5bfed_row8_col2, #T_5bfed_row8_col3, #T_5bfed_row8_col4, #T_5bfed_row8_col5, #T_5bfed_row9_col0, #T_5bfed_row9_col1, #T_5bfed_row9_col2, #T_5bfed_row9_col3, #T_5bfed_row9_col4, #T_5bfed_row9_col5 {
+  color: #1F2937;
+  text-align: left;
+  padding: 10px 12px;
+}
+#T_5bfed_row0_col6, #T_5bfed_row1_col6, #T_5bfed_row2_col6, #T_5bfed_row3_col6 {
+  color: #1F2937;
+  text-align: left;
+  padding: 10px 12px;
+  color: #DC2626;
+  font-weight: bold;
+}
+#T_5bfed_row4_col6 {
+  color: #1F2937;
+  text-align: left;
+  padding: 10px 12px;
+  color: #D97706;
+  font-weight: bold;
+}
+#T_5bfed_row5_col6, #T_5bfed_row6_col6, #T_5bfed_row7_col6, #T_5bfed_row8_col6, #T_5bfed_row9_col6 {
+  color: #1F2937;
+  text-align: left;
+  padding: 10px 12px;
+  color: #15803D;
+  font-weight: bold;
+}
+</style>
+
+<table id="T_5bfed" class="caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
-<th>Skill</th>
-<th>Team average</th>
-<th>Postings that list it</th>
-<th>Gap</th>
-<th>Priority</th>
+<th id="T_5bfed_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">Skill</th>
+<th id="T_5bfed_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">Haben</th>
+<th id="T_5bfed_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">Genevieve</th>
+<th id="T_5bfed_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">Gabriel</th>
+<th id="T_5bfed_level0_col4" class="col_heading level0 col4" data-quarto-table-cell-role="th">Team Avg</th>
+<th id="T_5bfed_level0_col5" class="col_heading level0 col5" data-quarto-table-cell-role="th">Postings</th>
+<th id="T_5bfed_level0_col6" class="col_heading level0 col6" data-quarto-table-cell-role="th">Priority</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Cloud Computing</td>
-<td>1.33</td>
-<td>93%</td>
-<td>3.67</td>
-<td>High</td>
+<td id="T_5bfed_row0_col0" class="data row0 col0">Python</td>
+<td id="T_5bfed_row0_col1" class="data row0 col1">2 / 3</td>
+<td id="T_5bfed_row0_col2" class="data row0 col2">1 / 4</td>
+<td id="T_5bfed_row0_col3" class="data row0 col3">1 / 4</td>
+<td id="T_5bfed_row0_col4" class="data row0 col4">1.33</td>
+<td id="T_5bfed_row0_col5" class="data row0 col5">86%</td>
+<td id="T_5bfed_row0_col6" class="data row0 col6">High</td>
 </tr>
 <tr class="even">
-<td>Python</td>
-<td>1.33</td>
-<td>86%</td>
-<td>3.67</td>
-<td>High</td>
+<td id="T_5bfed_row1_col0" class="data row1 col0">Cloud Computing</td>
+<td id="T_5bfed_row1_col1" class="data row1 col1">2 / 3</td>
+<td id="T_5bfed_row1_col2" class="data row1 col2">1 / 4</td>
+<td id="T_5bfed_row1_col3" class="data row1 col3">1 / 4</td>
+<td id="T_5bfed_row1_col4" class="data row1 col4">1.33</td>
+<td id="T_5bfed_row1_col5" class="data row1 col5">93%</td>
+<td id="T_5bfed_row1_col6" class="data row1 col6">High</td>
 </tr>
 <tr class="odd">
-<td>Spark / PySpark</td>
-<td>1.00</td>
-<td>62%</td>
-<td>3.00</td>
-<td>High</td>
+<td id="T_5bfed_row2_col0" class="data row2 col0">Spark / PySpark</td>
+<td id="T_5bfed_row2_col1" class="data row2 col1">1 / 3</td>
+<td id="T_5bfed_row2_col2" class="data row2 col2">1 / 3</td>
+<td id="T_5bfed_row2_col3" class="data row2 col3">1 / 3</td>
+<td id="T_5bfed_row2_col4" class="data row2 col4">1.00</td>
+<td id="T_5bfed_row2_col5" class="data row2 col5">62%</td>
+<td id="T_5bfed_row2_col6" class="data row2 col6">High</td>
 </tr>
 <tr class="even">
-<td>Git &amp; CI/CD</td>
-<td>2.00</td>
-<td>93%</td>
-<td>3.00</td>
-<td>High</td>
+<td id="T_5bfed_row3_col0" class="data row3 col0">Git &amp; CI/CD</td>
+<td id="T_5bfed_row3_col1" class="data row3 col1">2 / 3</td>
+<td id="T_5bfed_row3_col2" class="data row3 col2">2 / 3</td>
+<td id="T_5bfed_row3_col3" class="data row3 col3">2 / 3</td>
+<td id="T_5bfed_row3_col4" class="data row3 col4">2.00</td>
+<td id="T_5bfed_row3_col5" class="data row3 col5">93%</td>
+<td id="T_5bfed_row3_col6" class="data row3 col6">High</td>
 </tr>
 <tr class="odd">
-<td>ETL / Pipelines</td>
-<td>2.67</td>
-<td>62%</td>
-<td>1.33</td>
-<td>Moderate</td>
+<td id="T_5bfed_row4_col0" class="data row4 col0">ETL/ELT &amp; Data Pipelines</td>
+<td id="T_5bfed_row4_col1" class="data row4 col1">2 / 2</td>
+<td id="T_5bfed_row4_col2" class="data row4 col2">3 / 1</td>
+<td id="T_5bfed_row4_col3" class="data row4 col3">2 / 2</td>
+<td id="T_5bfed_row4_col4" class="data row4 col4">2.33</td>
+<td id="T_5bfed_row4_col5" class="data row4 col5">62%</td>
+<td id="T_5bfed_row4_col6" class="data row4 col6">Moderate</td>
 </tr>
 <tr class="even">
-<td>SQL</td>
-<td>3.67</td>
-<td>76%</td>
-<td>0.33</td>
-<td>Low</td>
+<td id="T_5bfed_row5_col0" class="data row5 col0">SQL</td>
+<td id="T_5bfed_row5_col1" class="data row5 col1">3 / 1</td>
+<td id="T_5bfed_row5_col2" class="data row5 col2">4 / 0</td>
+<td id="T_5bfed_row5_col3" class="data row5 col3">3 / 1</td>
+<td id="T_5bfed_row5_col4" class="data row5 col4">3.33</td>
+<td id="T_5bfed_row5_col5" class="data row5 col5">76%</td>
+<td id="T_5bfed_row5_col6" class="data row5 col6">Low</td>
+</tr>
+<tr class="odd">
+<td id="T_5bfed_row6_col0" class="data row6 col0">Databricks</td>
+<td id="T_5bfed_row6_col1" class="data row6 col1">1 / 0</td>
+<td id="T_5bfed_row6_col2" class="data row6 col2">1 / 0</td>
+<td id="T_5bfed_row6_col3" class="data row6 col3">1 / 0</td>
+<td id="T_5bfed_row6_col4" class="data row6 col4">1.00</td>
+<td id="T_5bfed_row6_col5" class="data row6 col5">17%</td>
+<td id="T_5bfed_row6_col6" class="data row6 col6">Low</td>
+</tr>
+<tr class="even">
+<td id="T_5bfed_row7_col0" class="data row7 col0">Data Modeling &amp; Warehousing</td>
+<td id="T_5bfed_row7_col1" class="data row7 col1">2 / 0</td>
+<td id="T_5bfed_row7_col2" class="data row7 col2">3 / 0</td>
+<td id="T_5bfed_row7_col3" class="data row7 col3">3 / 0</td>
+<td id="T_5bfed_row7_col4" class="data row7 col4">2.67</td>
+<td id="T_5bfed_row7_col5" class="data row7 col5">34%</td>
+<td id="T_5bfed_row7_col6" class="data row7 col6">Low</td>
+</tr>
+<tr class="odd">
+<td id="T_5bfed_row8_col0" class="data row8 col0">Databases / Snowflake</td>
+<td id="T_5bfed_row8_col1" class="data row8 col1">1 / 1</td>
+<td id="T_5bfed_row8_col2" class="data row8 col2">2 / 0</td>
+<td id="T_5bfed_row8_col3" class="data row8 col3">3 / 0</td>
+<td id="T_5bfed_row8_col4" class="data row8 col4">2.00</td>
+<td id="T_5bfed_row8_col5" class="data row8 col5">34%</td>
+<td id="T_5bfed_row8_col6" class="data row8 col6">Low</td>
+</tr>
+<tr class="even">
+<td id="T_5bfed_row9_col0" class="data row9 col0">Data Quality &amp; Governance</td>
+<td id="T_5bfed_row9_col1" class="data row9 col1">3 / 0</td>
+<td id="T_5bfed_row9_col2" class="data row9 col2">3 / 0</td>
+<td id="T_5bfed_row9_col3" class="data row9 col3">3 / 0</td>
+<td id="T_5bfed_row9_col4" class="data row9 col4">3.00</td>
+<td id="T_5bfed_row9_col5" class="data row9 col5">41%</td>
+<td id="T_5bfed_row9_col6" class="data row9 col6">Low</td>
 </tr>
 </tbody>
 </table>
-<p>Target for every plan below: first skill from its current rating to 3 (Intermediate).</p>
+</div>
+<div id="combined-skill-gap-matrix-2" class="cell-output cell-output-display cell-output-markdown">
+<p>Each team member’s score is shown as <strong>Skill Rating / Skill Gap</strong>. For example, <strong>2 / 3</strong> means a self-assessed skill rating of 2 out of 5 and a calculated gap of 3. Larger gaps indicate higher development priorities.</p>
+</div>
+</div>
 </section>
-<section id="first-skill-per-person" class="level2">
-<h2 class="anchored" data-anchor-id="first-skill-per-person">First Skill Per Person</h2>
-<section id="gabriel-python" class="level3">
-<h3 class="anchored" data-anchor-id="gabriel-python">Gabriel: Python</h3>
-<ul>
-<li>Evidence: rating 1, gap 4. Python is in 86% of postings and PySpark work builds on it.</li>
-<li>Resource: the official Python Tutorial (docs.python.org/3/tutorial), then the PySpark labs in the course.</li>
-<li>Action: finish the tutorial sections on control flow, data structures, functions, and modules. Done by Oct 14.</li>
-<li>Action: turn the project data cleaning step into a plain script that Haben can run and review.</li>
-<li>Next: ETL / Pipelines (rating 2, lowest on the team, gap 2).</li>
-</ul>
+<section id="gabriel-technical-development-plan" class="level3">
+<h3 class="anchored" data-anchor-id="gabriel-technical-development-plan">Gabriel — Technical Development Plan</h3>
+<p>Gabriel should prioritize <strong>Python and Cloud Computing</strong>, where his individual skill gaps are highest, followed by <strong>Spark / PySpark and Git &amp; CI/CD</strong>. His existing intermediate skills in SQL, Data Modeling &amp; Warehousing, Databases / Snowflake, and Data Quality &amp; Governance provide a foundation for developing more advanced Data Engineering capabilities.</p>
+<p>He should begin with <a href="https://www.datacamp.com/courses/intro-to-python-for-data-science">DataCamp’s Introduction to Python</a>, followed by <a href="https://www.datacamp.com/courses/intermediate-python">Intermediate Python</a>, to strengthen his programming foundation <span class="citation" data-cites="datacamp_intro_python datacamp_intermediate_python">(<a href="#ref-datacamp_intro_python" role="doc-biblioref">DataCamp</a>; <a href="#ref-datacamp_intermediate_python" role="doc-biblioref">DataCamp</a>)</span>. He can then apply these skills by developing reusable data-cleaning scripts and an ETL pipeline using Python and SQL. He should also gain practical cloud experience through <a href="https://skillbuilder.aws/">AWS Skill Builder</a> <span class="citation" data-cites="aws_skill_builder">(<a href="#ref-aws_skill_builder" role="doc-biblioref">Amazon Web Services</a>)</span> and introductory Amazon S3 and EC2 exercises. As his programming skills improve, he can explore Spark / PySpark and GitHub-based collaboration.</p>
+<p><strong>Development goal:</strong> Build and document an end-to-end Python and SQL data pipeline on GitHub, incorporating cloud storage and progressing toward intermediate proficiency in his highest-priority skills.</p>
 </section>
-<section id="genevieve-cloud-aws" class="level3">
-<h3 class="anchored" data-anchor-id="genevieve-cloud-aws">Genevieve: Cloud (AWS)</h3>
-<ul>
-<li>Evidence: rating 1, gap 4. Cloud tools are in 93% of postings.</li>
-<li>Resource: AWS Academy Cloud Foundations badge (course item, due Oct 7), then AWS Skill Builder, Cloud Practitioner Essentials (free, skillbuilder.aws).</li>
-<li>Action: launch and stop an EC2 instance and read and write an S3 bucket in the Learner Lab without notes. Done by Oct 14.</li>
-<li>Next: Python (rating 1, gap 4).</li>
-</ul>
+<section id="genevieve-technical-development-plan" class="level3">
+<h3 class="anchored" data-anchor-id="genevieve-technical-development-plan">Genevieve — Technical Development Plan</h3>
+<p>Genevieve should prioritize <strong>Python and Cloud Computing</strong>, where her individual skill gaps are highest, followed by <strong>Spark / PySpark and Git &amp; CI/CD</strong>. Her existing strengths in SQL, ETL/ELT, Data Modeling &amp; Warehousing, Data Quality &amp; Governance, and Insurance Knowledge provide a foundation for developing more advanced Data Engineering skills.</p>
+<p>She should begin with <a href="https://www.datacamp.com/courses/intro-to-python-for-data-science">DataCamp’s Introduction to Python</a>, followed by <a href="https://www.datacamp.com/courses/intermediate-python">Intermediate Python</a>, to strengthen her programming abilities <span class="citation" data-cites="datacamp_intro_python datacamp_intermediate_python">(<a href="#ref-datacamp_intro_python" role="doc-biblioref">DataCamp</a>; <a href="#ref-datacamp_intermediate_python" role="doc-biblioref">DataCamp</a>)</span>. She can continue developing cloud knowledge through <a href="https://skillbuilder.aws/">AWS Skill Builder</a> <span class="citation" data-cites="aws_skill_builder">(<a href="#ref-aws_skill_builder" role="doc-biblioref">Amazon Web Services</a>)</span> and hands-on exercises involving Amazon EC2 and S3. With her existing SQL proficiency, <a href="https://www.datacamp.com/courses/intermediate-sql">Intermediate SQL</a> <span class="citation" data-cites="datacamp_intermediate_sql">(<a href="#ref-datacamp_intermediate_sql" role="doc-biblioref">DataCamp</a>)</span> can provide opportunities to strengthen advanced querying skills. She should also practice integrating Python and SQL into cloud-based data pipelines.</p>
+<p><strong>Development goal:</strong> Build and document a cloud-based data pipeline using Python, AWS, and SQL, demonstrating data ingestion, transformation, and storage while progressing toward intermediate proficiency in her highest-priority skills.</p>
 </section>
-<section id="haben-spark-pyspark" class="level3">
-<h3 class="anchored" data-anchor-id="haben-spark-pyspark">Haben: Spark / PySpark</h3>
-<ul>
-<li>Evidence: rating 1, gap 3. Spark is in 62% of postings. All four of Haben’s high-priority gaps are 3, and Spark is the one at the floor.</li>
-<li>Resource: the Module 5 Spark ML assignment (due Oct 7) and the Apache Spark Quick Start (spark.apache.org/docs/latest/quick-start.html).</li>
-<li>Action: run the assignment pipeline end to end, then write one page of notes for Gabriel and Genevieve. Done by Oct 14.</li>
-<li>Next: Git &amp; CI/CD lead (rating 2, gap 3).</li>
-</ul>
+<section id="haben-technical-development-plan" class="level3">
+<h3 class="anchored" data-anchor-id="haben-technical-development-plan">Haben — Technical Development Plan</h3>
+<p>Haben should prioritize <strong>Spark / PySpark, Python, Cloud Computing, and Git &amp; CI/CD</strong>, where his individual skill gaps are highest. His existing intermediate skills in SQL and Data Quality &amp; Governance provide a foundation for developing stronger Data Engineering capabilities, particularly in large-scale data processing and cloud-based systems.</p>
+<p>He should strengthen his programming skills through <a href="https://www.datacamp.com/courses/intro-to-python-for-data-science">DataCamp’s Introduction to Python</a> and <a href="https://www.datacamp.com/courses/intermediate-python">Intermediate Python</a> <span class="citation" data-cites="datacamp_intro_python datacamp_intermediate_python">(<a href="#ref-datacamp_intro_python" role="doc-biblioref">DataCamp</a>; <a href="#ref-datacamp_intermediate_python" role="doc-biblioref">DataCamp</a>)</span>, while advancing his SQL knowledge through <a href="https://www.datacamp.com/courses/intermediate-sql">Intermediate SQL</a> <span class="citation" data-cites="datacamp_intermediate_sql">(<a href="#ref-datacamp_intermediate_sql" role="doc-biblioref">DataCamp</a>)</span>. Building on his experience from the <strong>Module 5 Spark Machine Learning assignment</strong>, he should develop additional PySpark pipelines using the <a href="https://spark.apache.org/docs/latest/">Apache Spark documentation</a> <span class="citation" data-cites="apache_spark">(<a href="#ref-apache_spark" role="doc-biblioref">Apache Software Foundation</a>)</span>. He can also expand his cloud experience through hands-on AWS EC2 and S3 projects and use GitHub for version control and collaborative development.</p>
+<p><strong>Development goal:</strong> Build and document an end-to-end data pipeline using Python, PySpark, SQL, and AWS, demonstrating data ingestion, transformation, validation, and cloud-based processing while progressing toward intermediate proficiency in his highest-priority skills.</p>
 </section>
-<section id="everyone-git-cicd" class="level3">
-<h3 class="anchored" data-anchor-id="everyone-git-cicd">Everyone: Git &amp; CI/CD</h3>
-<ul>
-<li>Evidence: all three rate 2, gap 3. Git or CI/CD is in 93% of postings.</li>
-<li>Rule: every change to the team site goes through a branch and a pull request with one reviewer, starting now.</li>
-<li>Resource: GitHub Skills (skills.github.com), the introduction course first, then the GitHub Actions course.</li>
-<li>Done by Oct 12, before the report is submitted.</li>
-</ul>
+<section id="shared-team-development-plan" class="level3">
+<h3 class="anchored" data-anchor-id="shared-team-development-plan">Shared Team Development Plan</h3>
+<p>The Individual Skill Gap Matrix identifies Git &amp; CI/CD as a shared development priority, with all three team members reporting a proficiency level of 2 out of 5 and an individual skill gap of 3. Improving collaboration and version-control practices will help the team develop technical skills that are relevant to professional Data Engineering environments.</p>
+<p>The team should use GitHub branches, pull requests, and peer code reviews when collaborating on technical projects. Members can strengthen these skills through GitHub Skills and gradually introduce GitHub Actions to automate basic testing and validation. Each member should also contribute to a shared data pipeline project, applying Python, SQL, PySpark, and cloud technologies while documenting the development process.</p>
+</section>
+<section id="development-timeline" class="level3">
+<h3 class="anchored" data-anchor-id="development-timeline">Development Timeline</h3>
+<p>The following timeline outlines the team’s academic milestones and longer-term skill development goals. Each member aims to reach <strong>Level 3 — Intermediate</strong> in selected high-priority skills.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Period</th>
+<th>Development Activities</th>
+<th>Expected Outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>October 1–7, 2026</strong></td>
+<td>Complete Spark ML assignment and AWS Academy coursework</td>
+<td>Establish technical foundations</td>
+</tr>
+<tr class="even">
+<td><strong>October 8–14, 2026</strong></td>
+<td>Complete the final report (October 12), prepare for the presentation (October 14), and demonstrate initial skill-development activities</td>
+<td>Final project submission and presentation</td>
+</tr>
+<tr class="odd">
+<td><strong>October 15–November 15, 2026</strong></td>
+<td>Develop first-priority skills through Python, AWS, PySpark, and Git projects</td>
+<td>Progress toward Level 3; reassess skills November 15</td>
+</tr>
+<tr class="even">
+<td><strong>November 16–December 15, 2026</strong></td>
+<td>Strengthen second-priority skills, expand portfolio projects, and continue collaborative development</td>
+<td>Reassess skills December 15 and compare results with the baseline</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Progress Measurement:</strong> Preserve the original team ratings as the baseline and record future assessments separately. Evaluate progress using completed projects, demonstrated technical abilities, and updated self-assessments.</p>
+</section>
+<section id="collaborative-skill-development" class="level3">
+<h3 class="anchored" data-anchor-id="collaborative-skill-development">Collaborative Skill Development</h3>
+<p>As the project concludes, team members can continue supporting each other’s professional development by sharing their existing strengths and knowledge. <strong>Haben</strong> can contribute his intermediate skills in SQL and Data Quality &amp; Governance, while <strong>Genevieve</strong> can share her stronger knowledge of SQL, ETL/ELT, and the insurance industry. <strong>Gabriel</strong> can contribute his strengths in SQL, Data Modeling &amp; Warehousing, Databases / Snowflake, and Data Quality &amp; Governance. Since all three members have beginner-level proficiency in Spark / PySpark, they can continue learning together through practical exercises and shared projects. By maintaining this collaboration beyond the course, the team can <strong>address individual skill gaps, strengthen technical abilities, and improve long-term career readiness</strong>.</p>
 </section>
 </section>
-<section id="timeline" class="level2">
-<h2 class="anchored" data-anchor-id="timeline">Timeline</h2>
-<ul>
-<li>Oct 1 to 7: course items due Oct 7 (Spark ML assignment, AWS Academy badge). Pull request rule starts.</li>
-<li>Oct 8 to 14: report due Oct 12, presentation Oct 14. Each person shows the first-skill action item to the team.</li>
-<li>Oct 15 to Nov 15: first skills to rating 3. Re-rate Nov 15.</li>
-<li>Nov 16 to Dec 15: second skills to rating 3. Re-rate Dec 15 and rerun the gap comparison with the same method.</li>
-<li>Keep the original ratings as the baseline. Store re-ratings in a separate file.</li>
-</ul>
-</section>
-<section id="covering-each-others-gaps" class="level2">
-<h2 class="anchored" data-anchor-id="covering-each-others-gaps">Covering Each Other’s Gaps</h2>
-<p>Cover goes to the highest current rating on the team.</p>
-<ul>
-<li>Python: Haben (2) reviews Gabriel’s and Genevieve’s code.</li>
-<li>Cloud: Haben (2) reviews cloud steps until Genevieve reaches 3.</li>
-<li>Spark: nobody is above 1. Haben learns it first and teaches it. Run every Spark result on EC2 before it goes in the report.</li>
-<li>Git: nobody is above 2. Haben leads the pull request process.</li>
-<li>ETL and SQL: Haben and Genevieve (ETL 3, SQL 4) review Gabriel’s work.</li>
-<li>Insurance knowledge: Genevieve (4; Haben and Gabriel rate 1) reviews all insurance wording in the report.</li>
-</ul>
-</section>
-<section id="not-a-priority" class="level2">
-<h2 class="anchored" data-anchor-id="not-a-priority">Not a Priority</h2>
-<ul>
-<li>Databricks, Data Modeling, Databases / Snowflake, Data Quality: gap 0 on the Skill Gap page. Databricks is in 17% of postings.</li>
-<li>SQL: gap 0.33. No separate plan.</li>
-</ul>
-</section>
-<section id="limits" class="level2">
-<h2 class="anchored" data-anchor-id="limits">Limits</h2>
-<ul>
-<li>Three self-ratings. No outside check.</li>
-<li>Market score is the share of 29 postings that list a skill. It does not show the level employers expect.</li>
-<li>Insurance knowledge is rated but not compared against postings.</li>
-</ul>
-</section>
-<section id="still-to-add-for-the-final-version" class="level2">
-<h2 class="anchored" data-anchor-id="still-to-add-for-the-final-version">Still to Add for the Final Version</h2>
-<ul>
-<li>Role, location, and employer recommendations from the Step 4 analytics (Module 5 requires them).</li>
-<li>Team contributions.</li>
-</ul>
+<section id="limitations" class="level2">
+<h2 class="anchored" data-anchor-id="limitations">Limitations</h2>
+<p>The career and skill-development recommendations are based on <strong>29 Data Engineering-related job postings from the Insurance Carrier industry (NAICS 5241)</strong>. Because the sample represents a limited number of employers and positions, the findings may not reflect the entire insurance job market or current hiring conditions.</p>
+<p>The Skill Gap Analysis uses <strong>self-reported proficiency ratings from three team members</strong> on a scale of 1 to 5. These ratings have not been independently validated through technical assessments or professional evaluations. Additionally, the market demand scores are derived from how frequently skills appear in job postings, rather than the proficiency levels employers explicitly require. Therefore, the calculated skill gaps should be interpreted as <strong>development indicators, not direct measures of job qualifications</strong>.</p>
+<p>Insurance Knowledge was included in the team’s self-assessment but excluded from the quantitative Skill Gap Matrix because a comparable market demand score was not available.</p>
+<p>The recommended career pathways, locations, and employers are based on the available market evidence and should not be treated as guarantees of employment. Applicants should review current job requirements, verify work arrangements, and consider their individual qualifications when making career decisions.</p>
+
 
 
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-aws_skill_builder" class="csl-entry" role="listitem">
+<span class="smallcaps">Amazon Web Services</span>. <span>“<a href="https://skillbuilder.aws/">AWS Skill Builder</a>,”</span>
+</div>
+<div id="ref-apache_spark" class="csl-entry" role="listitem">
+<span class="smallcaps">Apache Software Foundation</span>. <span>“<a href="https://spark.apache.org/docs/latest/">Apache Spark Documentation</a>,”</span>
+</div>
+<div id="ref-datacamp_intro_python" class="csl-entry" role="listitem">
+<span class="smallcaps">DataCamp</span>. <span>“<a href="https://www.datacamp.com/courses/intro-to-python-for-data-science">Introduction to Python</a>,”</span>
+</div>
+<div id="ref-datacamp_intermediate_python" class="csl-entry" role="listitem">
+<span class="smallcaps">---</span>. <span>“<a href="https://www.datacamp.com/courses/intermediate-python">Intermediate Python</a>,”</span>
+</div>
+<div id="ref-datacamp_intermediate_sql" class="csl-entry" role="listitem">
+<span class="smallcaps">---</span>. <span>“<a href="https://www.datacamp.com/courses/intermediate-sql">Intermediate SQL</a>,”</span>
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
