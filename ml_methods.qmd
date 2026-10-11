@@ -2,6 +2,12 @@
 title: "Predictive Modeling"
 ---
 
+```{=html}
+<style>
+.cell-output-display img.figure-img { max-width: 100%; height: auto; }
+</style>
+```
+
 This page answers the project question with a model. **Which skills and job features go with higher pay** for data jobs at insurance carriers (NAICS 5241)? A job seeker can use the answer to decide which skill to learn next and to judge whether an advertised salary is fair for what the posting asks.
 
 We used **Option A (Regression)**. It is a linear model that predicts a posting's advertised annual salary from the skills it asks for, the experience it requires, the seniority of the title and the work arrangement.
