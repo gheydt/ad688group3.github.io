@@ -1,3 +1,396 @@
 ---
 title: "Predictive Modeling"
 ---
+
+This page answers the project question with a model. **Which skills and job features go with higher pay** for data jobs at insurance carriers (NAICS 5241)? A job seeker can use the answer to decide which skill to learn next and to judge whether an advertised salary is fair for what the posting asks.
+
+We used **Option A (Regression)**. It is a linear model that predicts a posting's advertised annual salary from the skills it asks for, the experience it requires, the seniority of the title and the work arrangement.
+
+```{python}
+#| label: salary-model-setup
+#| echo: false
+
+import re
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from IPython.display import Markdown, display
+
+project_root = Path.cwd()
+while not (project_root / "_quarto.yml").exists():
+    if project_root.parent == project_root:
+        raise FileNotFoundError("Could not find the project root.")
+    project_root = project_root.parent
+
+BLUE = "#1f4e79"
+GREY = "#b0b7bf"
+DARK = "#333333"
+
+plt.rcParams.update({
+    "figure.dpi": 130,
+    "axes.spines.top": False,
+    "axes.spines.right": False,
+    "axes.titlesize": 13,
+    "axes.titleweight": "bold",
+    "axes.labelsize": 12,
+    "font.size": 12,
+    "xtick.labelsize": 11,
+    "ytick.labelsize": 11,
+})
+
+sal_all = pd.read_csv(
+    project_root / "outputs" / "step3" / "insurance_5241_all_postings_step3.csv",
+    low_memory=False,
+)
+
+sal_n_all = len(sal_all)
+sal_with_pay = sal_all[sal_all["SALARY"].notna()]
+sal_n_with_pay = len(sal_with_pay)
+sal_no_intern = sal_with_pay[~sal_with_pay["IS_INTERNSHIP"]]
+sal_n_no_intern = len(sal_no_intern)
+
+# The same job is often reposted in many cities with the same title and pay.
+# Counting each repost would let a handful of employers dominate the fit and
+# would leak copies of one job across the training and test folds.
+sal = sal_no_intern.drop_duplicates(
+    ["COMPANY_NAME", "TITLE_CLEAN", "SALARY"]
+).copy()
+sal_n = len(sal)
+
+skill_fields = [
+    "SKILLS_NAME",
+    "SPECIALIZED_SKILLS_NAME",
+    "COMMON_SKILLS_NAME",
+    "SOFTWARE_SKILLS_NAME",
+]
+sal["ALL_SKILLS"] = (
+    sal[skill_fields].fillna("").astype(str).agg(" | ".join, axis=1).str.lower()
+)
+
+# Same ten skills and patterns as the Skill Gap Analysis page.
+sal_skill_patterns = {
+    "Python": r"\bpython\b",
+    "SQL": r"\bsql\b|structured query language",
+    "ETL/ELT & Data Pipelines":
+        r"\betl\b|\belt\b|data pipelines?|"
+        r"data integration|data ingestion|airflow|\bdbt\b",
+    "Cloud Computing":
+        r"\baws\b|amazon web services|\bazure\b|"
+        r"\bgcp\b|google cloud|cloud computing",
+    "Spark / PySpark": r"\bpyspark\b|apache spark|\bspark\b",
+    "Databricks": r"\bdatabricks\b",
+    "Data Modeling & Warehousing":
+        r"data modeling|data modelling|data model|"
+        r"data warehouse|data warehousing|dimensional model|star schema",
+    "Databases / Snowflake":
+        r"\bsnowflake\b|database|postgresql|postgres|"
+        r"\bmysql\b|\boracle\b|sql server",
+    "Git & CI/CD":
+        r"\bgit\b|github|gitlab|ci/cd|"
+        r"continuous integration|continuous deployment",
+    "Data Quality & Governance":
+        r"data quality|data governance|data lineage|"
+        r"metadata management|master data",
+}
+for skill, pattern in sal_skill_patterns.items():
+    sal[skill] = sal["ALL_SKILLS"].str.contains(pattern, regex=True).astype(int)
+
+title = sal["TITLE_CLEAN"].fillna("")
+sal["Senior title"] = title.str.contains(
+    r"\b(?:senior|sr|lead|principal|staff|manager|director|head|vp|architect)\b"
+).astype(int)
+# "Senior associate" and "associate director" are senior roles, so a senior
+# word wins over a junior word.
+sal["Junior title"] = (
+    title.str.contains(r"\b(?:junior|jr|associate|entry|assistant|trainee|i)\b")
+    & (sal["Senior title"] == 0)
+).astype(int)
+
+sal_exp_median = sal["MIN_YEARS_EXPERIENCE"].median()
+sal["Experience not stated"] = sal["MIN_YEARS_EXPERIENCE"].isna().astype(int)
+sal["Years of experience"] = (
+    sal["MIN_YEARS_EXPERIENCE"].fillna(sal_exp_median).clip(upper=15)
+)
+sal["Fully remote"] = (sal["REMOTE_TYPE_NAME"] == "Remote").astype(int)
+sal["Hybrid"] = (sal["REMOTE_TYPE_NAME"] == "Hybrid Remote").astype(int)
+sal["Degree required"] = sal["MIN_EDULEVELS_NAME"].isin(
+    ["Bachelor's degree", "Master's degree", "Ph.D. or professional degree"]
+).astype(int)
+sal["Core data role"] = sal["IS_DATA_ROLE_MATCH"].astype(int)
+
+sal_job_features = [
+    "Years of experience",
+    "Experience not stated",
+    "Senior title",
+    "Junior title",
+    "Fully remote",
+    "Hybrid",
+    "Degree required",
+    "Core data role",
+]
+sal_features = list(sal_skill_patterns) + sal_job_features
+
+X = np.column_stack([np.ones(sal_n), sal[sal_features].to_numpy(float)])
+y_log = np.log(sal["SALARY"].to_numpy(float))
+y_pay = sal["SALARY"].to_numpy(float)
+
+
+def fit_ols(X, y):
+    beta, *_ = np.linalg.lstsq(X, y, rcond=None)
+    return beta
+
+
+sal_beta = fit_ols(X, y_log)
+sal_resid = y_log - X @ sal_beta
+n_obs, n_par = X.shape
+
+# Robust (HC1) standard errors: pay spread differs across kinds of jobs.
+xtx_inv = np.linalg.inv(X.T @ X)
+meat = (X.T * sal_resid**2) @ X
+sal_se = np.sqrt(np.diag(xtx_inv @ meat @ xtx_inv) * n_obs / (n_obs - n_par))
+
+# Duan smearing factor turns log-scale predictions back into dollars without
+# the downward bias of a plain exp().
+sal_smear = np.mean(np.exp(sal_resid))
+
+sal_coef = pd.DataFrame({
+    "Feature": sal_features,
+    "beta": sal_beta[1:],
+    "se": sal_se[1:],
+})
+sal_coef["Pay difference %"] = np.expm1(sal_coef["beta"]) * 100
+sal_coef["Low %"] = np.expm1(sal_coef["beta"] - 1.96 * sal_coef["se"]) * 100
+sal_coef["High %"] = np.expm1(sal_coef["beta"] + 1.96 * sal_coef["se"]) * 100
+sal_coef["Clear signal"] = (sal_coef["beta"].abs() / sal_coef["se"]) >= 1.96
+
+# Five-fold cross-validation, repeated ten times with different shuffles.
+cv_rows = []
+oof_pred = np.zeros((10, sal_n))
+for rep in range(10):
+    rng = np.random.default_rng(rep)
+    order = rng.permutation(sal_n)
+    for fold in np.array_split(order, 5):
+        train = np.setdiff1d(order, fold)
+        b = fit_ols(X[train], y_log[train])
+        smear = np.mean(np.exp(y_log[train] - X[train] @ b))
+        pred = np.exp(X[fold] @ b) * smear
+        oof_pred[rep, fold] = pred
+        actual = y_pay[fold]
+        baseline = np.median(y_pay[train])
+        cv_rows.append({
+            "rmse": np.sqrt(np.mean((pred - actual) ** 2)),
+            "mae": np.mean(np.abs(pred - actual)),
+            "r2": 1 - np.sum((pred - actual) ** 2)
+                  / np.sum((actual - actual.mean()) ** 2),
+            "base_rmse": np.sqrt(np.mean((baseline - actual) ** 2)),
+            "base_mae": np.mean(np.abs(baseline - actual)),
+        })
+sal_cv = pd.DataFrame(cv_rows).mean()
+sal_oof = oof_pred.mean(axis=0)
+sal_mae_gain = (1 - sal_cv["mae"] / sal_cv["base_mae"]) * 100
+
+
+def coef_row(name):
+    return sal_coef.set_index("Feature").loc[name]
+
+
+def pct(name):
+    return f"{abs(coef_row(name)['Pay difference %']):.0f}%"
+```
+
+## The data behind the model
+
+```{python}
+#| label: salary-model-sample
+#| echo: false
+
+display(Markdown(f"""
+| Step | Postings |
+|---|---:|
+| All insurance carrier data postings in the 2024 dataset | {sal_n_all:,} |
+| Postings that state a salary | {sal_n_with_pay:,} |
+| After removing internships | {sal_n_no_intern:,} |
+| **Distinct jobs used in the model** (repeat listings removed) | **{sal_n:,}** |
+"""))
+```
+
+The model uses the full 1,908-post insurance file and not only the 29 Data Engineer postings because 29 jobs with only 13 listing pay is too few to fit a trustworthy model. All of these jobs are in the same data occupation family (government occupation group *Data Scientists* which includes analysts, engineers and architects) so what drives pay here is a fair guide for a Data Engineer job seeker in the same industry.
+
+Many employers post the same job in dozens of cities with the same title and pay. We kept one copy of each employer, title and salary combination. Without this step the model would mostly learn from a handful of heavily reposted jobs and copies of the same job would show up on both sides of the accuracy test, which makes the model look better than it is.
+
+## What the model uses
+
+| Variable | What it captures |
+|---|---|
+| **Advertised salary** (what we predict) | Annual salary from the posting. The model works on its logarithm, so each result reads as a percentage difference in pay. |
+| **10 skill flags** | Whether the posting asks for each of the ten Data Engineering skills from our Skill Gap Analysis, using the same matching rules. |
+| **Years of experience** | Minimum years the posting requires (capped at 15). Missing values were filled with the median and flagged. |
+| **Senior title / junior title** | Title words such as senior, lead, principal, manager or architect, versus junior, associate, entry or assistant. |
+| **Fully remote / hybrid** | Work arrangement, compared with on-site or not stated. |
+| **Degree required** | The posting asks for a bachelor's degree or higher. |
+| **Core data role** | The posting's title matched the core data-role list from Step 3. |
+
+Each result compares two otherwise similar postings. For example a posting that asks for cloud skills is compared with one that has the same experience, seniority and other skills but does not ask for cloud.
+
+## How we checked it
+
+```{python}
+#| label: salary-model-evaluation
+#| echo: false
+
+display(Markdown(f"""
+We tested the model on jobs it had not seen. We split the {sal_n} jobs into five groups and trained on four and predicted the fifth, then rotated through all five and repeated the whole test ten times with different shuffles. The table compares the model with the simplest possible guess which is predicting the middle (median) salary for every job.
+
+| Measure | Salary model | Median guess |
+|---|---:|---:|
+| Typical error, MAE (average dollars off) | ${sal_cv['mae']:,.0f} | ${sal_cv['base_mae']:,.0f} |
+| RMSE (penalizes big misses more) | ${sal_cv['rmse']:,.0f} | ${sal_cv['base_rmse']:,.0f} |
+| R² (share of pay differences explained) | {sal_cv['r2']:.2f} | 0.00 |
+
+On jobs it had not seen the model's typical miss is about **${sal_cv['mae']:,.0f}** which is **{sal_mae_gain:.0f}% smaller** than guessing the median. It explains about **{sal_cv['r2'] * 100:.0f}%** of the differences in pay between jobs. That makes it a useful guide to what matters but not an exact salary calculator. The rest of the variation comes from things a posting does not show like the employer's pay bands, the city and the negotiation.
+"""))
+```
+
+```{python}
+#| label: fig-salary-predicted-vs-actual
+#| fig-cap: "Predicted versus advertised salary for jobs the model had not seen. Points on the diagonal line are perfect predictions."
+#| echo: false
+
+fig, ax = plt.subplots(figsize=(7, 5.2))
+ax.scatter(y_pay / 1000, sal_oof / 1000, s=16, color=BLUE, alpha=0.55, edgecolor="none")
+lims = [min(y_pay.min(), sal_oof.min()) / 1000 - 5, max(y_pay.max(), sal_oof.max()) / 1000 + 5]
+ax.plot(lims, lims, color=DARK, linewidth=1, linestyle="--")
+ax.set_xlim(lims)
+ax.set_ylim(lims)
+ax.set_xlabel("Advertised salary ($ thousands)")
+ax.set_ylabel("Predicted salary ($ thousands)")
+ax.set_title("The model tracks pay, but misses at the extremes", loc="left")
+fig.text(0.01, -0.02, f"Source: 2024 Insurance Carrier dataset, {sal_n} distinct jobs, out-of-fold predictions.",
+         fontsize=9.5, color="#555555", va="top")
+plt.tight_layout()
+plt.show()
+```
+
+The model pulls predictions toward the middle. It clearly underestimates the best-paid jobs and overestimates the lowest-paid ones so for a job seeker it is more reliable for typical mid-career postings than for the extremes.
+
+## What goes with higher pay
+
+```{python}
+#| label: fig-salary-drivers
+#| fig-cap: "Estimated pay difference for each feature, holding the others equal. Lines show the 95% confidence range and dark blue bars are features whose range does not cross zero."
+#| echo: false
+
+plot_df = sal_coef[sal_coef["Feature"] != "Experience not stated"].copy()
+plot_df = plot_df.sort_values("Pay difference %")
+labels = [
+    "Each extra year of experience" if f == "Years of experience" else f
+    for f in plot_df["Feature"]
+]
+colors = [BLUE if c else GREY for c in plot_df["Clear signal"]]
+
+fig, ax = plt.subplots(figsize=(8, 7))
+ax.barh(labels, plot_df["Pay difference %"], color=colors)
+ax.errorbar(
+    plot_df["Pay difference %"], labels,
+    xerr=[plot_df["Pay difference %"] - plot_df["Low %"],
+          plot_df["High %"] - plot_df["Pay difference %"]],
+    fmt="none", ecolor=DARK, elinewidth=1, capsize=3,
+)
+ax.axvline(0, color=DARK, linewidth=1)
+ax.set_xlabel("Difference in advertised pay (%)")
+ax.set_title("Cloud skills and seniority carry the clearest pay premium", loc="left")
+fig.text(0.01, -0.02, f"Source: 2024 Insurance Carrier dataset, {sal_n} distinct jobs. Linear model on log salary, robust standard errors.",
+         fontsize=9.5, color="#555555", va="top")
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+#| label: salary-drivers-table
+#| echo: false
+
+table = sal_coef[sal_coef["Feature"] != "Experience not stated"].copy()
+table = table.sort_values("Pay difference %", ascending=False)
+rows = "\n".join(
+    f"| {r.Feature} | {r._4:+.1f}% | {r._5:+.1f}% to {r._6:+.1f}% | {'Yes' if r._7 else 'No'} |"
+    for r in table.itertuples()
+)
+display(Markdown(
+    "| Feature | Pay difference | 95% range | Clear signal |\n|---|---:|---:|:---:|\n" + rows
+))
+```
+
+```{python}
+#| label: salary-drivers-reading
+#| echo: false
+
+display(Markdown(f"""
+**What this means for a job seeker**
+
+- **Cloud computing is the skill with the clearest pay premium.** Postings that ask for AWS, Azure or Google Cloud advertise about **{pct('Cloud Computing')} more** than similar postings that do not. Cloud is also one of our team's two largest skill gaps (team average 1.3 out of 5) so it is the best first skill to invest in.
+- **Data pipeline skills (ETL/ELT) add about {pct('ETL/ELT & Data Pipelines')}.** This is the everyday work of a Data Engineer. The effect is smaller and less certain than cloud (its range starts just above zero) but it points the same way.
+- **Experience and seniority matter most overall.** Each extra year of required experience goes with about **{pct('Years of experience')} more** pay. A senior title goes with about **{pct('Senior title')} more** and a junior title with about **{pct('Junior title')} less**. Entry-level offers will sit well below the market median and pay grows quickly in the first years.
+- **SQL and Python are the entry ticket, not a pay premium.** Once the other features are accounted for neither one moves pay by a clear amount. SQL appears in about {sal['SQL'].mean() * 100:.0f}% of these jobs and Python in about {sal['Python'].mean() * 100:.0f}% including lower-paid analyst roles so they get you hired more than they get you paid more. They are still required.
+- **Remote work does not cost pay.** Fully remote postings advertise about the same as on-site ones ({coef_row('Fully remote')['Pay difference %']:+.1f}%) so a job seeker can target remote roles without expecting a pay cut.
+- **Spark, Databricks, Git and the other skills show no clear effect.** Few postings in this sample ask for them (Spark appears in about {sal["Spark / PySpark"].mean() * 100:.0f}% of jobs) so the model cannot tell their effect apart from zero. That is a gap in the evidence and not proof that they do not matter.
+"""))
+```
+
+## What-if: pay for a job seeker profile
+
+The model can price a specific kind of posting. Each row below is a Data Engineer type posting (core data role, bachelor's degree, fully remote and no senior or junior title unless the row says so) that asks for SQL and Python. We then add skills and experience one step at a time.
+
+```{python}
+#| label: salary-what-if
+#| echo: false
+
+
+def predict_pay(skills, years, senior=0, junior=0):
+    row = {f: 0 for f in sal_features}
+    for s in ["SQL", "Python"] + skills:
+        row[s] = 1
+    row.update({
+        "Years of experience": years,
+        "Senior title": senior,
+        "Junior title": junior,
+        "Fully remote": 1,
+        "Degree required": 1,
+        "Core data role": 1,
+    })
+    x = np.array([1.0] + [row[f] for f in sal_features])
+    return float(np.exp(x @ sal_beta) * sal_smear)
+
+
+scenarios = [
+    ("Entry level: junior title, 1 year", [], 1, 0, 1),
+    ("2 years of experience", [], 2, 0, 0),
+    ("2 years, plus cloud", ["Cloud Computing"], 2, 0, 0),
+    ("2 years, plus cloud and pipelines", ["Cloud Computing", "ETL/ELT & Data Pipelines"], 2, 0, 0),
+    ("5 years, plus cloud and pipelines", ["Cloud Computing", "ETL/ELT & Data Pipelines"], 5, 0, 0),
+    ("Senior title, 7 years, cloud and pipelines", ["Cloud Computing", "ETL/ELT & Data Pipelines"], 7, 1, 0),
+]
+rows = "\n".join(
+    f"| {name} | ${predict_pay(skills, yrs, sen, jun):,.0f} |"
+    for name, skills, yrs, sen, jun in scenarios
+)
+sal_entry = predict_pay([], 1, 0, 1)
+sal_mid = predict_pay(["Cloud Computing", "ETL/ELT & Data Pipelines"], 2, 0, 0)
+sal_two = predict_pay([], 2, 0, 0)
+display(Markdown(
+    "| Posting asks for SQL and Python, plus... | Predicted advertised salary |\n|---|---:|\n" + rows
+))
+display(Markdown(f"""
+For a graduate with about two years of relevant experience adding cloud and pipeline skills moves the predicted advertised salary from about **${sal_two:,.0f}** to about **${sal_mid:,.0f}**. That is roughly **${sal_mid - sal_two:,.0f}** more a year. These are estimates of what employers advertise with a typical error of about ${sal_cv['mae']:,.0f} and not guaranteed offers.
+"""))
+```
+
+## Limitations of the model
+
+- **It shows association, not cause.** Postings that ask for cloud skills may also be at better-paying teams. Learning cloud makes a candidate eligible for those postings and does not raise pay on its own.
+- **A few employers dominate.** UnitedHealth Group (with its Optum unit) and Humana posted the largest share of the jobs so their pay practices shape the results.
+- **Advertised pay is not offered pay.** Only postings that state a salary are included and the figure is usually the midpoint of the advertised range.
+- **It is less accurate for employers it has never seen.** When whole employers are left out of training the typical miss grows to about $23,000.
+- **Rare skills cannot be measured well.** Spark, Databricks and Git appear in too few postings for the model to estimate their effect.
+- **It covers 2024 insurance carriers only.** Results may not carry over to other industries or later years.

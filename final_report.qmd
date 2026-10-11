@@ -1,0 +1,70 @@
+---
+title: "Data Engineering Careers at Insurance Carriers: A Career Evaluation Product"
+subtitle: "AD688 Project Group 3 final report"
+author: "Gabriel, Genevieve and Haben"
+date: "October 11, 2026"
+format:
+  docx:
+    toc: true
+    toc-depth: 2
+    number-sections: true
+    fig-dpi: 200
+filters:
+  - drop-page-titles.lua
+execute:
+  echo: false
+  warning: false
+---
+
+# Product framing
+
+**Target user.** Students and early-career analysts who want to move into data engineering.
+
+**Career pathway.** Data Engineer and closely related roles (analytics engineer, data platform engineer, ETL engineer and data warehouse engineer).
+
+**Industry.** Insurance carriers, NAICS 5241. These are the companies that sell and underwrite insurance policies.
+
+**The question the product answers.** Which skills make someone the most qualified for a Data Engineer job at an insurance carrier, and which of them pay off?
+
+{{< include introduction.qmd >}}
+
+# Scope and data
+
+{{< include data_preparation.qmd >}}
+
+# Market baseline
+
+{{< include market_baseline.qmd >}}
+
+# Skill-gap analysis
+
+{{< include skill_gap_analysis.qmd >}}
+
+# Final analytics
+
+{{< include ml_methods.qmd >}}
+
+## Career evaluation overview
+
+{{< include career_evaluation.qmd >}}
+
+# Recommendations
+
+{{< include final_recommendations.qmd >}}
+
+# Limitations
+
+The product gives a student a grounded starting point but it does not yet do the following things well.
+
+- **The Data Engineer sample is small.** Only 29 postings matched our strict Data Engineer definition and only 13 of them list a salary. The market snapshot and skill gap describe those 29 jobs. The salary model uses the wider set of 395 distinct insurance data jobs because 29 is too few to model.
+- **One company shapes the results.** State Farm posted 15 of the 29 Data Engineer postings. UnitedHealth Group (with its Optum unit) and Humana posted the largest share of the wider salary sample.
+- **Advertised pay is not offered pay.** Salaries come from postings that chose to list one. The model explains about 37% of pay differences between jobs and its typical miss on new jobs is about $21,000.
+- **The model shows association and not cause.** Cloud skills go with higher advertised pay but part of that may come from the better-paying teams that ask for cloud.
+- **Skill ratings are self-reported.** The team's 1 to 5 ratings were not checked by a test so the skill gaps are development signals and not measures of job readiness.
+- **The data is one year from one industry.** All results come from 2024 postings at insurance carriers and may not hold for other industries or later years.
+
+
+---
+# The included pages each carry their own title; a later metadata block wins, so this restores the report title.
+title: "Data Engineering Careers at Insurance Carriers: A Career Evaluation Product"
+---
