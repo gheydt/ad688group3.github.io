@@ -8,6 +8,9 @@ This project focuses on **Data Engineering and related career opportunities in t
 
 Data Engineers design, develop, and maintain the systems and infrastructure needed to collect, store, process, and transform large volumes of data. Their work ensures that organizations have reliable and accessible data for analysis, reporting, and decision-making. As organizations increasingly rely on data-driven operations, Data Engineering has become an important technical career pathway [@snowflake_data_engineer; @datascience_job_outlook].
 
+
+According to 365 Data Science (2026), citing StartUs, the Data Engineering sector employs more than **150,000 professionals**, with over **20,000 new jobs created in the preceding year** [@datascience_job_outlook]. These figures highlight broader Data Engineering career opportunities but are not specific to the Insurance Carrier industry (NAICS 5241).
+
 The insurance industry depends heavily on data to assess risk, develop pricing models, detect fraud, and improve business decisions. Advances in big data analytics and telematics have expanded the information insurers can use to understand customer behavior and evaluate potential risks. As a result, Data Engineering plays an important role in supporting modern insurance operations [@datascience_insurance; @discoverdatascience_insurance].
 
 
